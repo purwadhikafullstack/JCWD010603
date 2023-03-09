@@ -1,0 +1,13 @@
+"use strict"
+
+require("dotenv").config() // confiq dotenv
+const path = require("path")
+
+module.exports = {
+    // mengubah model menggunakan migration from here
+    config: path.resolve("src/config", "config.js"),
+    "models-path": path.resolve("src/models"),
+    "seeders-path": path.resolve("src/seeders"),
+    "migrations-path": path.resolve("src/migrations")
+
+}        
