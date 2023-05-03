@@ -31,13 +31,16 @@ import { Link as ReachLink } from "react-router-dom";
 import { useRef } from "react";
 import { useSelector } from "react-redux";
 import { AiOutlineMenu } from "react-icons/ai";
-
 import { FiBell } from "react-icons/fi";
 import { GrMenu } from "react-icons/gr";
 import { SlBasket } from "react-icons/sl";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import user_types from "../redux/auth/types";
+import LogoHD from "../asset/logo.png";
+import { BiBell, BiCartAlt, BiMenu } from "react-icons/bi";
+
+
 export default function Navbar(props) {
   const userSelector = useSelector((state) => state.auth);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -55,7 +58,7 @@ export default function Navbar(props) {
     window.location.reload(true);
   }
 
-  console.log(userSelector);
+  // console.log(userSelector);
 
   return (
     <>
@@ -73,14 +76,13 @@ export default function Navbar(props) {
         >
           <Flex px={3} gap={5}>
             <Flex alignItems={"center"}>
-              <Link href="/product-list-user">
+              <Link href="/">
                 <Image
                   fontSize={"26px"}
                   color="#F68522"
                   justifyContent="center"
-                  src={Logo}
+                  src={LogoHD}
                   w="100px"
-                  h="24px"
                 ></Image>
               </Link>
               <Flex px={"70px"} alignItems="center"></Flex>
@@ -88,7 +90,7 @@ export default function Navbar(props) {
                 <Icon
                   boxSize={"7"}
                   as={FiBell}
-                  color="#DCD7C9"
+                  color="white"
                   sx={{
                     _hover: {
                       cursor: "pointer",
@@ -101,7 +103,7 @@ export default function Navbar(props) {
                   <Icon
                     boxSize={"7"}
                     as={SlBasket}
-                    color="#DCD7C9"
+                    color="white"
                     sx={{
                       _hover: {
                         cursor: "pointer",
@@ -117,7 +119,7 @@ export default function Navbar(props) {
                     <Icon
                       boxSize={"7"}
                       as={AiOutlineMenu}
-                      color="#DCD7C9"
+                      color="white"
                       sx={{
                         _hover: {
                           cursor: "pointer",

@@ -44,10 +44,10 @@ export default function LoginAdmin() {
           password,
         })
       );
-      console.log(isAuth.message);
-      if (isAuth.message) {
+      console.log(isAuth.data.message);
+      if (isAuth.data.message) {
         setLoginStat("Failed")
-        setErrMsg(isAuth.message)
+        setErrMsg(isAuth.data.message)
       }
       if (isAuth.status) {
 

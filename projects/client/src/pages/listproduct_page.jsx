@@ -67,6 +67,15 @@ export default function PageProducts() {
     callback?.();
   };
 
+  // useEffect(() => {
+  //   // fetchPosts();
+  //   fetchData();
+  //   fetchDataCat();
+  //   setTimeout(() => {
+  //     setIsLoading(false);
+  //   }, 500);
+  // }, []);
+  console.log(`data nya = ${data}`);
   useEffect(() => {
     // fetchPosts();
     fetchData();
@@ -112,9 +121,9 @@ export default function PageProducts() {
               setSort={setSort}
               setSortBy={setSortBy}
               filter={fetchFilPro}
-              // page={page}
-              // setPage={setPage}
-              // fetchData={fetchData}
+            // page={page}
+            // setPage={setPage}
+            // fetchData={fetchData}
             />
           </Center>
         </>

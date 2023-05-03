@@ -24,7 +24,7 @@ import Logo from "../assets/logo.png";
 
 const queryParams = new URLSearchParams(window.location.search);
 const token = queryParams.get("token");
-console.log(token);
+// console.log(token);
 
 export default function Register() {
   const dispatch = useDispatch();

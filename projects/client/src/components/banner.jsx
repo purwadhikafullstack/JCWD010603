@@ -1,46 +1,26 @@
 import {
-  Flex,
-  Image,
-  InputGroup,
-  InputRightElement,
-  Box,
-  List,
-  Input,
-  Menu,
-  Link,
-  Button,
-  Divider,
-  Icon,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  useDisclosure,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverArrow,
-  PopoverCloseButton,
-  PopoverHeader,
-  PopoverBody,
-  ListItem,
-  Avatar,
-  Center,
+  Flex, Link, Button
 } from "@chakra-ui/react";
+import BannerImg from "../asset/bannerImage.png"
+
 export default function Banner() {
   return (
-    <>
-      <Center flex={1} align={"center"} justifyContent={"center"}>
-        <Flex
-          px={2}
-          h="686px"
-          backgroundColor="#DCD7C9"
-          w="430px"
-          padding="20px"
-          borderBottom={"2px solid #E2E8F0"}
-          display={"flex"}
-          pos="sticky"
-        ></Flex>
-      </Center>
-    </>
+    <Flex
+      h="636px" w="430px" m='0 auto' p={6} direction='column'
+      justify='flex-end' alignItems="flex-end"
+      backgroundImage={BannerImg}
+      backgroundRepeat="no-repeat" backgroundSize='cover'
+    >
+
+      <Button w='30%' borderRadius='3xl' bg='#2C3639' color='white' border='1px solid white' _hover={{
+        bg: "#4A5568",
+        color: "white",
+        boxShadow: "xl",
+      }}>
+        <Link href="/product-list-user" _hover={{textStyle:"none"}}>
+          Shop now
+        </Link>
+      </Button>
+    </Flex>
   );
 }

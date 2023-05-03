@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const { sequelize } = require("../models");
 const jwt = require("jsonwebtoken");
 const secret_key = process.env.secret_key;
+const opencage = require("opencage-api-client");
 
 const Admins = db.admin;
 const Branch = db.branch;
@@ -350,6 +351,66 @@ const adminController = {
     } catch (err) {
       await t.rollback();
       return res.status(400).send(err.message);
+    }
+  },
+
+  getBranchById: async (req, res) => {
+    try {
+      const branch = await Branch.findOne({
+        where: { id: req.params.id },
+        attributes: ["id", "name", "district", "city", "province", "postalCode"]
+      });
+      if (!branch) {
+        return res.status(404).json({
+          message: "Branch not found"
+        });
+      }
+      return res.status(200).json({
+        message: "Branch data fetched",
+        result: branch
+      });
+    } catch (err) {
+      return res.status(400).json({
+        message: err
+      });
+    }
+  },
+
+  getBranchesLatLng: async (req, res) => {
+    try {
+      const branches = await Branch.findAll({
+        attributes: [
+          "id",
+          "name",
+          "district",
+          "city",
+          "province",
+          "postalCode",
+        ],
+      });
+
+      const promises = branches.map(async (branch) => {
+        const { city, province } = branch;
+        const query = `${city}, ${province}`;
+        console.log("Query:", query);
+        const response = await opencage.geocode({ q: query });
+        console.log("Response:", response);
+        const { geometry } = response.results[0];
+        const { lat, lng } = geometry;
+        const coordinate = [lat, lng]; // modified here to be an array
+        return { ...branch.dataValues, coordinate };
+      });
+
+      const result = await Promise.all(promises);
+
+      return res.status(200).json({
+        message: "Branch data fetched",
+        result,
+      });
+    } catch (err) {
+      return res.status(400).json({
+        message: err,
+      });
     }
   },
 }

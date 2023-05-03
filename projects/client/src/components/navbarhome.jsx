@@ -35,6 +35,7 @@ import { FiBell } from "react-icons/fi";
 import { GrMenu } from "react-icons/gr";
 import { SlBasket } from "react-icons/sl";
 import { useEffect, useState } from "react";
+import LogoHD from "../asset/logo.png"
 
 export default function Navbar(props) {
   const userSelector = useSelector((state) => state.auth);
@@ -45,7 +46,7 @@ export default function Navbar(props) {
   const [products, setProducts] = useState([]);
   const [product, setProduct] = useState([]);
 
-  console.log(userSelector);
+  // console.log(userSelector);
 
   return (
     <>
@@ -63,20 +64,22 @@ export default function Navbar(props) {
         >
           <Flex px={3} gap={5}>
             <Flex alignItems={"center"}>
-              <Image
-                fontSize={"26px"}
-                color="#F68522"
-                justifyContent="center"
-                src={Logo}
-                w="100px"
-                h="24px"
-              ></Image>
+              <Link href="/">
+                <Image
+                  fontSize={"26px"}
+                  color="#F68522"
+                  justifyContent="center"
+                  src={LogoHD}
+                  w="100px"
+                  h="24px"
+                ></Image>
+              </Link>
               <Flex px={"70px"} alignItems="center"></Flex>
               <Flex px={3}>
                 <Icon
                   boxSize={"7"}
                   as={FiBell}
-                  color="#DCD7C9"
+                  color="white"
                   sx={{
                     _hover: {
                       cursor: "pointer",
@@ -85,16 +88,18 @@ export default function Navbar(props) {
                 ></Icon>
               </Flex>
               <Flex px={3}>
-                <Icon
-                  boxSize={"7"}
-                  as={SlBasket}
-                  color="#DCD7C9"
-                  sx={{
-                    _hover: {
-                      cursor: "pointer",
-                    },
-                  }}
-                ></Icon>
+                <Link href="/cart">
+                  <Icon
+                    boxSize={"7"}
+                    as={SlBasket}
+                    color="white"
+                    sx={{
+                      _hover: {
+                        cursor: "pointer",
+                      },
+                    }}
+                  ></Icon>
+                </Link>
               </Flex>
 
               <Popover trigger={"hover"} placement={"bottom-start"} gap={10}>
@@ -103,7 +108,7 @@ export default function Navbar(props) {
                     <Icon
                       boxSize={"7"}
                       as={AiOutlineMenu}
-                      color="#DCD7C9"
+                      color="white"
                       sx={{
                         _hover: {
                           cursor: "pointer",

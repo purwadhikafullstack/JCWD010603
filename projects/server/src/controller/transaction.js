@@ -11,6 +11,7 @@ const moment = require("moment");
 const Category = db.category;
 const Product = db.product;
 const Cart = db.cart;
+const Record_stock = db.record_stock;
 
 const transactionController = {
   getCountTransactionByBranch: async (req, res) => {
@@ -158,16 +159,24 @@ const transactionController = {
       orderlist.map(async (val) => {
         let obj = {
           qty: val.qty,
-          // totalPrice: val.qty * val.Product.price,
           ProductId: val.ProductId,
           TransactionHeaderId: id,
-          // subWeight: val.qty * val.Product.weight,
         };
         console.log(obj);
         arrItem.push(obj);
         const product = await Product.findByPk(val.ProductId, {
           transaction: t,
         });
+        await Record_stock.create(
+          {
+            stockBefore: product.dataValues.stock,
+            stockAfter: product.dataValues.stock - val.qty,
+            desc: "pengurangan stock transaction",
+            TypeStockId: 1,
+            ProductId: val.ProductId,
+          },
+          { transaction: t }
+        );
         if (product.stock < val.qty) {
           throw new Error("stocknya kurang");
         }
@@ -183,11 +192,8 @@ const transactionController = {
       });
 
       console.log(arrItem);
-      // console.log(filterCart);
+
       await Transaction_item.bulkCreate(
-        // qty: filterCart.dataValues.qty,
-        // TransactionHeaderId: id,
-        // ProductId: filterCart.dataValues.ProductId,
         arrItem,
 
         { transaction: t }

@@ -1,16 +1,14 @@
 import {
-  Flex,
-  Box,
-  IconButton,
-  Image,
-  Text,
-  Heading,
-  Button,
-  Link,
-  Center,
+  Flex, Box, IconButton, Image, Text, Heading,
+  Button, Link, Center,
+  AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody,
+  AlertDialogFooter, FormControl, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper,
+  NumberDecrementStepper,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import Navbar from "../components/navbar";
+import React from "react";
+import NavBar from "../components/navbarhome"; //not loggedin
+import Navbar from "../components/navbar"; //loggedin
 import { axiosInstance } from "../config/config";
 import { BiTrash, BiEdit, BiChevronRight, BiChevronLeft } from "react-icons/bi";
 import { Link as ReachLink } from "react-router-dom";
@@ -19,7 +17,14 @@ export default function Cart() {
   const [pages, setPages] = useState(1);
   const [numOfPage, setNumOfPage] = useState(0);
   const [cartTotal, setCartTotal] = useState(0);
+  const [cartId, setCartId] = useState(null); //handle delete 
+  const [editId, setEditId] = useState(null); //handle edit
+  const [deleteDialog, setDeleteDialog] = useState(false);
+  const [editDialog, setEditDialog] = useState(false);
+  const [editInput, setEditInput] = useState(0);
+  const cancelRef = React.useRef()
 
+  // STYLE
   const deleteButtonStyle = {
     _hover: {
       bg: "none",
@@ -69,6 +74,7 @@ export default function Cart() {
     },
   };
 
+  // PAGINATION
   const nextPage = () => {
     if (pages !== numOfPage) {
       setPages(pages + 1);
@@ -82,25 +88,73 @@ export default function Cart() {
   const handlePageClick = (pageNum) => {
     setPages(pageNum);
   };
-  const totalPrice = cartData.reduce((total, val) => {
-    return total + val.Product.price;
-  }, 0);
 
+  // CART DATA
   async function fetchCartData() {
-    await axiosInstance.get(`/cart/getcart?page=${pages}`).then((res) => {
+    const userId = localStorage.getItem("userID");
+    await axiosInstance.get(`/cart/getcart/${userId}?page=${pages}`).then((res) => {
       setCartData(res.data.result);
       setNumOfPage(res.data.totalPages);
       setCartTotal(res.data.totalPrice);
     });
   }
-
   useEffect(() => {
     fetchCartData();
   }, [pages]);
 
+  // EDIT CART
+  function handleEditInput(value) {
+    setEditInput(value)
+  }
+  console.log("berapa input nomor = " + editInput);
+  function editCart(id) {
+    setEditId(id);
+    setEditDialog(true);
+  }
+  function handleCloseEditDialog() {
+    setEditDialog(false)
+  }
+  async function confirmEdit() {
+    const data = {
+      qty: editInput
+    }
+    await axiosInstance.patch(`/cart/editcart/${editId}`, data).then(() => {
+      fetchCartData();
+    }).finally(() => {
+      setEditDialog(false);
+      setEditInput('');
+    })
+  }
+
+  // DELETE CART
+  function deleteCart(id) {
+    setCartId(id);
+    setDeleteDialog(true);
+  }
+  function handleCloseDeleteDialog() {
+    setDeleteDialog(false);
+  }
+
+  async function confirmDelete() {
+    await axiosInstance.delete(`/cart/deleteCart/${cartId}`).then(() => {
+      if (cartData.length > 1) {
+        fetchCartData();
+      } else {
+        setCartData([]);
+        setNumOfPage(1);
+        setCartTotal(0);
+      }
+    }).finally(() => {
+      setDeleteDialog(false);
+    })
+  }
+  console.log(`my cart data = ${cartData}`);
+
   return (
     <Flex direction="column">
-      <Navbar />
+      {
+        localStorage.getItem("userID") ? (<Navbar />) : (<NavBar />)
+      }
 
       <Flex w="430px" h="90vh" m="0 auto" direction="column" sx={scrollStyle}>
         {" "}
@@ -146,10 +200,6 @@ export default function Cart() {
               </Flex>
             </Center>
           ) : (
-            // <Flex direction='column' w='85%' h='560px' m='0 auto' py={5}
-            //     borderBottom='4px solid #2C3639' borderTop='4px solid #2C3639'
-            //     overflow='auto' sx={scrollStyle} borderRadius={5}
-            // >
             <>
               {cartData?.map((val) => {
                 return (
@@ -212,7 +262,7 @@ export default function Cart() {
                           color="gray.400"
                           bg="none"
                           cursor="pointer"
-                          mr={3}
+                          mr={3} onClick={() => deleteCart(val.id)}
                           sx={deleteButtonStyle}
                         />
                         <IconButton
@@ -220,7 +270,7 @@ export default function Cart() {
                           as={BiEdit}
                           color="gray.400"
                           bg="none"
-                          cursor="pointer"
+                          cursor="pointer" onClick={() => editCart(val.id)}
                           sx={editButtonStyle}
                         />
                       </Flex>
@@ -229,8 +279,73 @@ export default function Cart() {
                 );
               })}
             </>
-            // </Flex>
           )}
+          {/* Dialog Edit */}
+          <AlertDialog
+            motionPreset='slideInBottom'
+            isOpen={editDialog}
+            leastDestructiveRef={cancelRef}
+            onClose={handleCloseEditDialog}
+          >
+            <AlertDialogOverlay>
+              <AlertDialogContent>
+                <AlertDialogHeader fontSize="lg" fontWeight="bold" textAlign='center'>
+                  Update Quantity
+                </AlertDialogHeader>
+
+                <AlertDialogBody textAlign='center'>
+                  <FormControl id="quantity" >
+                    <NumberInput defaultValue={1} min={1} onChange={handleEditInput}>
+                      <NumberInputField />
+                      <NumberInputStepper>
+                        <NumberIncrementStepper />
+                        <NumberDecrementStepper />
+                      </NumberInputStepper>
+                    </NumberInput>
+                  </FormControl>
+                </AlertDialogBody>
+
+                <AlertDialogFooter>
+                  <Button ref={cancelRef} onClick={handleCloseEditDialog}>
+                    Cancel
+                  </Button>
+                  <Button colorScheme="green" onClick={confirmEdit} ml={3}>
+                    Edit
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialogOverlay>
+          </AlertDialog>
+
+          {/* Dialog Delete */}
+          <AlertDialog
+            motionPreset='slideInBottom'
+            isOpen={deleteDialog}
+            leastDestructiveRef={cancelRef}
+            onClose={handleCloseDeleteDialog}
+          >
+            <AlertDialogOverlay>
+              <AlertDialogContent>
+                <AlertDialogHeader fontSize="lg" fontWeight="bold" textAlign='center'>
+                  Remove Cart
+                </AlertDialogHeader>
+
+                <AlertDialogBody textAlign='center'>
+                  Are you sure you want to remove this product from the cart?
+                </AlertDialogBody>
+
+                <AlertDialogFooter>
+                  <Button ref={cancelRef} onClick={handleCloseDeleteDialog}>
+                    Cancel
+                  </Button>
+                  <Button colorScheme="red" onClick={confirmDelete} ml={3}>
+                    Delete
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialogOverlay>
+          </AlertDialog>
+
         </Flex>
         <Flex
           w="85%"
@@ -300,18 +415,25 @@ export default function Cart() {
             Rp {cartTotal.toLocaleString()}
           </Text>
         </Flex>
-        <Link href="/new-order">
-          <Button
-            w="85%"
-            h="40px"
-            m="20px auto 0px"
-            bg="#2C3639"
-            color="white"
-            sx={confirmButtonStyle}
-          >
-            Confirm & Buy
-          </Button>
-        </Link>
+        <Button
+          w="85%"
+          h="40px"
+          m="20px auto 0px"
+          bg={cartData.length > 0 ? "#2C3639" : "#BEBEBE"}
+          color="white"
+          sx={cartData.length > 0 ? confirmButtonStyle : {}}
+          disabled={cartData.length === 0}
+          p="0px"
+          cursor={cartData.length > 0 ? "pointer" : "context-menu"}
+        >
+          {cartData.length > 0 ? (
+            <Link href="/new-order" w="100%" h="100%" _hover={{ textStyle: 'none' }}>
+              <Center h="100%">Confirm & Buy</Center>
+            </Link>
+          ) : (
+            <Center h="100%">Confirm & Buy</Center>
+          )}
+        </Button>
       </Flex>
     </Flex>
 

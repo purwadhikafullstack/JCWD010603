@@ -19,7 +19,7 @@ const UserAuthProvider = ({ children }) => {
         });
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
         if (err) {
           if (token) {
             localStorage.removeItem("token");

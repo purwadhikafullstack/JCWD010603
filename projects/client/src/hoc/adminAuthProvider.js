@@ -17,8 +17,6 @@ const AdminAuthProvider = ({ children }) => {
         });
       }
           setIsLoading(false);
-
-      
     };
   
     useEffect(() => {

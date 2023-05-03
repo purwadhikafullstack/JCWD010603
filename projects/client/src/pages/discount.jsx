@@ -23,8 +23,11 @@ export default function Discount() {
     const [deleteTypeId, setDeleteTypeId] = useState(null);
     const [typeAlert, setTypeAlert] = useState(false);
     const [page, setPage] = useState(1); //voucher pagination
+    const [pages, setPages] = useState(1); //voucher all
     const [voucherData, setVoucherData] = useState([]);
-    const [pageNum, setPageNum] = useState(0);
+    const [allVoucher, setAllVoucher] = useState([]);
+    const [pageNum, setPageNum] = useState(0); // voucher biasa
+    const [pageNums, setPageNums] = useState(0); //voucher all
     const [productData, setProductData] = useState([]); //get product
     // form create voucher
     const [status, setStatus] = useState('');
@@ -32,6 +35,13 @@ export default function Discount() {
     const [enable, setEnable] = useState(false);
     const [deleteId, setDeleteId] = useState(null);
     const [voucherAlert, setVoucherAlert] = useState(false);
+    const [branchData, setBranchData] = useState([]); //get branch id
+    const [selectedBranchId, setSelectedBranchId] = useState('');
+    const handleBranchChange = (event) => {
+        setSelectedBranchId(event.target.value);
+        setPages(1);
+    };
+
     if (status === 'success') {
         setTimeout(() => {
             setStatus(null);
@@ -50,19 +60,20 @@ export default function Discount() {
             presentase: 0,
             expiredDate: "",
             ProductId: 0,
-            VoucherTypeId: 0
+            VoucherTypeId: 0,
+            BranchId: JSON.parse(localStorage.getItem("data")) ? JSON.parse(localStorage.getItem("data")).BranchId : null //note=pakai ternary biar ga "Error BranchId is not define" kalau logout.
         },
         validate: (values) => {
             const errors = {};
             if (!values.presentase && !values.nominal) {
-                errors.presentase = "Either nominal or presentase must be filled";
-                errors.nominal = "Either nominal or presentase must be filled";
+                errors.presentase = "Either nominal or percentage must be filled";
+                errors.nominal = "Either nominal or percentage must be filled";
             }
             if (values.nominal < 0) {
                 errors.nominal = "Nominal cannot be negative";
             }
             if (values.presentase < 0 || values.presentase > 100) {
-                errors.presentase = "Presentase must be between 0 and 100";
+                errors.presentase = "percentage must be between 0 and 100";
             }
             return errors;
         },
@@ -81,7 +92,9 @@ export default function Discount() {
                 })
                 .finally(() => {
                     fetchVoucher();
+                    fetchAllVoucher();
                     formik.resetForm();
+                    onCloseVoucher();
                 });
         }
     });
@@ -143,6 +156,11 @@ export default function Discount() {
             createType();
         }
     }
+    function onEnterCreateVoucher(e) {
+        if (e.key === 'Enter') {
+            formik.handleSubmit();
+        }
+    }
     // PAGINATION - START -
     const nextPage = () => {
         if (page !== pageNum) {
@@ -157,6 +175,20 @@ export default function Discount() {
     const handlePageClick = (pageNum) => {
         setPage(pageNum);
     }
+    // PAGINATION ALL
+    const nextPages = () => {
+        if (pages !== pageNums) {
+            setPages(pages + 1);
+        }
+    }
+    const prevPages = () => {
+        if (pages > 1) {
+            setPages(pages - 1);
+        }
+    }
+    const handlePageClicks = (pageNums) => {
+        setPages(pageNums);
+    }
     // PAGINATION - END -
     // FETCH VOUCHER TYPE - START -
     async function fetchVoucherType() {
@@ -170,7 +202,7 @@ export default function Discount() {
     // FETCH VOUCHER TYPE - END -
     // FETCH VOUCHER ALL - START -
     async function fetchVoucher() {
-        await axiosInstance.get(`/voucher_discount/getvoucher?page=${page}`).then((res) => {
+        await axiosInstance.get(`/voucher_discount/getvoucher?page=${page}&BranchId=${JSON.parse(localStorage.getItem("data")) ? JSON.parse(localStorage.getItem("data")).BranchId : null}`).then((res) => {
             setVoucherData(res.data.result)
             setPageNum(res.data.totalPages)
         })
@@ -178,7 +210,44 @@ export default function Discount() {
     useEffect(() => {
         fetchVoucher()
     }, [page])
+
+    async function fetchAllVoucher() {
+        let url = `/voucher_discount/getallvoucher?page=${pages}&BranchId=${selectedBranchId}`;
+        try {
+            const res = await axiosInstance.get(url);
+            setAllVoucher(selectedBranchId ? res.data.result : [...res.data.result]);
+            setPageNums(res.data.totalPages);
+        } catch (error) {
+            console.error(error);
+            setAllVoucher([]);
+            setPageNums(0)
+        }
+    }
+    useEffect(() => {
+        fetchAllVoucher(selectedBranchId)
+    }, [pages, selectedBranchId])
+
     // FETCH VOUCHER - END -
+    // FETCH BRANCH DATA ID
+    useEffect(() => {
+        if (JSON.parse(localStorage.getItem("data")) ? JSON.parse(localStorage.getItem("data")).isSuperAdmin : null) {
+            async function fetchAllBranch() {
+                await axiosInstance.get('/admin/branches').then((res) => {
+                    setBranchData([...res.data.result])
+                })
+            }
+            fetchAllBranch();
+        } else {
+            async function fetchBranch() {
+                await axiosInstance.get(`/admin/getBranchId/${JSON.parse(localStorage.getItem("data")) ? JSON.parse(localStorage.getItem("data")).BranchId : null}`).then((res) => {
+                    setBranchData([res.data.result])
+                })
+            }
+            fetchBranch();
+        }
+    }, []);
+
+    // FETCH BRANCH DATA ID
 
     function deleteTypeAlert(id) {
         setDeleteTypeId(id);
@@ -212,6 +281,7 @@ export default function Discount() {
         try {
             await axiosInstance.delete(`/voucher_discount/deletevoucher/${deleteId}`);
             fetchVoucher();
+            fetchAllVoucher();
             setVoucherAlert(false)
         } catch (error) {
             if (error.response && error.response.status === 404) {
@@ -223,7 +293,7 @@ export default function Discount() {
     }
 
     async function fetchProduct() {
-        await axiosInstance.get("/user/productall").then((res) => {
+        await axiosInstance.get("/product/productall").then((res) => {
             setProductData([...res.data.result])
         })
     }
@@ -250,7 +320,7 @@ export default function Discount() {
                             voucherType?.map((val, idx) => {
                                 return <>
                                     <Flex key={idx} borderBottom='1px solid #2c3639' w='90%' m='5px auto' justify='space-between' align='center'>
-                                        <Flex w={['100%', '100%', '70%', '40%']} align='center'>
+                                        <Flex w='80%' align='center'>
                                             <Text fontWeight='bold'>
                                                 {idx + 1}.
                                             </Text>
@@ -329,63 +399,127 @@ export default function Discount() {
                 </Flex>
 
                 <Flex w='100%' h='60%' direction='column' px={5}>
-                    <Flex mb={5}>
+                    <Flex>
                         <Button size={['xs', 'sm']} bg='#2C3639' color='white' sx={confirmButtonStyle} onClick={onOpenVoucher}>
                             Create Voucher
                         </Button>
                         <Heading ml={5} size={['sm', 'md']}>Voucher List</Heading>
                     </Flex>
+                    {
+                        (JSON.parse(localStorage.getItem("data")) ? JSON.parse(localStorage.getItem("data")).isSuperAdmin : null) ? (
+                            <FormControl id="branchSelect" my={2}>
+                                <Select
+                                    placeholder="All Branches" name="branchSelect" bg='whiteAlpha.600' color='#2C3639'
+                                    value={selectedBranchId} onChange={handleBranchChange} border='2px solid grey'>
+                                    {branchData?.map((val) => (
+                                        <option key={val.id} name={val.name} id={val.id} value={val.id} background-color='#2C3639'>
+                                            {val.city}
+                                        </option>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        ) : (
+                            branchData?.map((val) => {
+                                return (
+                                    <Heading textAlign='center' size='md' mb={5}>
+                                        {val.city}
+                                    </Heading>
+                                );
+                            })
+                        )
+                    }
 
                     <Flex w='100%' h='90%' sx={webkit} overflow='auto' borderRadius={10} direction='column' justify='space-between'>
                         <Flex w='100%' h='90%' sx={webkit} overflow='auto' direction='column' >
                             {
-                                voucherData.length === 0 ? (
+                                (voucherData.length === 0 || allVoucher.length === 0) ? (
                                     <Center w='100%' h='100%'>
                                         <Text textAlign='center' fontSize={['md', 'lg']} fontWeight='bold'>
-                                            Your cart is empty
+                                            The voucher list is currently empty
                                         </Text>
                                     </Center>
                                 ) : (
                                     <>
                                         {
-                                            voucherData?.map((val, idx) => {
-                                                const currentDate = new Date();
-                                                const valDate = new Date(val.expiredDate);
-                                                const date = new Date(val.expiredDate).toLocaleDateString('en-US', { day: '2-digit', month: 'long', year: 'numeric' });
-                                                const bg = valDate < currentDate ? 'red.100' : 'white';
-                                                const color = valDate < currentDate ? 'red.500' : 'green.500';
+                                            (JSON.parse(localStorage.getItem("data")) ? JSON.parse(localStorage.getItem("data")).isSuperAdmin : null) ? (
+                                                allVoucher?.map((val, idx) => {
+                                                    const currentDate = new Date();
+                                                    const valDate = new Date(val.expiredDate);
+                                                    const date = new Date(val.expiredDate).toLocaleDateString('en-US', { day: '2-digit', month: 'long', year: 'numeric' });
+                                                    const bg = valDate < currentDate ? 'red.100' : 'white';
+                                                    const color = valDate < currentDate ? 'red.500' : 'green.500';
 
-                                                return <>
-                                                    <Flex
-                                                        key={idx} w='100%' bg={bg} borderRadius={5} color='#2C3639'
-                                                        m='3px auto' justify='space-between' align='center' p={3}
-                                                    >
-                                                        <Flex w='20%' direction='column'>
-                                                            <Text fontWeight='bold' fontSize={['sm', 'md', 'lg']}>{val.name}</Text>
-                                                            <Text fontWeight='bold' fontSize={['sm', 'md', 'lg']}>Code : {val.code}</Text>
+                                                    return <>
+                                                        <Flex
+                                                            key={idx} w='100%' bg={bg} borderRadius={5} color='#2C3639'
+                                                            m='3px auto' justify='space-between' align='center' p={3}
+                                                        >
+                                                            <Flex w='20%' direction='column'>
+                                                                <Text fontWeight='bold' fontSize={['sm', 'md', 'lg']}>{val.name}</Text>
+                                                                <Text fontWeight='bold' fontSize={['sm', 'md', 'lg']}>Code : {val.code}</Text>
+                                                            </Flex>
+                                                            <Flex w='30%' direction='column'>
+                                                                <Text fontWeight='bold' color={color} fontSize={['sm', 'md', 'lg']}>- {val.nominal ? ("Rp " + val.nominal.toLocaleString()) : (val.presentase + " %")}</Text>
+                                                                <Text fontSize={['sm', 'md', 'lg']}>Exp : {date}</Text>
+                                                            </Flex>
+                                                            <Flex w='20%' direction='column'>
+                                                                <Text textAlign='right' fontSize={['sm', 'md', 'lg']}>{val.Product ? "Purchase of : " + val.Product.name : null}</Text>
+                                                                <Text textAlign='right' fontSize={['sm', 'md', 'lg']}>{val.Voucher_type.name}</Text>
+                                                            </Flex>
+                                                            <Tooltip label='Delete' placement='top-start'>
+                                                                <IconButton //delete button
+                                                                    icon={<FiX />}
+                                                                    borderRadius='full'
+                                                                    bg='none' onClick={() => deleteAlert(val.id)}
+                                                                    _hover={{
+                                                                        color: 'maroon',
+                                                                        backgroundColor: 'none'
+                                                                    }}
+                                                                />
+                                                            </Tooltip>
                                                         </Flex>
-                                                        <Flex w='30%' direction='column'>
-                                                            <Text fontWeight='bold' color={color} fontSize={['sm', 'md', 'lg']}>- {val.nominal ? ("Rp " + val.nominal.toLocaleString()) : (val.presentase + " %")}</Text>
-                                                            <Text fontSize={['sm', 'md', 'lg']}>Exp : {date}</Text>
+                                                    </>
+                                                })
+                                            ) : (
+                                                voucherData.map((val, idx) => {
+                                                    const currentDate = new Date();
+                                                    const valDate = new Date(val.expiredDate);
+                                                    const date = new Date(val.expiredDate).toLocaleDateString('en-US', { day: '2-digit', month: 'long', year: 'numeric' });
+                                                    const bg = valDate < currentDate ? 'red.100' : 'white';
+                                                    const color = valDate < currentDate ? 'red.500' : 'green.500';
+
+                                                    return <>
+                                                        <Flex
+                                                            key={idx} w='100%' bg={bg} borderRadius={5} color='#2C3639'
+                                                            m='3px auto' justify='space-between' align='center' p={3}
+                                                        >
+                                                            <Flex w='20%' direction='column'>
+                                                                <Text fontWeight='bold' fontSize={['sm', 'md', 'lg']}>{val.name}</Text>
+                                                                <Text fontWeight='bold' fontSize={['sm', 'md', 'lg']}>Code : {val.code}</Text>
+                                                            </Flex>
+                                                            <Flex w='30%' direction='column'>
+                                                                <Text fontWeight='bold' color={color} fontSize={['sm', 'md', 'lg']}>- {val.nominal ? ("Rp " + val.nominal.toLocaleString()) : (val.presentase + " %")}</Text>
+                                                                <Text fontSize={['sm', 'md', 'lg']}>Exp : {date}</Text>
+                                                            </Flex>
+                                                            <Flex w='20%' direction='column'>
+                                                                <Text textAlign='right' fontSize={['sm', 'md', 'lg']}>{val.Product ? "Purchase of : " + val.Product.name : null}</Text>
+                                                                <Text textAlign='right' fontSize={['sm', 'md', 'lg']}>{val.Voucher_type.name}</Text>
+                                                            </Flex>
+                                                            <Tooltip label='Delete' placement='top-start'>
+                                                                <IconButton //delete button
+                                                                    icon={<FiX />}
+                                                                    borderRadius='full'
+                                                                    bg='none' onClick={() => deleteAlert(val.id)}
+                                                                    _hover={{
+                                                                        color: 'maroon',
+                                                                        backgroundColor: 'none'
+                                                                    }}
+                                                                />
+                                                            </Tooltip>
                                                         </Flex>
-                                                        <Flex w='20%' direction='column'>
-                                                            <Text textAlign='right' fontSize={['sm', 'md', 'lg']}>{val.Product ? "Purchase of : " + val.Product.name : null}</Text>
-                                                            <Text textAlign='right' fontSize={['sm', 'md', 'lg']}>{val.Voucher_type.name}</Text>
-                                                        </Flex>
-                                                        <Tooltip label='Delete' placement='top-start'>
-                                                            <IconButton //delete button
-                                                                icon={<FiX />}
-                                                                borderRadius='full'
-                                                                bg='none' onClick={() => deleteAlert(val.id)}
-                                                                _hover={{
-                                                                    color: 'maroon',
-                                                                    backgroundColor: 'none'
-                                                                }}
-                                                            />
-                                                        </Tooltip>
-                                                    </Flex>
-                                                </>
-                                            })
+                                                    </>
+                                                })
+                                            )
                                         }
                                     </>
                                 )
@@ -418,27 +552,27 @@ export default function Discount() {
                                                     </Alert>
                                                 ) : null}
                                                 <FormLabel>Voucher name</FormLabel>
-                                                <Input name="name" type="text" placeholder='Create a new voucher' onChange={(e) => formik.setFieldValue('name', e.target.value)} />
+                                                <Input name="name" type="text" placeholder='Create a new voucher name' onChange={(e) => formik.setFieldValue('name', e.target.value)} onKeyDown={onEnterCreateVoucher} />
                                             </FormControl>
                                             <FormControl id="code" mb={2}>
                                                 <FormLabel>CODE</FormLabel>
-                                                <Input name="code" type="text" placeholder='Create a new voucher' onChange={(e) => formik.setFieldValue('code', e.target.value)} />
+                                                <Input name="code" type="text" placeholder='Voucher Code' onChange={(e) => formik.setFieldValue('code', e.target.value)} onKeyDown={onEnterCreateVoucher} />
                                             </FormControl>
                                             <FormControl id="nominal" mb={2}>
                                                 <FormLabel>Nominal</FormLabel>
-                                                <Input name="nominal" type="text" placeholder='Create a new voucher' onChange={(e) => formik.setFieldValue('nominal', e.target.value)} />
+                                                <Input name="nominal" type="text" placeholder='Enter a price' onChange={(e) => formik.setFieldValue('nominal', e.target.value)} onKeyDown={onEnterCreateVoucher} />
                                             </FormControl>
                                             <FormControl id="percent" mb={2}>
                                                 <FormLabel>Percentage</FormLabel>
-                                                <Input name="percent" type="text" placeholder='Create a new voucher' onChange={(e) => formik.setFieldValue('presentase', e.target.value)} />
+                                                <Input name="percent" type="text" placeholder='Enter a percentage' onChange={(e) => formik.setFieldValue('presentase', e.target.value)} onKeyDown={onEnterCreateVoucher} />
                                             </FormControl>
                                             <FormControl id="expDate" mb={2}>
                                                 <FormLabel>Set Expiry</FormLabel>
-                                                <Input name="expDate" type="date" placeholder='Create a new voucher' onChange={(e) => formik.setFieldValue('expiredDate', e.target.value)} />
+                                                <Input name="expDate" type="date" onChange={(e) => formik.setFieldValue('expiredDate', e.target.value)} onKeyDown={onEnterCreateVoucher} />
                                             </FormControl>
                                             <FormControl id="productId" mb={2}>
                                                 <FormLabel>Exclusive Product -Optional</FormLabel>
-                                                <Select placeholder="All Product" name="productId" onChange={(e) => formik.setFieldValue('ProductId', e.target.value)}>
+                                                <Select placeholder="All Product" name="productId" onChange={(e) => formik.setFieldValue('ProductId', e.target.value)} onKeyDown={onEnterCreateVoucher}>
                                                     {
                                                         productData?.map((val) => {
                                                             return <option key={val.id} name={val.name} id={val.id} value={val.id}>{val.name}</option>
@@ -448,7 +582,7 @@ export default function Discount() {
                                             </FormControl>
                                             <FormControl id="TypeId" mb={2}>
                                                 <FormLabel>Voucher Type</FormLabel>
-                                                <Select placeholder="Select voucher type" name="voucherType" onChange={(e) => formik.setFieldValue('VoucherTypeId', e.target.value)}>
+                                                <Select placeholder="Select voucher type" name="voucherType" onChange={(e) => formik.setFieldValue('VoucherTypeId', e.target.value)} onKeyDown={onEnterCreateVoucher}>
                                                     {
                                                         voucherType?.map((val) => {
                                                             return <option key={val.id} value={val.id} id={val.id}>{val.name}</option>
@@ -502,48 +636,93 @@ export default function Discount() {
                         </Flex>
 
                         <Flex w='100%' h='10%' >
-                            <Flex w='100%' h='100%' m='0 auto' justify='space-between' align='center'>
-                                <IconButton
-                                    size='sm' as={BiChevronLeft} bg='none' cursor={page > 1 ? 'pointer' : 'default'}
-                                    onClick={prevPage} color={page > 1 ? '#2C3639' : 'gray.200'}
-                                    sx={{
-                                        _hover: {
-                                            bg: 'none'
-                                        }
-                                    }}
-                                />
+                            {
+                                (JSON.parse(localStorage.getItem("data")) ? JSON.parse(localStorage.getItem("data")).isSuperAdmin : null) ? (
+                                    <Flex w='100%' h='100%' m='0 auto' justify='space-between' align='center'>
+                                        <IconButton
+                                            size='sm' as={BiChevronLeft} bg='none' cursor={pages > 1 ? 'pointer' : 'default'}
+                                            onClick={prevPages} color={pages > 1 ? '#2C3639' : 'gray.200'}
+                                            sx={{
+                                                _hover: {
+                                                    bg: 'none'
+                                                }
+                                            }}
+                                        />
 
-                                {pageNum > 1 && (
-                                    <Flex align='center'>
-                                        {Array.from(Array(pageNum).keys()).map((_, index) => (
-                                            <Button
-                                                borderRadius={50}
-                                                color={page === index + 1 ? 'white' : '#2C3639'}
-                                                key={index}
-                                                size='xs'
-                                                bg={page === index + 1 ? '#2C3639' : 'none'}
-                                                cursor='pointer'
-                                                onClick={() => handlePageClick(index + 1)}
-                                                _hover={{
-                                                    border: "1px solid #2C3639"
-                                                }}
-                                            >
-                                                {index + 1}
-                                            </Button>
-                                        ))}
+                                        {pageNums > 1 && (
+                                            <Flex align='center'>
+                                                {Array.from(Array(pageNums).keys()).map((_, index) => (
+                                                    <Button
+                                                        borderRadius={50}
+                                                        color={pages === index + 1 ? 'white' : '#2C3639'}
+                                                        key={index}
+                                                        size='xs'
+                                                        bg={pages === index + 1 ? '#2C3639' : 'none'}
+                                                        cursor='pointer'
+                                                        onClick={() => handlePageClicks(index + 1)}
+                                                        _hover={{
+                                                            border: "1px solid #2C3639"
+                                                        }}
+                                                    >
+                                                        {index + 1}
+                                                    </Button>
+                                                ))}
+                                            </Flex>
+                                        )}
+
+                                        <IconButton size='sm' as={BiChevronRight} bg='none' cursor={page < pageNum ? 'pointer' : 'default'}
+                                            onClick={nextPages} color={pages < pageNums ? '#2C3639' : 'gray.200'}
+                                            sx={{
+                                                _hover: {
+                                                    bg: 'none'
+                                                }
+                                            }}
+                                        />
                                     </Flex>
-                                )}
+                                ) : (
+                                    <Flex w='100%' h='100%' m='0 auto' justify='space-between' align='center'>
+                                        <IconButton
+                                            size='sm' as={BiChevronLeft} bg='none' cursor={page > 1 ? 'pointer' : 'default'}
+                                            onClick={prevPage} color={page > 1 ? '#2C3639' : 'gray.200'}
+                                            sx={{
+                                                _hover: {
+                                                    bg: 'none'
+                                                }
+                                            }}
+                                        />
 
-                                <IconButton size='sm' as={BiChevronRight} bg='none' cursor={page < pageNum ? 'pointer' : 'default'}
-                                    onClick={nextPage} color={page < pageNum ? '#2C3639' : 'gray.200'}
-                                    sx={{
-                                        _hover: {
-                                            bg: 'none'
-                                        }
-                                    }}
-                                />
-                            </Flex>
+                                        {pageNum > 1 && (
+                                            <Flex align='center'>
+                                                {Array.from(Array(pageNum).keys()).map((_, index) => (
+                                                    <Button
+                                                        borderRadius={50}
+                                                        color={page === index + 1 ? 'white' : '#2C3639'}
+                                                        key={index}
+                                                        size='xs'
+                                                        bg={page === index + 1 ? '#2C3639' : 'none'}
+                                                        cursor='pointer'
+                                                        onClick={() => handlePageClick(index + 1)}
+                                                        _hover={{
+                                                            border: "1px solid #2C3639"
+                                                        }}
+                                                    >
+                                                        {index + 1}
+                                                    </Button>
+                                                ))}
+                                            </Flex>
+                                        )}
 
+                                        <IconButton size='sm' as={BiChevronRight} bg='none' cursor={page < pageNum ? 'pointer' : 'default'}
+                                            onClick={nextPage} color={page < pageNum ? '#2C3639' : 'gray.200'}
+                                            sx={{
+                                                _hover: {
+                                                    bg: 'none'
+                                                }
+                                            }}
+                                        />
+                                    </Flex>
+                                )
+                            }
                         </Flex>
                     </Flex>
                 </Flex>

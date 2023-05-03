@@ -9,7 +9,7 @@ const init_state = {
 };
 
 function userReducer(state = init_state, action) {
-  console.log(action);
+  // console.log(action);
   if (action.type === user_types.USER_LOGIN) {
     return {
       ...state,

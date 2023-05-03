@@ -9,27 +9,43 @@ export default function NewOrderPage() {
   const [pages, setPages] = useState(1);
   const [numOfPage, setNumOfPage] = useState(0);
   const [cartTotal, setCartTotal] = useState(0);
+  const [voucher, setVoucher] = useState();
   const [isLoading, setIsLoading] = useState(true);
   async function fetchCartData() {
+    setIsLoading(true);
     const userId = localStorage.getItem("userID");
-    await axiosInstance.get(`/cart/getcartbyUserId/${userId}`).then((res) => {
-      setCartData(res.data.result);
-    });
+    await axiosInstance
+      .get(`/cart/getcartbyUserId/${userId}`)
+      .then((res) => {
+        setCartData(res.data.result);
+      })
+      .finally(() => setIsLoading(false));
   }
   async function fetchAddressData() {
+    setIsLoading(true);
     const userId = localStorage.getItem("userID");
-    await axiosInstance.get(`/address/primaryaddress/${userId}`).then((res) => {
-      setisPrimary(res.data.result);
-    });
+    await axiosInstance
+      .get(`/address/primaryaddress/${userId}`)
+      .then((res) => {
+        setisPrimary(res.data.result);
+      })
+      .finally(() => setIsLoading(false));
+  }
+  async function fetchVouchersData() {
+    setIsLoading(true);
+    const userId = localStorage.getItem("userID");
+    await axiosInstance
+      .get(`/voucher_discount/listvoucher`)
+      .then((res) => {
+        setVoucher(res.data.result);
+      })
+      .finally(() => setIsLoading(false));
   }
   console.log(cartData);
   useEffect(() => {
     fetchCartData();
     fetchAddressData();
-    setTimeout(() => {
-      setIsLoading(false);
-      // if (!state) navigate("/");
-    }, 1500);
+    fetchVouchersData();
   }, []);
 
   return (
@@ -41,7 +57,11 @@ export default function NewOrderPage() {
       ) : (
         <>
           <Stack minH={"100vh"} direction={{ base: "column", md: "row" }}>
-            <NewOrder data={cartData} dataaddress={isPrimary} />
+            <NewOrder
+              data={cartData}
+              dataaddress={isPrimary}
+              voucher={voucher}
+            />
           </Stack>{" "}
         </>
       )}

@@ -20,4 +20,5 @@ router.get("/category", productController.getCategory);
 router.get("/productall", productController.getProduct);
 router.get("/detail-product/:id", productController.getProductById);
 router.get("/find", productController.getProductByName);
+router.get("/productsuggestion/:BranchId", productController.getProductSuggestion);
 module.exports = router;

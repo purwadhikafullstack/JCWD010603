@@ -334,7 +334,7 @@ export default function AdminSetting() {
                                                 <Select placeholder="Select a branch" name="branches" onChange={(e) => formik.setFieldValue('branches', e.target.value)}>
                                                     {
                                                         data?.map((val) => {
-                                                            return <option value={val.id}>{val.name}</option>
+                                                            return <option value={val.id} key={val.id}>{val.name}</option>
                                                         })
                                                     }
                                                 </Select>

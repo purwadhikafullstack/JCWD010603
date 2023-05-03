@@ -9,59 +9,59 @@ const Category = db.category;
 const Product = db.product;
 
 const productController = {
-    create : async (req,res) => { 
-      const {name, BranchId} = req.body
-      const stock = parseInt(req.body.stock)
-      let status = parseInt(req.query.status)
-      if(stock == null || undefined || "" || 0) {
-        status = 0
-      }
-      
-      const t = await sequelize.transaction();
-        try {
-          if(!req.file){
-            throw new Error("File is not compatible");
-          }
-          
-          // get filename
-          let fileName = req.file.filename
-          // rewrite filename and add url
-          fileName =  process.env.render_img + fileName
-          
-          // combine object req.body and added image name
-          const data = {
-            ...req.body,
-            imgProduct : fileName
-          }
-          // console.log(data);
-          const result = await Product.create({...data}, { transaction: t })
-          if(!result){
-              throw new Error("Failed add new product");
-            }
-            
-            if(status) {
-            console.log('record running');  
-        const record = {
-          stockBefore: 0,
-          stockAfter: stock,
-          desc: `Added new stock product ${name}`,
-          TypeStockId: 1,
-          ProductId: result.dataValues.id,
-          BranchId: BranchId
-        };
-        
-        const stockReport = await Record_stock.create(
-          { ...record },
-          { transaction: t }
-          );
-          
-          if (!stockReport) {
-            throw new Error("Failed create record stock new product");
-          }
+  create : async (req,res) => { 
+    const {name, BranchId} = req.body
+    const stock = parseInt(req.body.stock)
+    let status = parseInt(req.query.status)
+    if(stock == null || undefined || "" || 0) {
+      status = 0
+    }
+    
+    const t = await sequelize.transaction();
+      try {
+        if(!req.file){
+          throw new Error("File is not compatible");
         }
+        
+        // get filename
+        let fileName = req.file.filename
+        // rewrite filename and add url
+        fileName =  process.env.render_img + fileName
+        
+        // combine object req.body and added image name
+        const data = {
+          ...req.body,
+          imgProduct : fileName
+        }
+        // console.log(data);
+        const result = await Product.create({...data}, { transaction: t })
+        if(!result){
+            throw new Error("Failed add new product");
+          }
           
-          await t.commit();
-          res.status(201).json({ message: "Success add new product" });
+          if(status) {
+          console.log('record running');  
+      const record = {
+        stockBefore: 0,
+        stockAfter: stock,
+        desc: `Added new stock product ${name}`,
+        TypeStockId: 1,
+        ProductId: result.dataValues.id,
+        BranchId: BranchId
+      };
+      
+      const stockReport = await Record_stock.create(
+        { ...record },
+        { transaction: t }
+        );
+        
+        if (!stockReport) {
+          throw new Error("Failed create record stock new product");
+        }
+      }
+        
+        await t.commit();
+        res.status(201).json({ message: "Success add new product" });
     } catch (err) {
       console.log(err);
       await t.rollback();
@@ -377,6 +377,38 @@ const productController = {
       });
     }
   },
+
+  getProductSuggestion: async (req, res) => {
+    const { BranchId } = req.params;
+
+    try {
+      const getProduct = await Product.findAll({
+        where: {
+          BranchId,
+          stock: { [Op.gt]: 0 } // only fetch products with available stock
+        },
+        limit: 6,
+        include: [
+          {
+            model: Category,
+            attributes: ["name"],
+          },
+        ],
+      });
+
+      res.status(200).json({
+        message: `get product suggestion for branch ${BranchId} with available stock`,
+        result: getProduct,
+      });
+
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({
+        message: err,
+      });
+    }
+  }
+
 };
 
 module.exports = productController;

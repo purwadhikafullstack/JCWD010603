@@ -240,7 +240,7 @@ export default function Register() {
               <Flex textAlign={"left"} color="white" py={3} px={3}>
                 <Icon
                   boxSize={"7"}
-                  as={IoIosArrowBack}
+                  // as={IoIosArrowBack}
                   color="white"
                   sx={{
                     _hover: {

@@ -55,7 +55,7 @@ export default function Login() {
     const isAuth = await dispatch(userLogin(user));
     console.log(isAuth);
     if (isAuth.status && isAuth.data.isVerify) {
-      return navigate("/userpage");
+      return navigate("/"); //erwin-ubah dari /userpage ke / aja
     } else if (isAuth.status && !isAuth.data.isVerify) {
       return navigate("/");
     }

@@ -28,5 +28,7 @@ router.get("/categories", adminController.getCategory);
 router.patch("/update_category/:id", adminController.updateCategory);
 router.delete("/delete_category/:id", adminController.deleteCategory);
 router.patch("/update_stock/:id", adminController.updateStock);
+router.get("/getBranchId/:id", adminController.getBranchById);
+router.get("/branchesgeometry", adminController.getBranchesLatLng);
 
 module.exports = router;
