@@ -55,6 +55,7 @@ db.transaction_item = require("./transaction_item")(sequelize,Sequelize)
 db.type_stock = require("./type_stock")(sequelize,Sequelize)
 db.record_stock = require("./record_stock")(sequelize,Sequelize)
 db.discount = require("./discount")(sequelize,Sequelize)
+db.transaction_status = require("./transaction_status")(sequelize,Sequelize)
 
 // associate
 db.admin.belongsTo(db.branch)
@@ -94,6 +95,9 @@ db.transaction_item.belongsTo(db.product)
 db.product.hasMany(db.transaction_item)
 db.transaction_item.belongsTo(db.transaction_header)
 db.transaction_header.hasMany(db.transaction_item)
+db.transaction_header.belongsTo(db.transaction_status)
+db.transaction_status.hasMany(db.transaction_header)
+
 
 db.record_stock.belongsTo(db.type_stock)
 db.type_stock.hasMany(db.record_stock)

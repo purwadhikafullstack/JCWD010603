@@ -38,7 +38,7 @@ db_project.connect((err) => {
   }
 });
 app.use(express.json());
-// db.sequelize.sync({ alter: true });
+db.sequelize.sync({ alter: true });
 
 //#region API ROUTES
 
