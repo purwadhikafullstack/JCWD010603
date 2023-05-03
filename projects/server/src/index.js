@@ -203,6 +203,7 @@ app.use("/admin", route.adminRoute);
 app.use("/address", route.addressRoute);
 app.use("/cart", route.cartRoute);
 app.use("/product", route.productRoute);
+app.use("/stock", route.stockRoute);
 app.use("/voucher_discount", route.voucherDiscountRoute);
 app.use("/transaction", route.transactionRoute);
 app.use("/api_rajaongkir", route.rajaOngkirRoute);

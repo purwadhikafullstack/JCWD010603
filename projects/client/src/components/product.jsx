@@ -51,10 +51,8 @@ export default function ProductPage(props) {
   const data = props.data;
   const datacat = props.datacat;
   const fetchData = props.fetchData;
-  // console.log(data);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const firstField = React.useRef();
-  const secondField = React.useRef();
   const [search, setSearch] = useState("");
   const [product, setProduct] = useState([]);
   const [page, setPage] = useState(1);
@@ -107,6 +105,8 @@ export default function ProductPage(props) {
 
   const [msg, setMsg] = useState("");
   
+  const [userData, setUserData] = useState([{}])
+
   const NotifyError = useToast({
     title: "Failed",
     description: msg,
@@ -125,11 +125,18 @@ export default function ProductPage(props) {
   });
 
 
-  const handleFile = (event) => {
-    const uploaded = event.target.files[0];
+  const handleFile = (e) => {
+    const uploaded = e.target.files[0];
     console.log(uploaded);
     formikEdit.setFieldValue("imgProduct", uploaded)
   };
+
+  const stockSubmit = (e) => {
+    formikEdit.setFieldValue("stock", e.target.value)    
+    formik.setFieldValue("stock", e.target.value)    
+    formikEdit.setFieldValue("status", 1)    
+    formik.setFieldValue("status", 1) 
+  }
 
   const [editProd, setEditProd] = useState([{
     'id' : 0,
@@ -140,14 +147,15 @@ export default function ProductPage(props) {
     'CategoryId': 0,
     'imgProduct': "",
     'desc': "",
+    'BranchId': 0
   }])
 
   const deleteSubmit = async (id) => {
       try {
-        await axiosInstance.delete(`/product/delete/${id}`)
+        await axiosInstance.delete(`/product/delete/${id}?BranchId=${userData.BranchId}`)
         setTimeout(()=> {
           NotifySuccess()
-          fetchData()
+          fetchData() 
           onCloseDelModal()
       }, 300)
       } catch (err) {
@@ -176,8 +184,6 @@ export default function ProductPage(props) {
     setEditProd(result)
     
     setTimeout(() =>{
-      console.log(editProd.CategoryId);
-      // console.log(editProd.CategoryId);
       onOpenEditModal()
     }, 100)
   }
@@ -188,21 +194,28 @@ export default function ProductPage(props) {
     // console.log(result);
     setEditProd(result)
 
-    console.log(result);
+    // console.log(result);
     onOpenDelModal()
   }
 
   const fetchCategory = async () => {
     const response = await axiosInstance.get("/admin/categories")
     const result = response.data.result
-    // console.log(result)
     setCat(result)
     
   }
   useEffect(() => {
     fetchCategory()
+    setUserData(JSON.parse(localStorage.getItem("data")))
   },[])
 
+
+  const submitData = () => {
+    formik.setFieldValue("BranchId", userData?.BranchId ?? 0)
+    formik.handleSubmit()
+  }
+  // console.log(userData?.BranchId);
+  // console.log(JSON.parse(localStorage.getItem("data")));
   const formik = useFormik({
       initialValues : {   
           name : "",
@@ -212,10 +225,14 @@ export default function ProductPage(props) {
           desc : "",
           imgProduct : "",
           category : 0,
+          status : 0,
+          BranchId : 0
       } ,
       validationSchema : Yup.object().shape({
           name: Yup.string().required("Product name must be filled"),
+          category: Yup.number().required("Category must be choosed"),
           price: Yup.number("Price must be a number").nullable(),
+          stock: Yup.number("Stock must be a number"),
           imgProduct: Yup.mixed()
           .nullable()
           .required("Product image must be a filled")
@@ -234,7 +251,7 @@ export default function ProductPage(props) {
       }),
       onSubmit:  async (values) => {
           try{
-            const {name, price, stock, weight, desc, imgProduct, category} = values
+            const {name, price, stock, weight, desc, imgProduct, category, BranchId, status} = values
             const formData = new FormData()
 
             formData.append("name", name)
@@ -244,10 +261,12 @@ export default function ProductPage(props) {
             formData.append("desc", desc)
             formData.append("imgProduct", imgProduct)
             formData.append("CategoryId", category)
+            formData.append("BranchId", BranchId)
 
-            await axiosInstance.post("/product/create", formData)
+            await axiosInstance.post(`/product/create?status=${status}`, formData)
             setTimeout(()=> {
               NotifySuccess()
+              fetchData()
               onCloseModal()
              }, 300)
           }catch(err){
@@ -273,7 +292,8 @@ export default function ProductPage(props) {
           weight :editProd?.weight ?? 0,
           category : editProd?.CategoryId ?? 0,
           imgProduct : editProd?.imgProduct ?? "",
-          desc : editProd?.desc ?? "",
+          desc : editProd?.desc ?? "",   
+          BranchId : editProd?.BranchId ?? "",   
       } ,
       enableReinitialize : true,
       validationSchema : Yup.object().shape({
@@ -282,30 +302,31 @@ export default function ProductPage(props) {
             "type",
             "Invalid file format selection",
             (e) => {
-            return !e || (e.type === "image/jpg" || e.type === "image/jpeg" || e.type === "image/png" || e.type === "image/gif")}
+            return !e || e || (e.type === "image/jpg" || e.type === "image/jpeg" || e.type === "image/png" || e.type === "image/gif")}
           ).test(
             "size",
             "File size is too big",
-            (e) => {return !e || e.size <= 1000 * 1000} // 1MB
+            (e) => {return !e || e || e.size <= 1000 * 1000} // 1MB
           )
       }),
       onSubmit:  async (values)=> {
         console.log(values);
+        const {id, imgProduct, name, price, stock, weight, category, desc, status, BranchId} = values
+        
+        const formData = new FormData()
+        formData.append("id", id)
+        formData.append("imgProduct", imgProduct)
+        formData.append("name", name)
+        formData.append("price", price)
+        formData.append("stock", stock)
+        formData.append("weight", weight)
+        formData.append("CategoryId", category)
+        formData.append("desc", desc)
+        formData.append("BranchId", BranchId)
+        
+        // console.log(formData);
         try{
-          const {id, imgProduct, name, price, stock, weight, category, desc} = values
-          
-          const formData = new FormData()
-          formData.append("id", id)
-          formData.append("imgProduct", imgProduct)
-          formData.append("name", name)
-          formData.append("price", price)
-          formData.append("stock", stock)
-          formData.append("weight", weight)
-          formData.append("CategoryId", category)
-          formData.append("desc", desc)
-          
-          // console.log(formData);
-            await axiosInstance.patch(`/product/edit/${id}`, formData)
+        await axiosInstance.patch(`/product/edit/${id}?status=${status}`, formData)
             setTimeout(()=> {
               NotifySuccess()
               fetchData()
@@ -552,7 +573,6 @@ export default function ProductPage(props) {
           h="full"
         >
           {data.slice(page * 6 - 6, page * 6)?.map((product, index) => {
-            {/* console.log(product.imgProduct) */}
             return (
               <>
                 <Box minW="246px" h="300px">
@@ -709,7 +729,7 @@ export default function ProductPage(props) {
               </FormControl>
               <FormControl id="stock">
                 <FormLabel>Product Stock</FormLabel>
-                <Input placeholder="Stock" type="text" name="stock" defaultValue={editProd?.stock} onChange={(e)=> formikEdit.setFieldValue("stock", e.target.value )} />
+                <Input placeholder="Stock" type="text" name="stock" defaultValue={editProd?.stock} onChange={(e)=> stockSubmit(e)} />
                 <FormHelperText  w={"inherit"} marginTop={"5px"} color={"red.500"} fontSize={"9px"} >
                     {formikEdit.errors.stock}
                 </FormHelperText>
@@ -729,12 +749,12 @@ export default function ProductPage(props) {
                     {formikEdit.errors.category}
                 </FormHelperText>
               </FormControl>
-              <FormControl id="address">
+              <FormControl id="description">
               <FormLabel>Product Description</FormLabel>
               <Textarea
                 placeholder="Description"
                 type="text"
-                name="address"
+                name="description"
                 bgColor="white"
                 maxH={"150px"}
                 validationSchema
@@ -803,7 +823,7 @@ export default function ProductPage(props) {
               </FormControl>
               <FormControl id="stock">
                 <FormLabel>Product Stock</FormLabel>
-                <Input placeholder="Stock" type="text" name="stock" onChange={(e)=> formik.setFieldValue("stock", e.target.value )} />
+                <Input placeholder="Stock" type="text" name="stock" onChange={(e)=> stockSubmit(e)} />
                 <FormHelperText  w={"inherit"} marginTop={"5px"} color={"red.500"} fontSize={"9px"} >
                     {formik.errors.stock}
                 </FormHelperText>
@@ -823,12 +843,12 @@ export default function ProductPage(props) {
                     {formik.errors.category}
                 </FormHelperText>
               </FormControl>
-              <FormControl id="address">
+              <FormControl id="description">
               <FormLabel>Product Description</FormLabel>
               <Textarea
                 placeholder="Description"
                 type="text"
-                name="address"
+                name="description"
                 bgColor="white"
                 maxH={"150px"}
                 onChange={(e) =>
@@ -853,7 +873,7 @@ export default function ProductPage(props) {
               </FormControl>
             </ModalBody>
             <ModalFooter>
-              <Button colorScheme='blue' mr={3} onClick={formik.handleSubmit}>
+              <Button colorScheme='blue' mr={3} onClick={submitData}>
                 Submit
               </Button>
               <Button onClick={onCloseModal}>Cancel</Button>

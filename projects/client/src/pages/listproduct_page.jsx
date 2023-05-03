@@ -75,14 +75,6 @@ export default function PageProducts() {
       setIsLoading(false);
     }, 500);
   }, []);
-  // useEffect(() => {
-  //   // fetchPosts();
-  //   fetchData();
-  //   fetchDataCat();
-  //   setTimeout(() => {
-  //     setIsLoading(false);
-  //   }, 500);
-  // }, [data]);
   useEffect(() => {
     console.log(categories1);
   }, [categories1]);

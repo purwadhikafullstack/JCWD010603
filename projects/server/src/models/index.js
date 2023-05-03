@@ -98,7 +98,10 @@ db.transaction_header.hasMany(db.transaction_item)
 db.record_stock.belongsTo(db.type_stock)
 db.type_stock.hasMany(db.record_stock)
 db.record_stock.belongsTo(db.product)
-db.type_stock.hasMany(db.product)
+db.product.hasMany(db.record_stock)
+
+db.record_stock.belongsTo(db.branch)
+db.branch.hasMany(db.record_stock)
 
 db.discount.belongsTo(db.product)
 db.product.hasMany(db.discount)
