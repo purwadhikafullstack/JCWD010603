@@ -137,7 +137,7 @@ export default function DetailProduct(props) {
       UserId: userId,
     };
     try {
-      await axiosInstance.post("/cart/addCart", cartData);
+      await axiosInstance.post("/cart/addToCart", cartData);
       toast({
         title: "Item added to cart",
         status: "success",
@@ -146,7 +146,7 @@ export default function DetailProduct(props) {
       });
     } catch (error) {
       toast({
-        title: "Error adding item to cart",
+        title: error.response.data.message,
         status: "error",
         duration: 2000,
         isClosable: true,

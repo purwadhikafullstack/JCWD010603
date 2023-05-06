@@ -113,6 +113,7 @@ export default function SidebarAdmin() {
           </Link>
           <Link
             sx={linkStyles}
+            href="/sales_report"
             display="flex"
             alignItems="center"
             className="sidebar-link"

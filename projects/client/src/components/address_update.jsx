@@ -232,7 +232,7 @@ export default function UpdateAdress(props) {
                   const selectedProvince = provinceAPI.find(
                     (val) => val.province === e.target.value
                   );
-                  setProvinces(e.target.p.province);
+                  setProvinces(e.target.province);
                   handleId(selectedProvince.province_id);
                 }}
               >
