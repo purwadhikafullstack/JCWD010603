@@ -64,6 +64,36 @@ const transactionController = {
       });
     }
   },
+  getTransactionByNoTransaction: async (req, res) => {
+    try {
+      const noTrans = req.params.noTrans;
+      const filterTransaction = await Transaction_header.findOne({
+        include: [
+          {
+            model: Transaction_item,
+            attributes: ["TransactionHeaderId", "qty", "ProductId"],
+            include: {
+              model: Product,
+              attributes: ["name", "price", "imgProduct"],
+            },
+          },
+        ],
+        where: {
+          noTrans: noTrans,
+        },
+      });
+
+      res.status(200).json({
+        message: " transaction berdasarkan noTrans",
+        result: filterTransaction,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({
+        message: err,
+      });
+    }
+  },
   getCountTransaction: async (req, res) => {
     try {
       const id = req.params.id;
