@@ -18,14 +18,7 @@ const UserAuthProvider = ({ children }) => {
           payload: res.data.result,
         });
       })
-      .catch((err) => {
-        // console.log(err);
-        if (err) {
-          if (token) {
-            localStorage.removeItem("token");
-          }
-        }
-      })
+
       .finally(() => {
         setIsLoading(false);
       });

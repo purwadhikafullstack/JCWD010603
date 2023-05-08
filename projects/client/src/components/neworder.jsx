@@ -10,40 +10,17 @@ import {
   AlertDialogContent,
   AlertDialogHeader,
   AlertDialogBody,
-  Radio,
   Spinner,
-  RadioGroup,
-  Switch,
-  Heading,
-  Accordion,
-  Avatar,
-  AvatarBadge,
-  IconButton,
-  Checkbox,
-  AccordionButton,
-  AccordionItem,
-  AccordionIcon,
-  AccordionPanel,
   AlertDialogFooter,
-  Box,
   Select,
-  Input,
-  Spacer,
   Link,
-  Stack,
-  InputGroup,
   Image,
-  Alert,
-  AlertIcon,
   useDisclosure,
   Badge,
-  useToast,
   Text,
-  FormHelperText,
-  InputRightElement,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { GrFormPrevious } from "react-icons/gr";
+
 import { BiNotepad } from "react-icons/bi";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
 import { TfiLocationPin } from "react-icons/tfi";
@@ -51,22 +28,12 @@ import { BsShop } from "react-icons/bs";
 import { TbDiscount } from "react-icons/tb";
 import React from "react";
 import { axiosInstance, beautyScroll } from "../config/config";
-import { IoIosArrowBack, IoIosCloseCircleOutline } from "react-icons/io";
-import { SmallCloseIcon } from "@chakra-ui/icons";
-import { FaUserCircle, FaShippingFast } from "react-icons/fa";
-import { FiEdit } from "react-icons/fi";
-import { GrClose } from "react-icons/gr";
-import { BiTrash, BiEdit, BiChevronRight, BiChevronLeft } from "react-icons/bi";
-import { AiFillCamera } from "react-icons/ai";
-import { userLogin } from "../redux/middleware/userauth";
-import { useDispatch } from "react-redux";
+import { IoIosArrowBack } from "react-icons/io";
+
+import { FaShippingFast } from "react-icons/fa";
+
 import { useNavigate } from "react-router-dom";
 import { Link as ReachLink } from "react-router-dom";
-import { useLocation } from "react-router-dom";
-import Logo from "../assets/logo.png";
-import { useSelector } from "react-redux";
-import { useFormik } from "formik";
-import * as Yup from "yup";
 
 export default function NewOrder(props) {
   const moment = require("moment");
@@ -97,22 +64,13 @@ export default function NewOrder(props) {
   const [courier, setCourier] = useState("jne");
   const [cartTotal, setCartTotal] = useState(0);
   const [countHeader, setCountHeader] = useState(0);
-  const [cartData, setCartData] = useState();
   const [nameBranch, setNameBranch] = useState("");
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const tgl = moment().format("YYYYMMDD");
-  const BranchId = localStorage.getItem("branchID");
+
   const cancelRef = React.useRef();
-  function handlevoucherInput(e) {}
-  const confirmButtonStyle = {
-    _hover: {
-      bg: "#3e4b4f",
-    },
-    _active: {
-      bg: "#232b2e",
-    },
-  };
+
   const fetchcounttransaction = async () => {
     setIsLoading(true);
     await axiosInstance
@@ -168,7 +126,6 @@ export default function NewOrder(props) {
     await axiosInstance
       .get(`/cart/getcartbyUserId/${userId}`)
       .then((res) => {
-        setCartData(res.data.result);
         setOrderList(res.data.result.filterCart);
       })
       .finally(() => setIsLoading(false));
@@ -803,22 +760,6 @@ export default function NewOrder(props) {
           </Flex>
         </Center>
       )}
-    </>
-  );
-}
-
-function Loading() {
-  return (
-    <>
-      <Button
-        isLoading
-        loadingText="Loading"
-        colorScheme="teal"
-        variant="outline"
-        spinnerPlacement="start"
-      >
-        Submit
-      </Button>
     </>
   );
 }

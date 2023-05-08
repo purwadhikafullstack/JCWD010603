@@ -34,6 +34,36 @@ const transactionController = {
       });
     }
   },
+  getTransactionByNoTransaction: async (req, res) => {
+    try {
+      const noTrans = req.params.noTrans;
+      const filterTransaction = await Transaction_header.findOne({
+        include: [
+          {
+            model: Transaction_item,
+            attributes: ["TransactionHeaderId", "qty", "ProductId"],
+            include: {
+              model: Product,
+              attributes: ["name", "price", "imgProduct"],
+            },
+          },
+        ],
+        where: {
+          noTrans: noTrans,
+        },
+      });
+
+      res.status(200).json({
+        message: " transaction berdasarkan noTrans",
+        result: filterTransaction,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({
+        message: err,
+      });
+    }
+  },
   getCountTransaction: async (req, res) => {
     try {
       const id = req.params.id;
@@ -172,7 +202,7 @@ const transactionController = {
             stockBefore: product.dataValues.stock,
             stockAfter: product.dataValues.stock - val.qty,
             desc: "pengurangan stock transaction",
-            TypeStockId: 1,
+            TypeStockId: 2,
             ProductId: val.ProductId,
           },
           { transaction: t }
@@ -216,6 +246,29 @@ const transactionController = {
       console.log(error);
       await t.rollback();
 
+      res.status(400).json({
+        message: error,
+      });
+    }
+  },
+  updateStatusDeliver: async (req, res) => {
+    try {
+      const noTrans = req.params.noTrans;
+      const TransactionStatusId = 5;
+      const data = { TransactionStatusId };
+      const result = await Transaction_header.update(
+        {
+          ...data,
+        },
+        {
+          where: {
+            noTrans: noTrans,
+          },
+        }
+      );
+      res.send(result);
+    } catch (error) {
+      console.error(error);
       res.status(400).json({
         message: error,
       });

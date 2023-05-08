@@ -5,95 +5,35 @@ import {
   Flex,
   FormControl,
   FormLabel,
-  Switch,
-  Heading,
-  Accordion,
-  Avatar,
-  AvatarBadge,
-  IconButton,
   Checkbox,
-  AccordionButton,
-  AccordionItem,
-  AccordionIcon,
-  AccordionPanel,
-  Box,
   Select,
   Input,
-  Spacer,
   Link,
-  Stack,
-  InputGroup,
-  Image,
-  Alert,
-  AlertIcon,
-  Badge,
   useToast,
   FormHelperText,
-  InputRightElement,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { GrFormPrevious } from "react-icons/gr";
-import { IoIosArrowBack, IoIosCloseCircleOutline } from "react-icons/io";
-import { SmallCloseIcon } from "@chakra-ui/icons";
-import { FaUserCircle } from "react-icons/fa";
-import { FiEdit } from "react-icons/fi";
-import { GrClose } from "react-icons/gr";
 
-import { AiFillCamera } from "react-icons/ai";
-import { userLogin } from "../redux/middleware/userauth";
-import { useDispatch } from "react-redux";
+import { IoIosArrowBack } from "react-icons/io";
+
 import { axiosInstance } from "../config/config";
 import { useNavigate } from "react-router-dom";
 import { Link as ReachLink } from "react-router-dom";
-import { useLocation } from "react-router-dom";
-import Logo from "../assets/logo.png";
+
 import { useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 export default function AddAdress(props) {
-  const [imgUser, setImgUser] = useState("");
-  const [address, setAddress] = useState("");
   const [isPrimary, setIsPrimary] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [district, setDistrict] = useState("");
-
-  const [addressList, setAddressList] = useState("");
   const [city, setCity] = useState("");
-  const [idCity, setidCity] = useState("");
   const [province, setProvince] = useState("");
-  const [ket, setKet] = useState("");
-  const [postalCode, setPostalCode] = useState("");
-  const data = props.data;
-  const location = useLocation();
   const toast = useToast();
-  const [User_id, setUser_id] = useState(0);
   const [status, setStatus] = useState(false);
   const [msg, setMsg] = useState("");
   const userSelector = useSelector((state) => state.auth);
   const [idProv, setIdProv] = useState(0);
   console.log(userSelector);
-  const CheckUtama = (e, param) => {
-    let newUtama;
-    if (e.target.checked) {
-      props.setIsUtama([...props.utama, param]);
-    } else {
-      newUtama = props.utama.filter((val) => {
-        return val !== param;
-      });
-      props.setIsUtama([...newUtama]);
-    }
-  };
-  // useEffect(() => {
-  //   setUser_id(location.pathname?.split("/")[2]);
-  // }, []);
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [saveImage, setSaveImage] = useState(null);
-  const [user, setUser] = useState({
-    username: "",
-    password: "",
-  });
-  const [userdetail, setUserDetail] = useState([]);
   const [enable, setEnable] = useState(false);
   const handleId = (e) => {
     setIdProv(e);
@@ -146,15 +86,6 @@ export default function AddAdress(props) {
     fetchCity();
   }, [idProv]);
 
-  function inputHandler(event) {
-    const { name, value } = event.target;
-
-    setUser({
-      ...user,
-      [name]: value,
-    });
-  }
-
   const formik = useFormik({
     initialValues: {
       UserId: userSelector?.id,
@@ -166,6 +97,7 @@ export default function AddAdress(props) {
       isPrimary: 0,
       Ket: "",
       idCity: 0,
+      idProv: 0,
     },
     validationSchema: Yup.object().shape({
       city: Yup.string().required("City must be filled"),
@@ -201,7 +133,6 @@ export default function AddAdress(props) {
           setMsg(error.response.data.message);
         });
       console.log(res.data);
-      // alert(res.status);
 
       if (res.status === 200) {
         navigate("/list-address", { replace: true });
@@ -216,30 +147,6 @@ export default function AddAdress(props) {
       setEnable(false);
     }
   }, [formik.values]);
-  const saveAddress = async (e) => {
-    e.preventDefault();
-
-    const formData = new FormData();
-    formData.append("UserId", User_id);
-    formData.append("address", address);
-    formData.append("district", district);
-    formData.append("city", city);
-    formData.append("province", province);
-    formData.append("postalCode", postalCode);
-    formData.append("isPrimary", isPrimary);
-    formData.append("Ket", ket);
-    formData.append("idCity", idCity);
-    console.log(formData);
-
-    try {
-      // alert("asd");
-      await axiosInstance.post("/address/addaddress", formData);
-      navigate("/list-address");
-      console.log("address added");
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   return (
     <>
@@ -314,6 +221,7 @@ export default function AddAdress(props) {
                     (val) => val.province === e.target.value
                   );
                   formik.setFieldValue("province", selectedProvince.province);
+                  formik.setFieldValue("idProv", selectedProvince.province_id);
                   handleId(selectedProvince.province_id);
                 }}
               >

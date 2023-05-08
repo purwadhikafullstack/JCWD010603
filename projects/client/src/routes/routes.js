@@ -19,14 +19,14 @@ import AddAddressPage from "../pages/addadress_page";
 import VerifyEmail from "../pages/verify_email.jsx";
 import ResetPassReqPage from "../pages/reset_password_request";
 import ResetPassSetPage from "../pages/reset_password_set";
+import ConfirmDeliverPage from "../pages/confirmdeliver_page";
 import Cart from "../pages/cart";
 import Discount from "../pages/discount";
 import DetailProduct from "../pages/detail_product";
 import AddProductPage from "../pages/addproduct";
 import NewOrder from "../pages/neworder_page";
 import Upload from "../pages/upload_page";
-import RecordStock from "../pages/record_stock"
-
+import RecordStock from "../pages/record_stock";
 
 const routes = [
   {
@@ -64,6 +64,10 @@ const routes = [
   {
     path: "/reset-password",
     element: <ResetPassReqPage />,
+  },
+  {
+    path: "/confirm-deliver/:noTrans",
+    element: <ConfirmDeliverPage />,
   },
   {
     path: "/setup-password",
