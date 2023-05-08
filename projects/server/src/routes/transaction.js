@@ -34,4 +34,11 @@ router.patch(
   }).single("image"),
   transactionController.uploadFoto
 );
+router.get("/productReport", transactionController.getSuperAdminDataByProduct);
+router.get("/branchProductReport", transactionController.getBranchAdminDataByProduct);
+router.get("/transactionReport", transactionController.getSuperAdminDataByTransaction);
+router.get("/branchTransactionReport", transactionController.getBranchAdminDataByTransaction);
+router.get("/userReport", transactionController.getAllUserTransactionData);
+router.get("/branchUserReport", transactionController.getBranchUserTransactionData);
+
 module.exports = router;

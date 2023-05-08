@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const { Op, Sequelize } = require("sequelize");
 const { sequelize } = require("../models");
 const db = require("../models");
 const Transaction_header = db.transaction_header;
@@ -202,7 +202,7 @@ const transactionController = {
             stockBefore: product.dataValues.stock,
             stockAfter: product.dataValues.stock - val.qty,
             desc: "pengurangan stock transaction",
-            TypeStockId: 2,
+            TypeStockId: 5,
             ProductId: val.ProductId,
           },
           { transaction: t }
@@ -304,6 +304,320 @@ const transactionController = {
     } catch (err) {
       return res.status(400).json({
         message: err.toString(),
+      });
+    }
+  },
+  getSuperAdminDataByProduct: async (req, res) => {
+    try {
+      const startDate = req.query.startDate;
+      const endDate = req.query.endDate;
+      const sortOrder = req.query.sortOrder;
+      const sortSales = req.query.sortSales;
+
+      let order = [];
+      if (sortOrder && sortSales) {
+        throw new Error(
+          "Can't use both sortOrder and sortSales at the same time"
+        );
+      } else if (sortOrder) {
+        order = [["createdAt", sortOrder]];
+      } else if (sortSales) {
+        order = [[Sequelize.literal("totalSales"), sortSales.toUpperCase()]];
+      }
+
+      const data = await Transaction_item.findAll({
+        attributes: [
+          "ProductId",
+          "createdAt",
+          [Sequelize.literal("SUM(qty)"), "totalQty"],
+          [Sequelize.literal("Product.price * SUM(qty)"), "totalSales"],
+        ],
+        include: [
+          {
+            model: Product,
+            attributes: ["name", "imgProduct", "price"],
+            include: [
+              {
+                model: Branch,
+                attributes: ["city"],
+              },
+            ],
+          },
+          {
+            model: Transaction_header,
+            attributes: [],
+            where: {
+              createdAt: {
+                [Op.between]: [startDate, endDate],
+              },
+            },
+          },
+        ],
+        group: ["ProductId", "createdAt"],
+        order: order,
+      });
+
+      res.status(200).json({
+        message: "Sales data by product",
+        result: data,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({
+        message: err,
+      });
+    }
+  },
+  getBranchAdminDataByProduct: async (req, res) => {
+    try {
+      const startDate = req.query.startDate;
+      const endDate = req.query.endDate;
+      const sortOrder = req.query.sortOrder;
+      const sortSales = req.query.sortSales;
+      const branchId = req.query.branchId;
+
+      let order = [];
+      if (sortOrder && sortSales) {
+        throw new Error(
+          "Can't use both sortOrder and sortSales at the same time"
+        );
+      } else if (sortOrder) {
+        order = [["createdAt", sortOrder]];
+      } else if (sortSales) {
+        order = [[Sequelize.literal("totalSales"), sortSales.toUpperCase()]];
+      }
+
+      const data = await Transaction_item.findAll({
+        attributes: [
+          "ProductId",
+          "createdAt",
+          [Sequelize.literal("SUM(qty)"), "totalQty"],
+          [Sequelize.literal("Product.price * SUM(qty)"), "totalSales"],
+        ],
+        include: [
+          {
+            model: Product,
+            attributes: ["name", "imgProduct", "price"],
+            include: [
+              {
+                model: Branch,
+                attributes: ["city"],
+              },
+            ],
+          },
+          {
+            model: Transaction_header,
+            attributes: [],
+            where: {
+              BranchId: branchId,
+              createdAt: {
+                [Op.between]: [startDate, endDate],
+              },
+            },
+          },
+        ],
+        group: ["ProductId", "createdAt"],
+        order: order,
+      });
+
+      res.status(200).json({
+        message: "Sales data by product for branch " + branchId,
+        result: data,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({
+        message: err,
+      });
+    }
+  },
+  getSuperAdminDataByTransaction: async (req, res) => {
+    try {
+      const startDate = req.query.startDate;
+      const endDate = req.query.endDate;
+      const sortOrder = req.query.sortOrder;
+      const sortSales = req.query.sortSales;
+
+      let order = [];
+      if (sortOrder && sortSales) {
+        throw new Error(
+          "Can't use both sortOrder and sortSales at the same time"
+        );
+      } else if (sortOrder) {
+        order = [["createdAt", sortOrder]];
+      } else if (sortSales) {
+        order = [["grandPrice", sortSales.toUpperCase()]];
+      }
+
+      const data = await Transaction_header.findAll({
+        attributes: [
+          "noTrans",
+          "grandPrice",
+          "createdAt",
+          "imgUpload",
+          [Sequelize.literal("Branch.name"), "branchName"],
+          [Sequelize.literal("User.username"), "userName"],
+        ],
+        include: [
+          {
+            model: Branch,
+            attributes: [],
+          },
+          {
+            model: User,
+            attributes: [],
+          },
+        ],
+        where: {
+          createdAt: {
+            [Op.between]: [startDate, endDate],
+          },
+        },
+        order: order,
+      });
+
+      res.status(200).json({
+        message: "Transaction data",
+        result: data,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({
+        message: err,
+      });
+    }
+  },
+  getBranchAdminDataByTransaction: async (req, res) => {
+    try {
+      const startDate = req.query.startDate;
+      const endDate = req.query.endDate;
+      const sortOrder = req.query.sortOrder;
+      const sortSales = req.query.sortSales;
+      const branchId = req.query.branchId;
+
+      let order = [];
+      if (sortOrder && sortSales) {
+        throw new Error(
+          "Can't use both sortOrder and sortSales at the same time"
+        );
+      } else if (sortOrder) {
+        order = [["createdAt", sortOrder]];
+      } else if (sortSales) {
+        order = [["grandPrice", sortSales.toUpperCase()]];
+      }
+
+      const data = await Transaction_header.findAll({
+        attributes: [
+          "noTrans",
+          "grandPrice",
+          "createdAt",
+          "imgUpload",
+          [Sequelize.literal("Branch.name"), "branchName"],
+          [Sequelize.literal("User.username"), "userName"],
+        ],
+        include: [
+          {
+            model: Branch,
+            attributes: [],
+            where: {
+              id: branchId,
+            },
+          },
+          {
+            model: User,
+            attributes: [],
+          },
+        ],
+        where: {
+          createdAt: {
+            [Op.between]: [startDate, endDate],
+          },
+        },
+        order: order,
+      });
+
+      res.status(200).json({
+        message: "Transaction data",
+        result: data,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({
+        message: err,
+      });
+    }
+  },
+  getAllUserTransactionData: async (req, res) => {
+    try {
+      const grandTotal = req.query.grandTotal;
+
+      const data = await Transaction_header.findAll({
+        attributes: [
+          [Sequelize.literal("User.username"), "userName"],
+          [Sequelize.fn("SUM", Sequelize.col("grandPrice")), "totalGrandPrice"],
+          [Sequelize.literal("Branch.name"), "branchName"],
+        ],
+        include: [
+          {
+            model: User,
+            attributes: [],
+          },
+          {
+            model: Branch,
+            attributes: [],
+          },
+        ],
+        group: ["userName", "branchName"],
+        order: [["totalGrandPrice", grandTotal]],
+      });
+
+      res.status(200).json({
+        message: "Total Grand Price data for each user",
+        result: data,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({
+        message: err,
+      });
+    }
+  },
+  getBranchUserTransactionData: async (req, res) => {
+    try {
+      const branchId = req.query.branchId;
+      const grandTotal = req.query.grandTotal;
+
+      const data = await Transaction_header.findAll({
+        attributes: [
+          [Sequelize.literal("User.username"), "userName"],
+          [Sequelize.fn("SUM", Sequelize.col("grandPrice")), "totalGrandPrice"],
+          [Sequelize.literal("Branch.name"), "branchName"],
+        ],
+        include: [
+          {
+            model: User,
+            attributes: [],
+          },
+          {
+            model: Branch,
+            attributes: [],
+          },
+        ],
+        where: {
+          branchId: branchId,
+        },
+        group: ["userName", "branchName"],
+        order: [["totalGrandPrice", grandTotal]],
+      });
+
+      res.status(200).json({
+        message: "Total Grand Price data for each user in a branch",
+        result: data,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({
+        message: err,
       });
     }
   },

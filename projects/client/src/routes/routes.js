@@ -26,6 +26,7 @@ import DetailProduct from "../pages/detail_product";
 import AddProductPage from "../pages/addproduct";
 import NewOrder from "../pages/neworder_page";
 import Upload from "../pages/upload_page";
+import Report from "../pages/report";
 import RecordStock from "../pages/record_stock";
 
 const routes = [
@@ -189,6 +190,14 @@ const routes = [
   {
     path: "*",
     element: <Page404 />,
+  },
+  {
+    path: "/sales_report",
+    element: (
+      <ProtectedPage adminLogin={true} adminGuest={false}>
+        <Report />
+      </ProtectedPage>
+    ),
   },
 ];
 

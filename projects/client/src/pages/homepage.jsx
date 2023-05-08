@@ -91,7 +91,9 @@ export default function UserPage() {
   }, [branchId])
   //handle on change Select Branch
   const handleBranchChange = (e) => {
-    setBranchId(e.target.value);
+    const selectedId = e.target.value
+    localStorage.setItem("branchID", selectedId);
+    setBranchId(selectedId);
   };
 
   async function addToCart(id) {
@@ -112,7 +114,8 @@ export default function UserPage() {
     } catch (error) {
       // console.log(error.response.data);
       toast({
-        title: error.response.data.message,
+        title: "Failed adding item",
+        description: error.response.data.message,
         status: "warning",
         duration: 2000,
         isClosable: true,
@@ -134,7 +137,7 @@ export default function UserPage() {
       {nearestId && (
         <Select defaultValue={nearestId} w="430px" m='0 auto' onChange={handleBranchChange} cursor='pointer' size='sm'>
           {branches?.map((val) => (
-            <option value={val.id} key={val.id}>
+            <option value={val.id} key={val.id} >
               {val.city}
             </option>
           ))}

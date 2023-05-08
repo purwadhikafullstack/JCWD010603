@@ -9,16 +9,16 @@ const cartController = {
     const page = parseInt(req.query.page) || 1; // default to page 1 if not provided
     const pageSize = 5;
     const { userId } = req.params; // assuming that the userId is passed as a parameter in the request
-  
+
     try {
       const totalCount = await Cart.count({ where: { UserId: userId } });
       const totalPages = Math.ceil(totalCount / pageSize);
-  
+
       // Adjust the page number to the last page if it is greater than the total number of pages
       if (page > totalPages) {
         page = totalPages;
       }
-  
+
       const result = await Cart.findAll({
         where: { UserId: userId },
         attributes: ["id", "qty", "ProductId", "UserId"],
@@ -29,11 +29,11 @@ const cartController = {
           },
         ],
       });
-  
+
       const totalPrice = result.reduce((acc, item) => {
         return acc + item.Product.price * item.qty;
       }, 0);
-  
+
       return res.status(200).json({
         message: "Cart data successfully fetched",
         result: result.slice((page - 1) * pageSize, page * pageSize), // Only send the data for the requested page
@@ -250,6 +250,12 @@ const cartController = {
       if (availableStock < 0) {
         return res.status(401).json({
           message: `Stock is not enough. Available stock is ${checkProduct.stock}.`,
+        });
+      }
+
+      if (availableStock === 0) {
+        return res.status(401).json({
+          message: `The product is out of stock.`,
         });
       }
 
