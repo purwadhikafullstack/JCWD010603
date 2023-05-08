@@ -3,7 +3,7 @@ import {
   Button, Link, Center,
   AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody,
   AlertDialogFooter, FormControl, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper,
-  NumberDecrementStepper,
+  NumberDecrementStepper, useToast
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import React from "react";
@@ -22,7 +22,8 @@ export default function Cart() {
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [editDialog, setEditDialog] = useState(false);
   const [editInput, setEditInput] = useState(0);
-  const cancelRef = React.useRef()
+  const cancelRef = React.useRef();
+  const toast = useToast();
 
   // STYLE
   const deleteButtonStyle = {
@@ -106,7 +107,7 @@ export default function Cart() {
   function handleEditInput(value) {
     setEditInput(value)
   }
-  console.log("berapa input nomor = " + editInput);
+
   function editCart(id) {
     setEditId(id);
     setEditDialog(true);
@@ -118,12 +119,29 @@ export default function Cart() {
     const data = {
       qty: editInput
     }
-    await axiosInstance.patch(`/cart/editcart/${editId}`, data).then(() => {
+    try {
+      await axiosInstance.patch(`/cart/editcart/${editId}`, data);
       fetchCartData();
-    }).finally(() => {
+      toast({
+        title: 'Cart edited',
+        description: 'Your cart has been successfully edited.',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: 'Cart edit failed',
+        description: error.response.data.message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
       setEditDialog(false);
       setEditInput('');
-    })
+    }
   }
 
   // DELETE CART
@@ -148,7 +166,6 @@ export default function Cart() {
       setDeleteDialog(false);
     })
   }
-  console.log(`my cart data = ${cartData}`);
 
   return (
     <Flex direction="column">
@@ -212,7 +229,7 @@ export default function Cart() {
                         overflow="hidden"
                       >
                         <Image
-                          src="https://images.unsplash.com/photo-1512372388054-a322888e67a6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80"
+                          src={val.Product.imgProduct}
                           objectFit="cover"
                           w="100%"
                           h="auto"

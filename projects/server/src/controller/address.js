@@ -23,6 +23,7 @@ const addressController = {
         UserId,
         Ket,
         idCity,
+        idProv,
       } = req.body;
       const data = {
         address,
@@ -34,6 +35,7 @@ const addressController = {
         isPrimary,
         Ket,
         idCity,
+        idProv,
       };
       console.log(data);
       const checkPrimaryAddress = await Address.findOne({
@@ -78,6 +80,7 @@ const addressController = {
         UserId,
         Ket,
         idCity,
+        idProv,
       } = req.body;
       const data = {
         address,
@@ -88,6 +91,7 @@ const addressController = {
         isPrimary,
         Ket,
         idCity,
+        idProv,
       };
       const checkPrimaryAddress = await Address.findOne({
         where: {

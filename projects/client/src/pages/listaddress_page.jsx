@@ -5,29 +5,9 @@ import {
   Flex,
   FormControl,
   FormLabel,
-  Switch,
-  Heading,
-  Accordion,
-  Avatar,
-  AvatarBadge,
-  IconButton,
-  AccordionButton,
-  AccordionItem,
-  AccordionIcon,
-  AccordionPanel,
-  Box,
-  Select,
-  Input,
-  Spacer,
   Link,
   Stack,
-  InputGroup,
-  Image,
-  Alert,
-  AlertIcon,
   Badge,
-  useToast,
-  InputRightElement,
   AlertDialog,
   AlertDialogOverlay,
   AlertDialogContent,
@@ -36,48 +16,25 @@ import {
   AlertDialogFooter,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { GrFormPrevious } from "react-icons/gr";
 import { IoIosArrowBack, IoIosCloseCircleOutline } from "react-icons/io";
-import { SmallCloseIcon } from "@chakra-ui/icons";
-import { FaUserCircle } from "react-icons/fa";
 import { FiEdit } from "react-icons/fi";
-import { GrClose } from "react-icons/gr";
 import React from "react";
-import { AiFillCamera } from "react-icons/ai";
-import { userLogin } from "../redux/middleware/userauth";
-import { useDispatch } from "react-redux";
 import { axiosInstance } from "../config/config";
-import { useNavigate } from "react-router-dom";
-import { Link as ReachLink } from "react-router-dom";
-import { useLocation } from "react-router-dom";
-import Logo from "../assets/logo.png";
-import { useSelector } from "react-redux";
 
+import { Link as ReachLink } from "react-router-dom";
+import { useSelector } from "react-redux";
 export default function ListAddressPage() {
   const [isLoading, setIsLoading] = useState(true);
-  const [address, setAddress] = useState("");
-  const [district, setDistrict] = useState("");
-  const [city, setCity] = useState("");
-  const [province, setProvince] = useState("");
-  const [postalCode, setPostalCode] = useState("");
+
   const [addressId, setAddressId] = useState(null);
   const [openAddressDialog, setOpenAddressDialog] = useState(false);
   const [data, setData] = useState();
   const cancelRef = React.useRef();
   const [User_id, setUser_id] = useState(0);
   const userSelector = useSelector((state) => state.auth);
-  const navigate = useNavigate();
-  const [user, setUser] = useState({
-    username: "",
-    password: "",
-  });
-  const [userdetail, setUserDetail] = useState([]);
-  const [enable, setEnable] = useState(false);
-  const [qty, setQty] = useState(1);
-  console.log(userSelector);
+
   useEffect(() => {
     setUser_id(userSelector?.id);
-    fetchuserdetail(userSelector?.id);
   }, []);
   function deleteCategory(id) {
     setAddressId(id);
@@ -86,56 +43,6 @@ export default function ListAddressPage() {
   function handleCategoryCancelDelete() {
     setOpenAddressDialog(false);
   }
-
-  useEffect(() => {
-    fetchuserdetail(User_id);
-  }, []);
-  const fetchuserdetail = async (User_id) => {
-    await axiosInstance
-      .get("/address/listaddress/" + User_id)
-      .then((response) => {
-        setUserDetail(response.data.result);
-        console.log(response.data.result);
-        setDistrict(response.data.result.district);
-        setProvince(response.data.result.province);
-        setAddress(response.data.result.address);
-        setPostalCode(response.data.result.postalCode);
-        setCity(response.data.result.city);
-      })
-      .catch((error) => {
-        console.log({ error });
-      });
-  };
-
-  function inputHandler(event) {
-    const { name, value } = event.target;
-
-    setUser({
-      ...user,
-      [name]: value,
-    });
-  }
-
-  const saveUser = async (e) => {
-    e.preventDefault();
-    const Data = {
-      User_id,
-      district,
-      province,
-      postalCode,
-      address,
-      city,
-    };
-
-    try {
-      console.log(Data);
-      await axiosInstance.patch("/address/editaddress?id=" + User_id, Data);
-      navigate("/userpage");
-      console.log("user edited");
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   async function categoryConfirmDelete() {
     await axiosInstance

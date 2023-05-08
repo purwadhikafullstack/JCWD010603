@@ -19,12 +19,14 @@ import AddAddressPage from "../pages/addadress_page";
 import VerifyEmail from "../pages/verify_email.jsx";
 import ResetPassReqPage from "../pages/reset_password_request";
 import ResetPassSetPage from "../pages/reset_password_set";
+import ConfirmDeliverPage from "../pages/confirmdeliver_page";
 import Cart from "../pages/cart";
 import Discount from "../pages/discount";
 import DetailProduct from "../pages/detail_product";
 import AddProductPage from "../pages/addproduct";
 import NewOrder from "../pages/neworder_page";
 import Upload from "../pages/upload_page";
+import Report from "../pages/report";
 import RecordStock from "../pages/record_stock"
 import AllBranchTrans from "../pages/all_branch_transactions"
 
@@ -69,6 +71,10 @@ const routes = [
   {
     path: "/reset-password",
     element: <ResetPassReqPage />,
+  },
+  {
+    path: "/confirm-deliver/:noTrans",
+    element: <ConfirmDeliverPage />,
   },
   {
     path: "/setup-password",
@@ -190,6 +196,14 @@ const routes = [
   {
     path: "*",
     element: <Page404 />,
+  },
+  {
+    path: "/sales_report",
+    element: (
+      <ProtectedPage adminLogin={true} adminGuest={false}>
+        <Report />
+      </ProtectedPage>
+    ),
   },
 ];
 
