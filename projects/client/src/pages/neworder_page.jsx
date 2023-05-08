@@ -1,14 +1,12 @@
 import NewOrder from "../components/neworder";
 
-import { Flex, Stack, Center, Spinner } from "@chakra-ui/react";
+import { Stack, Center, Spinner } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { axiosInstance } from "../config/config";
 export default function NewOrderPage() {
   const [cartData, setCartData] = useState([]);
   const [isPrimary, setisPrimary] = useState([]);
-  const [pages, setPages] = useState(1);
-  const [numOfPage, setNumOfPage] = useState(0);
-  const [cartTotal, setCartTotal] = useState(0);
+
   const [voucher, setVoucher] = useState();
   const [isLoading, setIsLoading] = useState(true);
   async function fetchCartData() {
@@ -33,7 +31,7 @@ export default function NewOrderPage() {
   }
   async function fetchVouchersData() {
     setIsLoading(true);
-    const userId = localStorage.getItem("userID");
+
     await axiosInstance
       .get(`/voucher_discount/listvoucher`)
       .then((res) => {

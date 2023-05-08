@@ -12,9 +12,17 @@ router.get(
   transactionController.getIncomeTransactionByBranch
 );
 router.get("/transaction-header", transactionController.getData);
+router.patch(
+  "/confirmtransaction/:noTrans",
+  transactionController.updateStatusDeliver
+);
 router.get(
   "/transaction-detail/:id",
   transactionController.getTransactionDetail
+);
+router.get(
+  "/gettransactionbynotrans/:noTrans",
+  transactionController.getTransactionByNoTransaction
 );
 router.post("/create-transaction/:id", transactionController.addTranscation);
 router.patch(

@@ -34,6 +34,36 @@ const transactionController = {
       });
     }
   },
+  getTransactionByNoTransaction: async (req, res) => {
+    try {
+      const noTrans = req.params.noTrans;
+      const filterTransaction = await Transaction_header.findOne({
+        include: [
+          {
+            model: Transaction_item,
+            attributes: ["TransactionHeaderId", "qty", "ProductId"],
+            include: {
+              model: Product,
+              attributes: ["name", "price", "imgProduct"],
+            },
+          },
+        ],
+        where: {
+          noTrans: noTrans,
+        },
+      });
+
+      res.status(200).json({
+        message: " transaction berdasarkan noTrans",
+        result: filterTransaction,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({
+        message: err,
+      });
+    }
+  },
   getCountTransaction: async (req, res) => {
     try {
       const id = req.params.id;
@@ -167,19 +197,19 @@ const transactionController = {
         const product = await Product.findByPk(val.ProductId, {
           transaction: t,
         });
-        // await Record_stock.create(
-        //   {
-        //     stockBefore: product.dataValues.stock,
-        //     stockAfter: product.dataValues.stock - val.qty,
-        //     desc: "pengurangan stock transaction",
-        //     TypeStockId: 1,
-        //     ProductId: val.ProductId,
-        //   },
-        //   { transaction: t }
-        // );
-        // if (product.stock < val.qty) {
-        //   throw new Error("stocknya kurang");
-        // }
+        await Record_stock.create(
+          {
+            stockBefore: product.dataValues.stock,
+            stockAfter: product.dataValues.stock - val.qty,
+            desc: "pengurangan stock transaction",
+            TypeStockId: 5,
+            ProductId: val.ProductId,
+          },
+          { transaction: t }
+        );
+        if (product.stock < val.qty) {
+          throw new Error("stocknya kurang");
+        }
         await Product.update(
           { stock: product.dataValues.stock - val.qty },
           {
@@ -216,6 +246,29 @@ const transactionController = {
       console.log(error);
       await t.rollback();
 
+      res.status(400).json({
+        message: error,
+      });
+    }
+  },
+  updateStatusDeliver: async (req, res) => {
+    try {
+      const noTrans = req.params.noTrans;
+      const TransactionStatusId = 5;
+      const data = { TransactionStatusId };
+      const result = await Transaction_header.update(
+        {
+          ...data,
+        },
+        {
+          where: {
+            noTrans: noTrans,
+          },
+        }
+      );
+      res.send(result);
+    } catch (error) {
+      console.error(error);
       res.status(400).json({
         message: error,
       });
@@ -263,43 +316,45 @@ const transactionController = {
 
       let order = [];
       if (sortOrder && sortSales) {
-        throw new Error("Can't use both sortOrder and sortSales at the same time");
+        throw new Error(
+          "Can't use both sortOrder and sortSales at the same time"
+        );
       } else if (sortOrder) {
-        order = [['createdAt', sortOrder]];
+        order = [["createdAt", sortOrder]];
       } else if (sortSales) {
-        order = [[Sequelize.literal('totalSales'), sortSales.toUpperCase()]];
+        order = [[Sequelize.literal("totalSales"), sortSales.toUpperCase()]];
       }
 
       const data = await Transaction_item.findAll({
         attributes: [
-          'ProductId',
-          'createdAt',
-          [Sequelize.literal('SUM(qty)'), 'totalQty'],
-          [Sequelize.literal('Product.price * SUM(qty)'), 'totalSales']
+          "ProductId",
+          "createdAt",
+          [Sequelize.literal("SUM(qty)"), "totalQty"],
+          [Sequelize.literal("Product.price * SUM(qty)"), "totalSales"],
         ],
         include: [
           {
             model: Product,
-            attributes: ['name', 'imgProduct', 'price'],
+            attributes: ["name", "imgProduct", "price"],
             include: [
               {
                 model: Branch,
-                attributes: ['city']
-              }
-            ]
+                attributes: ["city"],
+              },
+            ],
           },
           {
             model: Transaction_header,
             attributes: [],
             where: {
               createdAt: {
-                [Op.between]: [startDate, endDate]
-              }
-            }
-          }
+                [Op.between]: [startDate, endDate],
+              },
+            },
+          },
         ],
-        group: ['ProductId', 'createdAt'],
-        order: order
+        group: ["ProductId", "createdAt"],
+        order: order,
       });
 
       res.status(200).json({
@@ -323,30 +378,32 @@ const transactionController = {
 
       let order = [];
       if (sortOrder && sortSales) {
-        throw new Error("Can't use both sortOrder and sortSales at the same time");
+        throw new Error(
+          "Can't use both sortOrder and sortSales at the same time"
+        );
       } else if (sortOrder) {
-        order = [['createdAt', sortOrder]];
+        order = [["createdAt", sortOrder]];
       } else if (sortSales) {
-        order = [[Sequelize.literal('totalSales'), sortSales.toUpperCase()]];
+        order = [[Sequelize.literal("totalSales"), sortSales.toUpperCase()]];
       }
 
       const data = await Transaction_item.findAll({
         attributes: [
-          'ProductId',
-          'createdAt',
-          [Sequelize.literal('SUM(qty)'), 'totalQty'],
-          [Sequelize.literal('Product.price * SUM(qty)'), 'totalSales']
+          "ProductId",
+          "createdAt",
+          [Sequelize.literal("SUM(qty)"), "totalQty"],
+          [Sequelize.literal("Product.price * SUM(qty)"), "totalSales"],
         ],
         include: [
           {
             model: Product,
-            attributes: ['name', 'imgProduct', 'price'],
+            attributes: ["name", "imgProduct", "price"],
             include: [
               {
                 model: Branch,
-                attributes: ['city'],
-              }
-            ]
+                attributes: ["city"],
+              },
+            ],
           },
           {
             model: Transaction_header,
@@ -354,13 +411,13 @@ const transactionController = {
             where: {
               BranchId: branchId,
               createdAt: {
-                [Op.between]: [startDate, endDate]
-              }
-            }
-          }
+                [Op.between]: [startDate, endDate],
+              },
+            },
+          },
         ],
-        group: ['ProductId', 'createdAt'],
-        order: order
+        group: ["ProductId", "createdAt"],
+        order: order,
       });
 
       res.status(200).json({
@@ -383,38 +440,40 @@ const transactionController = {
 
       let order = [];
       if (sortOrder && sortSales) {
-        throw new Error("Can't use both sortOrder and sortSales at the same time");
+        throw new Error(
+          "Can't use both sortOrder and sortSales at the same time"
+        );
       } else if (sortOrder) {
-        order = [['createdAt', sortOrder]];
+        order = [["createdAt", sortOrder]];
       } else if (sortSales) {
-        order = [['grandPrice', sortSales.toUpperCase()]];
+        order = [["grandPrice", sortSales.toUpperCase()]];
       }
 
       const data = await Transaction_header.findAll({
         attributes: [
-          'noTrans',
-          'grandPrice',
-          'createdAt',
-          'imgUpload',
-          [Sequelize.literal('Branch.name'), 'branchName'],
-          [Sequelize.literal('User.username'), 'userName']
+          "noTrans",
+          "grandPrice",
+          "createdAt",
+          "imgUpload",
+          [Sequelize.literal("Branch.name"), "branchName"],
+          [Sequelize.literal("User.username"), "userName"],
         ],
         include: [
           {
             model: Branch,
-            attributes: []
+            attributes: [],
           },
           {
             model: User,
-            attributes: []
-          }
+            attributes: [],
+          },
         ],
         where: {
           createdAt: {
-            [Op.between]: [startDate, endDate]
-          }
+            [Op.between]: [startDate, endDate],
+          },
         },
-        order: order
+        order: order,
       });
 
       res.status(200).json({
@@ -438,41 +497,43 @@ const transactionController = {
 
       let order = [];
       if (sortOrder && sortSales) {
-        throw new Error("Can't use both sortOrder and sortSales at the same time");
+        throw new Error(
+          "Can't use both sortOrder and sortSales at the same time"
+        );
       } else if (sortOrder) {
-        order = [['createdAt', sortOrder]];
+        order = [["createdAt", sortOrder]];
       } else if (sortSales) {
-        order = [['grandPrice', sortSales.toUpperCase()]];
+        order = [["grandPrice", sortSales.toUpperCase()]];
       }
 
       const data = await Transaction_header.findAll({
         attributes: [
-          'noTrans',
-          'grandPrice',
-          'createdAt',
-          'imgUpload',
-          [Sequelize.literal('Branch.name'), 'branchName'],
-          [Sequelize.literal('User.username'), 'userName']
+          "noTrans",
+          "grandPrice",
+          "createdAt",
+          "imgUpload",
+          [Sequelize.literal("Branch.name"), "branchName"],
+          [Sequelize.literal("User.username"), "userName"],
         ],
         include: [
           {
             model: Branch,
             attributes: [],
             where: {
-              id: branchId
-            }
+              id: branchId,
+            },
           },
           {
             model: User,
-            attributes: []
-          }
+            attributes: [],
+          },
         ],
         where: {
           createdAt: {
-            [Op.between]: [startDate, endDate]
-          }
+            [Op.between]: [startDate, endDate],
+          },
         },
-        order: order
+        order: order,
       });
 
       res.status(200).json({
@@ -492,22 +553,22 @@ const transactionController = {
 
       const data = await Transaction_header.findAll({
         attributes: [
-          [Sequelize.literal('User.username'), 'userName'],
-          [Sequelize.fn('SUM', Sequelize.col('grandPrice')), 'totalGrandPrice'],
-          [Sequelize.literal('Branch.name'), 'branchName']
+          [Sequelize.literal("User.username"), "userName"],
+          [Sequelize.fn("SUM", Sequelize.col("grandPrice")), "totalGrandPrice"],
+          [Sequelize.literal("Branch.name"), "branchName"],
         ],
         include: [
           {
             model: User,
-            attributes: []
+            attributes: [],
           },
           {
             model: Branch,
-            attributes: []
-          }
+            attributes: [],
+          },
         ],
-        group: ['userName', 'branchName'],
-        order: [['totalGrandPrice', grandTotal]]
+        group: ["userName", "branchName"],
+        order: [["totalGrandPrice", grandTotal]],
       });
 
       res.status(200).json({
@@ -528,25 +589,25 @@ const transactionController = {
 
       const data = await Transaction_header.findAll({
         attributes: [
-          [Sequelize.literal('User.username'), 'userName'],
-          [Sequelize.fn('SUM', Sequelize.col('grandPrice')), 'totalGrandPrice'],
-          [Sequelize.literal('Branch.name'), 'branchName']
+          [Sequelize.literal("User.username"), "userName"],
+          [Sequelize.fn("SUM", Sequelize.col("grandPrice")), "totalGrandPrice"],
+          [Sequelize.literal("Branch.name"), "branchName"],
         ],
         include: [
           {
             model: User,
-            attributes: []
+            attributes: [],
           },
           {
             model: Branch,
-            attributes: []
-          }
+            attributes: [],
+          },
         ],
         where: {
-          branchId: branchId
+          branchId: branchId,
         },
-        group: ['userName', 'branchName'],
-        order: [['totalGrandPrice', grandTotal]]
+        group: ["userName", "branchName"],
+        order: [["totalGrandPrice", grandTotal]],
       });
 
       res.status(200).json({
@@ -632,7 +693,6 @@ const transactionController = {
       });
     }
   }
-
 
 };
 

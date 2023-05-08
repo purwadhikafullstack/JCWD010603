@@ -1,54 +1,36 @@
 import {
   Flex,
   Image,
-  InputGroup,
-  InputRightElement,
-  Box,
   List,
-  Input,
-  Menu,
   Link,
-  Button,
   Divider,
   Icon,
-  MenuButton,
-  MenuItem,
-  MenuList,
   useDisclosure,
   Popover,
   PopoverTrigger,
   PopoverContent,
   PopoverArrow,
-  PopoverCloseButton,
   PopoverHeader,
   PopoverBody,
   ListItem,
-  Avatar,
   Center,
 } from "@chakra-ui/react";
-import Logo from "../assets/logo.png";
+
 import { Link as ReachLink } from "react-router-dom";
 import { useRef } from "react";
 import { useSelector } from "react-redux";
 import { AiOutlineMenu } from "react-icons/ai";
 import { FiBell } from "react-icons/fi";
-import { GrMenu } from "react-icons/gr";
+
 import { SlBasket } from "react-icons/sl";
-import { useEffect, useState } from "react";
+
 import { useDispatch } from "react-redux";
 import user_types from "../redux/auth/types";
 import LogoHD from "../asset/logo.png";
-import { BiBell, BiCartAlt, BiMenu } from "react-icons/bi";
-
 
 export default function Navbar(props) {
   const userSelector = useSelector((state) => state.auth);
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [search, setSearch] = useState("");
-  const initialRef = useRef(null);
-  const finalRef = useRef(null);
-  const [products, setProducts] = useState([]);
-  const [product, setProduct] = useState([]);
+
   let dispatch = useDispatch();
   function logOut() {
     dispatch({
