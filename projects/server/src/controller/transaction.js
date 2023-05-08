@@ -621,6 +621,79 @@ const transactionController = {
       });
     }
   },
+  adminCancelTransaction: async (req, res) => {
+    try {
+      const transactionHeaderId = req.params.id;
+
+      const transactionItems = await Transaction_item.findAll({
+        where: {
+          TransactionHeaderId: transactionHeaderId,
+        },
+        include: {
+          model: Product,
+        },
+      });
+
+      await Promise.all(
+        transactionItems.map(async (item) => {
+          const product = item.Product;
+          const qtyToAdd = item.qty;
+
+          await Product.update(
+            { stock: product.stock + qtyToAdd },
+            { where: { id: product.id } }
+          );
+        })
+      );
+
+      const updatedTransactionHeader = await Transaction_header.update(
+        {
+          TransactionStatusId: 5,
+        },
+        {
+          where: {
+            id: transactionHeaderId,
+          },
+        }
+      );
+
+      res.status(200).json({
+        message: "Transaction canceled successfully.",
+        result: updatedTransactionHeader,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({
+        message: err,
+      });
+    }
+  },
+  adminSendTransaction: async (req, res) => {
+    try {
+      const transactionHeaderId = req.params.id;
+      const updatedTransactionHeader = await Transaction_header.update(
+        {
+          TransactionStatusId: 3,
+        },
+        {
+          where: {
+            id: transactionHeaderId,
+          },
+        }
+      );
+
+      res.status(200).json({
+        message: "Transaction Delivered.",
+        result: updatedTransactionHeader,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({
+        message: err,
+      });
+    }
+  }
+
 };
 
 module.exports = transactionController;

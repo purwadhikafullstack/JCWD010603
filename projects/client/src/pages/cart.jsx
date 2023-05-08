@@ -229,7 +229,7 @@ export default function Cart() {
                         overflow="hidden"
                       >
                         <Image
-                          src="https://images.unsplash.com/photo-1512372388054-a322888e67a6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80"
+                          src={val.Product.imgProduct}
                           objectFit="cover"
                           w="100%"
                           h="auto"
