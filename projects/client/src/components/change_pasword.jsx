@@ -1,14 +1,11 @@
 import {
   Button,
-  Checkbox,
   Center,
   Flex,
   FormControl,
   FormLabel,
-  Heading,
   Input,
   Link,
-  Stack,
   Icon,
   Image,
   Alert,
@@ -18,21 +15,15 @@ import {
   FormHelperText,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { userLogin } from "../redux/middleware/userauth";
-import { useDispatch } from "react-redux";
-// import { AxiosInstance } from 'axios';
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../config/config";
 import { Link as ReachLink } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import Logo from "../assets/logo.png";
 import * as Yup from "yup";
-import YupPassword from "yup-password";
 import { useFormik } from "formik";
 import { FaEyeSlash, FaEye } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
-import axios from "axios";
 
 export default function ChangePassword({ id }) {
   const [show, setShow] = useState(false);

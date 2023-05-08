@@ -1,53 +1,30 @@
 import {
   Flex,
   Image,
-  InputGroup,
-  InputRightElement,
-  Box,
   List,
-  Input,
-  Menu,
   Link,
-  Button,
   Divider,
   Icon,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  useDisclosure,
   Popover,
   PopoverTrigger,
   PopoverContent,
   PopoverArrow,
-  PopoverCloseButton,
   PopoverHeader,
   PopoverBody,
   ListItem,
-  Avatar,
   Center,
 } from "@chakra-ui/react";
-import Logo from "../assets/logo.png";
+
 import { Link as ReachLink } from "react-router-dom";
-import { useRef } from "react";
-import { useSelector } from "react-redux";
+
 import { AiOutlineMenu } from "react-icons/ai";
 import { FiBell } from "react-icons/fi";
-import { GrMenu } from "react-icons/gr";
+
 import { SlBasket } from "react-icons/sl";
-import { useEffect, useState } from "react";
-import LogoHD from "../asset/logo.png"
 
-export default function Navbar(props) {
-  const userSelector = useSelector((state) => state.auth);
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [search, setSearch] = useState("");
-  const initialRef = useRef(null);
-  const finalRef = useRef(null);
-  const [products, setProducts] = useState([]);
-  const [product, setProduct] = useState([]);
+import LogoHD from "../asset/logo.png";
 
-  // console.log(userSelector);
-
+export default function NavbarHome(props) {
   return (
     <>
       <Center flex={1} align={"center"} justifyContent={"center"}>
@@ -102,7 +79,7 @@ export default function Navbar(props) {
                 </Link>
               </Flex>
 
-              <Popover trigger={"hover"} placement={"bottom-start"} gap={10}>
+              <Popover trigger={"hover"} placement={"bottom-end"} gap={10}>
                 <PopoverTrigger>
                   <Flex flexDir={"rows"} px={2} alignContent={"center"}>
                     <Icon

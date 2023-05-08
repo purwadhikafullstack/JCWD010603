@@ -5,60 +5,35 @@ import {
   Flex,
   FormControl,
   FormLabel,
-  Heading,
-  Accordion,
   FormHelperText,
   Avatar,
-  AvatarBadge,
-  IconButton,
-  AccordionButton,
-  AccordionItem,
-  AccordionIcon,
-  AccordionPanel,
-  Box,
   Select,
   Input,
   Link,
   Stack,
-  InputGroup,
-  FormErrorMessage,
-  Image,
-  Alert,
   Text,
-  AlertIcon,
   useToast,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { GrFormPrevious } from "react-icons/gr";
 import { IoIosArrowBack } from "react-icons/io";
-import { SmallCloseIcon } from "@chakra-ui/icons";
-import { FaUserCircle } from "react-icons/fa";
-import { AiFillCamera } from "react-icons/ai";
-import { userLogin } from "../redux/middleware/userauth";
-import { useDispatch } from "react-redux";
 import { axiosInstance } from "../config/config";
 import { useNavigate } from "react-router-dom";
 import { Link as ReachLink } from "react-router-dom";
-import { useLocation } from "react-router-dom";
-import Logo from "../assets/logo.png";
 import { useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import YupPassword from "yup-password";
-// import { useDropzone } from "react-dropzone";
-import jimp from "jimp";
 import { useRef } from "react";
 import user_types from "../redux/auth/types";
 export default function UpdateProfile(props) {
   const [imgUser, setImgUser] = useState("");
   const data = props.data;
   const [firstName, setFirstName] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [birthDate, setbirthDate] = useState(new Date());
   const [gender, setGender] = useState(0);
-  const location = useLocation();
+
   const toast = useToast();
   const [User_id, setUser_id] = useState(0);
   const userSelector = useSelector((state) => state.auth);
@@ -71,13 +46,8 @@ export default function UpdateProfile(props) {
     fetchuserdetail(userSelector?.id);
   }, []);
 
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [saveImage, setSaveImage] = useState(null);
-  const [user, setUser] = useState({
-    username: "",
-    password: "",
-  });
+
   const [userdetail, setUserDetail] = useState([]);
 
   useEffect(() => {
@@ -178,15 +148,6 @@ export default function UpdateProfile(props) {
       setEnable(false);
     }
   }, [formik.values]);
-
-  function inputHandler(event) {
-    const { name, value } = event.target;
-
-    setUser({
-      ...user,
-      [name]: value,
-    });
-  }
 
   const saveUser = async (e) => {
     e.preventDefault();

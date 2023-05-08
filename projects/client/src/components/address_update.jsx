@@ -29,7 +29,6 @@ export default function UpdateAdress(props) {
   const [postalCode, setPostalCode] = useState("");
   const data = props.data;
   const location = useLocation();
-
   const [idCity, setIdCity] = useState(0);
   const [isPrimary, setIsPrimary] = useState(0);
   const [id, setId] = useState(0);
@@ -46,10 +45,7 @@ export default function UpdateAdress(props) {
   const handleId = (e) => {
     setIdProv(e);
   };
-  const [user, setUser] = useState({
-    username: "",
-    password: "",
-  });
+
   const [addressdetail, setAddressDetail] = useState([]);
   const [provinceAPI, setProvinceAPI] = useState([
     {
@@ -117,6 +113,7 @@ export default function UpdateAdress(props) {
         setKet(response.data.result.Ket);
         setUserId(response.data.result.UserId);
         setIdCity(response.data.result.idCity);
+        setIdProv(response.data.result.idProv);
       })
       .catch((error) => {
         console.log({ error });
@@ -150,6 +147,7 @@ export default function UpdateAdress(props) {
       Ket,
       UserId,
       idCity,
+      idProv,
     };
 
     try {
