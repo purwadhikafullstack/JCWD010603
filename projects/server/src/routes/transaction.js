@@ -32,5 +32,7 @@ router.get("/transactionReport", transactionController.getSuperAdminDataByTransa
 router.get("/branchTransactionReport", transactionController.getBranchAdminDataByTransaction);
 router.get("/userReport", transactionController.getAllUserTransactionData);
 router.get("/branchUserReport", transactionController.getBranchUserTransactionData);
+router.patch("/admincancelorder/:id", transactionController.adminCancelTransaction);
+router.patch("/adminsendorder/:id", transactionController.adminSendTransaction);
 
 module.exports = router;

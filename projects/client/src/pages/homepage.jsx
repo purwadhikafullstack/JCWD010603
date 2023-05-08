@@ -154,7 +154,7 @@ export default function UserPage() {
                   direction='column' justify='space-between' mb={4} cursor='pointer'
                 >
                   <Link to={"/detail-product/" + val?.id} as={ReachLink}>
-                    <Image src='https://cf.shopee.co.id/file/91f5d7c0182342102185ff9dfcb2d7e0' w='100%' h='120px' objectFit='cover' />
+                    <Image src={val.imgProduct} w='100%' h='120px' objectFit='cover' />
                   </Link>
 
                   <Text ml={1} fontSize='sm'>{val.name}</Text>
