@@ -26,4 +26,8 @@ router.patch(
   }).single("image"),
   transactionController.uploadFoto
 );
+router.get("/allBranchTransaction", transactionController.getAllTransaction)
+router.get("/transactionStatus", transactionController.getTransactionStatus)
+router.get("/allTransactionByBranch/:id", transactionController.getTransactionByBranch)
+router.get("/getTransactionItem/:id", transactionController.getTransactionItem)
 module.exports = router;
