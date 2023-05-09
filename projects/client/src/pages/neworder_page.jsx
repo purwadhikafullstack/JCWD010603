@@ -3,16 +3,19 @@ import NewOrder from "../components/neworder";
 import { Stack, Center, Spinner } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { axiosInstance } from "../config/config";
+import { useSelector } from "react-redux";
 export default function NewOrderPage() {
   const [cartData, setCartData] = useState([]);
   const [isPrimary, setisPrimary] = useState([]);
-
+  const [listAddress, setListAddress] = useState();
   const [voucher, setVoucher] = useState();
+  const userSelector = useSelector((state) => state.auth);
   const [isLoading, setIsLoading] = useState(true);
   async function fetchCartData() {
     setIsLoading(true);
     const userId = localStorage.getItem("userID");
     await axiosInstance
+
       .get(`/cart/getcartbyUserId/${userId}`)
       .then((res) => {
         setCartData(res.data.result);
@@ -29,6 +32,17 @@ export default function NewOrderPage() {
       })
       .finally(() => setIsLoading(false));
   }
+
+  async function fetchListData() {
+    setIsLoading(true);
+    const userId = localStorage.getItem("userID");
+    await axiosInstance
+      .get(`/address/listaddress/ ${userId}`)
+      .then((res) => {
+        setListAddress(res.data.result);
+      })
+      .finally(() => setIsLoading(false));
+  }
   async function fetchVouchersData() {
     setIsLoading(true);
 
@@ -39,11 +53,12 @@ export default function NewOrderPage() {
       })
       .finally(() => setIsLoading(false));
   }
-  console.log(cartData);
+
   useEffect(() => {
     fetchCartData();
     fetchAddressData();
     fetchVouchersData();
+    fetchListData();
   }, []);
 
   return (
@@ -57,6 +72,7 @@ export default function NewOrderPage() {
           <Stack minH={"100vh"} direction={{ base: "column", md: "row" }}>
             <NewOrder
               data={cartData}
+              datalist={listAddress}
               dataaddress={isPrimary}
               voucher={voucher}
             />

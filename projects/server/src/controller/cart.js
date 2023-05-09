@@ -3,6 +3,7 @@ const { sequelize } = require("../models");
 const db = require("../models");
 const Cart = db.cart;
 const Product = db.product;
+const Branch = db.branch;
 
 const cartController = {
   getCartData: async (req, res) => {
@@ -116,7 +117,11 @@ const cartController = {
         include: [
           {
             model: Product,
-            attributes: ["name", "price", "imgProduct", "weight"],
+            attributes: ["name", "price", "imgProduct", "weight", "BranchId"],
+            include: {
+              model: Branch,
+              attributes: ["name", "idCity"],
+            },
           },
         ],
         where: {
@@ -212,7 +217,7 @@ const cartController = {
     const { qty, ProductId, UserId } = req.body;
     if (!UserId) {
       return res.status(400).json({
-        message: 'Please Login first',
+        message: "Please Login first",
       });
     }
 
@@ -284,7 +289,6 @@ const cartController = {
       });
     }
   },
-
 };
 
 module.exports = cartController;
