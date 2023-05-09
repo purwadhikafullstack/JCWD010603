@@ -27,7 +27,9 @@ import AddProductPage from "../pages/addproduct";
 import NewOrder from "../pages/neworder_page";
 import Upload from "../pages/upload_page";
 import Report from "../pages/report";
-import RecordStock from "../pages/record_stock";
+import RecordStock from "../pages/record_stock"
+import AllBranchTrans from "../pages/all_branch_transactions"
+
 
 const routes = [
   {
@@ -53,6 +55,10 @@ const routes = [
   {
     path: "/record-stock",
     element: <RecordStock />,
+  },
+  {
+    path: "/all-branch-transactions",
+    element: <AllBranchTrans />,
   },
   {
     path: "/register",

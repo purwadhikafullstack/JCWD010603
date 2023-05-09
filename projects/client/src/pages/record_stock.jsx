@@ -171,7 +171,7 @@ export default function Record() {
                                                 <Flex w="100px" justify='space-around'>
                                                     <Tooltip label='Description' placement='top-start'>
                                                         <IconButton // edit button
-                                                            icon={<BiDetail />}
+                                                            icon={<BiDetail/>}
                                                             borderRadius='full'
                                                             _hover={{
                                                                 color: 'green',
