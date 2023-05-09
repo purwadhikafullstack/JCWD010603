@@ -27,6 +27,7 @@ export default function SidebarAdmin() {
       bgColor: "rgba(255, 255, 255, 0.05)",
       transform: "scale(1.05)",
       transition: "1ms all",
+      color: 'white'
     },
     _active: {
       transform: "scale(1.04)",
@@ -102,6 +103,7 @@ export default function SidebarAdmin() {
           </Link>
           <Link
             sx={linkStyles}
+            href="/all-branch-transactions"
             display="flex"
             alignItems="center"
             className="sidebar-link"
