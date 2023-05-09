@@ -58,7 +58,7 @@ export default function UpdateProfile(props) {
       .get("/user/" + User_id)
       .then((response) => {
         setUserDetail(response.data.result);
-        console.log(response.data.result);
+
         setFirstName(response.data.result.User_detail.firstname);
         setLastName(response.data.result.User_detail.lastname);
         setEmail(response.data.result.email);
@@ -116,7 +116,6 @@ export default function UpdateProfile(props) {
       await axiosInstance
         .patch(`user/updatefoto/${props?.user.id}`, formData)
         .then(async (res) => {
-          console.log(res.data.result);
           // await dispatch({
           //   type: user_types.USER_LOGIN,
           //   payload: res.data.result,

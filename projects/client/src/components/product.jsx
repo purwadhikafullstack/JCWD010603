@@ -141,7 +141,7 @@ export default function ProductPage(props) {
 
   const handleFile = (e) => {
     const uploaded = e.target.files[0];
-    console.log(uploaded);
+
     formikEdit.setFieldValue("imgProduct", uploaded);
   };
 
@@ -177,7 +177,6 @@ export default function ProductPage(props) {
         onCloseDelModal();
       }, 300);
     } catch (err) {
-      console.log(err.response.data.message);
       setMsg(err.response.data.message);
       setTimeout(() => {
         NotifyError();
@@ -345,7 +344,6 @@ export default function ProductPage(props) {
         ),
     }),
     onSubmit: async (values) => {
-      console.log(values);
       const {
         id,
         imgProduct,
@@ -396,7 +394,7 @@ export default function ProductPage(props) {
     <>
       <Flex
         zIndex={40}
-        w="800px"
+        w={["200px", "400px", "600px", "800px"]}
         gap={2}
         paddingTop="20px"
         paddingBottom={"20px"}
@@ -627,10 +625,21 @@ export default function ProductPage(props) {
           {data.slice(page * 6 - 6, page * 6)?.map((product, index) => {
             return (
               <>
-                <Box minW="246px" h="300px">
-                  <Flex justifyContent="left">
+                <Center
+                  minW={["100px", "150px", "200px", "250px"]}
+                  h={["100px", "150px", "200px", "250px"]}
+                  border="2px solid #E2E8F0"
+                  borderRadius={"5%"}
+                  boxShadow="rgba(0,0,0,0.56) 4px 0px 19px -2px"
+                >
+                  <Flex justifyContent="center">
                     <Link to={`/`}>
-                      <Box roundedTop="lg" w="190px" h="190px">
+                      <Box
+                        roundedTop="lg"
+                        w={["50px", "100px", "150px", "190px"]}
+                        h={["50px", "100px", "150px", "190px"]}
+                        px={2}
+                      >
                         <Image
                           src={product?.imgProduct}
                           alt={`Picture of ${product?.name}`}
@@ -647,45 +656,50 @@ export default function ProductPage(props) {
                     justifyContent="space-between"
                     alignContent="center"
                     flexDir={"column"}
-                    w="194px"
+                    w="200px"
+                    h="175px"
                   >
-                    <Box
-                      fontSize="14px"
-                      fontWeight="semibold"
-                      as="h4"
-                      lineHeight="tight"
-                    >
-                      {product?.category}
-                    </Box>
-                    <Box
-                      fontSize="16px"
-                      fontWeight={"Bold"}
-                      as="h4"
-                      lineHeight="tight"
-                    >
-                      {product?.name}
-                    </Box>
+                    <Flex h="75px" flexDir={"column"}>
+                      <Box
+                        fontSize="14px"
+                        fontWeight="semibold"
+                        as="h4"
+                        lineHeight="tight"
+                      >
+                        {product?.category}
+                      </Box>
+                      <Box
+                        fontSize="16px"
+                        fontWeight={"Bold"}
+                        as="h4"
+                        lineHeight="tight"
+                      >
+                        {product?.name}
+                      </Box>
 
-                    <Box fontSize="14px" as="h4">
-                      <Text>
-                        {" "}
-                        Harga : Rp. {product?.price.toLocaleString()}
-                      </Text>
-                    </Box>
-                    <Stack
-                      w={"inherit"}
-                      borderRadius={"50%"}
-                      marginY={"5px"}
-                      height={"2px"}
-                      bgColor={`rgb(111,111,111,0.1)`}
-                    />
-                    <Flex marginTop={"3px"} paddingX={"35px"}>
+                      <Box fontSize="14px" as="h4">
+                        <Text>
+                          {" "}
+                          Harga : Rp. {product?.price.toLocaleString()}
+                        </Text>
+                      </Box>
+                      <Stack
+                        w={"inherit"}
+                        borderRadius={"50%"}
+                        marginY={"5px"}
+                        height={"2px"}
+                        bgColor={`rgb(111,111,111,0.1)`}
+                      />
+                    </Flex>
+                    <Center marginTop={"3px"} paddingX={"35px"} gap={3}>
                       <Button
                         onClick={() => {
                           editHandlerModal(product?.id);
                         }}
                         colorScheme="yellow"
-                        h={"25px"}
+                        h={"50px"}
+                        w={"50px"}
+                        borderRadius={"100%"}
                         fontSize={"14px"}
                       >
                         <MdBorderColor color="white" size={15} />
@@ -696,14 +710,16 @@ export default function ProductPage(props) {
                           deleteHandlerModal(product?.id);
                         }}
                         colorScheme="red"
-                        h={"25px"}
+                        h={"50px"}
+                        w={"50px"}
+                        borderRadius={"100%"}
                         fontSize={"14px"}
                       >
                         <MdOutlineDelete size={18} />
                       </Button>
-                    </Flex>
+                    </Center>
                   </Flex>
-                </Box>
+                </Center>
               </>
             );
           })}

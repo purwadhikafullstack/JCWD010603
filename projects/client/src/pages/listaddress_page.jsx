@@ -59,7 +59,6 @@ export default function ListAddressPage() {
       .get("address/listaddress/" + userSelector?.id)
       .then((res) => {
         setData(res.data.result);
-        console.log(userSelector?.id);
       });
   }
   useEffect(() => {
