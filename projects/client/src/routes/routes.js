@@ -58,7 +58,11 @@ const routes = [
   },
   {
     path: "/all-branch-transactions",
-    element: <AllBranchTrans />,
+    element: (
+      <ProtectedPage adminLogin={true} adminGuest={false}>
+        <AllBranchTrans />
+      </ProtectedPage>
+    ),
   },
   {
     path: "/register",
