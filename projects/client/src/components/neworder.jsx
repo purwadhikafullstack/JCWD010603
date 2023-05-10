@@ -55,7 +55,7 @@ export default function NewOrder(props) {
     onClose: onCloseAddress,
   } = useDisclosure();
   const listaddress = props.datalist;
-
+  const [addAddress, setAddAdress] = useState("Add Address");
   const dataaddress = props.dataaddress;
   const [voucherInput, setVoucherInput] = useState("Use Promo");
   const [serviceInput, setServiceInput] = useState("Select Service Shipping");
@@ -284,7 +284,7 @@ export default function NewOrder(props) {
                     }}
                     onClick={onOpenAddress}
                   >
-                    Add Address
+                    {addAddress}
                   </Button>
                 </Flex>
 
@@ -313,6 +313,7 @@ export default function NewOrder(props) {
                             onClick={(e) => {
                               setDetailAddress(e.target.textContent);
                               setDestination(e.target.value);
+                              setAddAdress("Change Address");
                             }}
                           >
                             {listaddress.map((address, val) => (

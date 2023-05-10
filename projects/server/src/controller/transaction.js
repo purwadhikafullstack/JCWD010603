@@ -257,7 +257,7 @@ const transactionController = {
   updateStatusDeliver: async (req, res) => {
     try {
       const noTrans = req.params.noTrans;
-      const TransactionStatusId = 5;
+      const TransactionStatusId = 4;
       const data = { TransactionStatusId };
       const result = await Transaction_header.update(
         {

@@ -72,12 +72,12 @@ export default function ProductUserPage(props) {
   const [closeFilterDialog, setCloseFilterDialog] = useState(false);
   const [search, setSearch] = useState("");
   const [product, setProduct] = useState([]);
-
+  // const [branchId, setBranchId] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [branch, setBranch] = useState("");
   const [idBranch, setIdBranch] = useState(1);
   const [page, setPage] = useState(1);
-
+  const branchId = localStorage.getItem("branchID");
   const handleId = (e) => {
     setIdBranch(e);
   };
@@ -136,6 +136,7 @@ export default function ProductUserPage(props) {
           <Select
             name="city"
             bgColor="white"
+            value={branchId}
             onChange={(e) => {
               setBranch(e.target.value);
               handleId(e.target.value);
