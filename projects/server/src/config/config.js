@@ -5,8 +5,8 @@ module.exports = {
     database: process.env.database,
     host: process.env.host,
     dialect: "mysql",
-    timezone: "+07:00",
-  },
+    timezone: '+07:00'
+  }
 
   // test= {
   //   username= "root",
