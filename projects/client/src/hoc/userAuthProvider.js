@@ -11,7 +11,7 @@ const UserAuthProvider = ({ children }) => {
   const fetchData = async () => {
     const token = localStorage.getItem("token");
     await axiosInstance
-      .get("/user/keeplogin", { headers: { Authorization: token } })
+      .get("/api/user/keeplogin", { headers: { Authorization: token } })
       .then((res) => {
         dispatch({
           type: user_types.USER_LOGIN,

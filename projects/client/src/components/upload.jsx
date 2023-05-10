@@ -84,7 +84,7 @@ export default function UpdateProfile(props) {
       const formData = new FormData();
       formData.append("image", image);
       await axiosInstance
-        .patch(`transaction/uploadfoto/${noTrans}`, formData)
+        .patch(`/api/transaction/uploadfoto/${noTrans}`, formData)
         .then(async (res) => {
           console.log(res.data.result);
           toast({

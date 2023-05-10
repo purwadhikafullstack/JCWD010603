@@ -77,7 +77,7 @@ export default function Register() {
   const fetchProvince = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8000/api_rajaongkir/province"
+        "http://localhost:8000/api/api_rajaongkir/province"
       );
       const result = response.data;
 
@@ -110,7 +110,7 @@ export default function Register() {
     try {
       console.log(idProv);
       const response = await axios.get(
-        `http://localhost:8000/api_rajaongkir/city/${idProv}`
+        `http://localhost:8000/api/api_rajaongkir/city/${idProv}`
       );
       const result = response.data;
       setCity(result);
@@ -171,7 +171,7 @@ export default function Register() {
     }),
     onSubmit: async () => {
       try {
-        await axiosInstance.post("/user/register", formik.values);
+        await axiosInstance.post("/api/user/register", formik.values);
         handleSuccess();
       } catch (err) {
         setMsg(err.response.data.errors[0].msg);

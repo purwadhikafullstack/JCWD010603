@@ -11,10 +11,7 @@ import {
   Link,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-
 import { IoIosArrowBack } from "react-icons/io";
-
-import { useDispatch } from "react-redux";
 import { axiosInstance } from "../config/config";
 import { useNavigate } from "react-router-dom";
 import { Link as ReachLink } from "react-router-dom";
@@ -23,22 +20,21 @@ import { useLocation } from "react-router-dom";
 export default function UpdateAdress(props) {
   const [address, setAddress] = useState("");
   const [district, setDistrict] = useState("");
-  const [addressList, setAddressList] = useState("");
+
   const [idProv, setIdProv] = useState(0);
   const [city, setCity] = useState("");
   const [postalCode, setPostalCode] = useState("");
-  const data = props.data;
+
   const location = useLocation();
   const [idCity, setIdCity] = useState(0);
   const [isPrimary, setIsPrimary] = useState(0);
   const [id, setId] = useState(0);
   const [Ket, setKet] = useState("");
-  const [idAddress, setidAddress] = useState(0);
+
   const [UserId, setUserId] = useState(0);
-  const dispatch = useDispatch();
+
   const navigate = useNavigate();
   useEffect(() => {
-    setidAddress(location.pathname?.split("/")[2]);
     fetchaddressdetail(location.pathname?.split("/")[2]);
   }, []);
 
@@ -46,7 +42,6 @@ export default function UpdateAdress(props) {
     setIdProv(e);
   };
 
-  const [addressdetail, setAddressDetail] = useState([]);
   const [provinceAPI, setProvinceAPI] = useState([
     {
       province_id: 0,
@@ -68,7 +63,7 @@ export default function UpdateAdress(props) {
   const fetchProvince = async () => {
     try {
       const response = await axiosInstance.get(
-        "http://localhost:8000/api_rajaongkir/province"
+        "http://localhost:8000/api/api_rajaongkir/province"
       );
       const result = response.data;
 
@@ -84,7 +79,7 @@ export default function UpdateAdress(props) {
   const fetchCity = async () => {
     try {
       const response = await axiosInstance.get(
-        `http://localhost:8000/api_rajaongkir/city/${idProv}`
+        `http://localhost:8000/api/api_rajaongkir/city/${idProv}`
       );
       const result = response.data;
       setCityAPI(result);
@@ -98,10 +93,8 @@ export default function UpdateAdress(props) {
 
   const fetchaddressdetail = async (idAddress) => {
     await axiosInstance
-      .get("/address/update-address/" + idAddress)
+      .get("/api/address/update-address/" + idAddress)
       .then((response) => {
-        setAddressDetail(response.data.result);
-
         setId(response.data.result.id);
         setDistrict(response.data.result.district);
         setProvinces(response.data.result.province);
@@ -118,19 +111,6 @@ export default function UpdateAdress(props) {
         console.log({ error });
       });
   };
-
-  const [addresses, setAddresses] = useState([]);
-
-  useEffect(() => {
-    axiosInstance
-      .get("/address/addresses")
-      .then((response) => {
-        setAddresses(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
 
   const saveAddress = async (e) => {
     e.preventDefault();
@@ -149,7 +129,7 @@ export default function UpdateAdress(props) {
     };
 
     try {
-      await axiosInstance.patch("/address/editaddress?id=" + Data.id, Data);
+      await axiosInstance.patch("/api/address/editaddress?id=" + Data.id, Data);
       navigate("/list-address");
     } catch (error) {
       console.error(error);
