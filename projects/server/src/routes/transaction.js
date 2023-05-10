@@ -46,6 +46,8 @@ router.get("/userReport", transactionController.getAllUserTransactionData);
 router.get("/branchUserReport", transactionController.getBranchUserTransactionData);
 router.patch("/admincancelorder/:id", transactionController.adminCancelTransaction);
 router.patch("/adminsendorder/:id", transactionController.adminSendTransaction);
+router.get("/userTransactionList/:id", transactionController.getUserTransaction);
+router.patch("/userTransactionStatus/:id", transactionController.updateTransactionStatus);
 
 module.exports = router;
 module.exports = router;
