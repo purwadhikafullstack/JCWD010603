@@ -409,7 +409,7 @@ export default function Record() {
                     <nav
                       role={"navigation"}
                       aria-label={"pagination"}
-                      className="pagination is-centered"
+                      className="pagination is-small is-centered"
                     >
                       <ReactPaginate
                         previousLabel={"< Prev"}

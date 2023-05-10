@@ -37,6 +37,7 @@ import "bulma/css/bulma.css";
 export default function UserTrans() {
   const cancelRef = React.useRef();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen : isOpen2, onOpen : onOpen2, onClose : onClose2 } = useDisclosure();
   const [userTrans, setUserTrans] = useState([]);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(3);
@@ -152,10 +153,15 @@ export default function UserTrans() {
       });
   };
 
-  const cancelStatus = (e) => {
+  const cancelStatus1 = (e) => {
     setIdTrans(e);
     setCancelDialog(true);
     onOpen();
+  };
+  const cancelStatus2 = (e) => {
+    setIdTrans(e);
+    setCancelDialog(true);
+    onOpen2();
   };
 
   useEffect(() => {
@@ -286,13 +292,27 @@ export default function UserTrans() {
                           cursor="pointer"
                           mr={3}
                           onClick={() =>
-                            cancelStatus({ id: val.id, noTrans: val.noTrans })
+                            cancelStatus1({ id: val.id, noTrans: val.noTrans })
                           }
                           sx={deleteButtonStyle}
                         >
-                          {val.Transaction_status?.name}{" "}
+                          {val.Transaction_status?.name}
                         </Button>
-                      ) : (
+                      ) :  val.Transaction_status.id === 2 ? (
+                        <Button
+                          size="xs"
+                          // as={BiTrash}
+                          color="gray.400"
+                          bg="none"
+                          cursor="pointer"
+                          mr={3}
+                          onClick={() => cancelStatus2({id: val.id, noTrans: val.noTrans})}
+                          sx={deleteButtonStyle}
+                        >
+                          {val.Transaction_status?.name}
+                        </Button>
+                      ):
+                      (
                         <Button
                           size="xs"
                           // as={BiTrash}
@@ -303,9 +323,11 @@ export default function UserTrans() {
                           // onClick={() => cancelStatus({id: val.id, noTrans: val.noTrans})}
                           sx={deleteButtonStyle}
                         >
-                          {val.Transaction_status?.name}{" "}
+                          {val.Transaction_status?.name}
                         </Button>
-                      )}
+                      )
+                      
+                      }
                       {/* <Flex mr={4} py={2}>
                           <IconButton
                             size="xs"
@@ -323,13 +345,15 @@ export default function UserTrans() {
             </>
           )}
         </Flex>
-        <Flex w="85%" h="50px" m="0 auto" justify={"center"} align="center">
+        <Flex w="100%" h="50px" m="0 auto" justify={"center"} align="center">
           <nav
             role={"navigation"}
             aria-label={"pagination"}
-            className="pagination is-centered"
+            className="pagination is-small is-centered"
           >
             <ReactPaginate
+            pageRangeDisplayed={1}
+            marginPagesDisplayed={2}
               previousLabel={"< Prev"}
               nextLabel={"Next >"}
               pageCount={pages}
@@ -387,6 +411,44 @@ export default function UserTrans() {
                     Upload
                   </Link>
                 </Button>
+                <Button
+                  onClick={() => {
+                    statusTrans({
+                      id: idTrans.id,
+                      status: 5,
+                      msg: `Order Canceled`,
+                    });
+                  }}
+                  sx={cancelButtonStyle}
+                >
+                  Cancel Order
+                </Button>
+              </Flex>
+            </Center>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+      <Modal margin onClose={onClose2} isOpen={isOpen2} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader fontSize={"2xl"} fontWeight={"bold"}>
+            Transaction Status
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody paddingBottom={9}>
+            <Center display={"Grid"} textAlign={"center"} rowGap={"35px"}>
+              <Text fontSize={"lg"} fontWeight={"semibold"}>
+                Your payment has been approve by admin, waiting admin to send your order
+              </Text>
+              <Flex justify={"center"} columnGap={"35px"}>
+                {/* <Button sx={uploadButtonStyle}>
+                  <Link
+                    to={`/upload-payment/${idTrans.noTrans}`}
+                    as={ReachLink}
+                  >
+                    Upload
+                  </Link>
+                </Button> */}
                 <Button
                   onClick={() => {
                     statusTrans({
