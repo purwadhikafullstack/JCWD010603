@@ -1,5 +1,5 @@
 const path = require("path");
-require("dotenv").config({path: path.resolve("../.env")});
+require("dotenv").config({path: path.resolve(__dirname,"../.env")});
 const express = require("express");
 const bcrypt = require("bcrypt");
 const cors = require("cors");
