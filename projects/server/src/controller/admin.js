@@ -35,9 +35,6 @@ const adminController = {
       const isValid = await bcrypt.compare(password, result.password);
       if (!isValid) {
         throw new Error("Incorrect Email / Password")
-        // return res.status(401).json({
-        //     message: 'email / password incorrect'
-        // })
       }
       let payload = { id: result.id, isSuperAdmin: result.isSuperAdmin };
       const token = jwt.sign(
@@ -55,23 +52,6 @@ const adminController = {
         error.message
       )
     }
-
-    // else {
-    //     const check = bcrypt.compare(password, result.password)
-
-    //     if (!check) {
-    //         return res.status(400).json({
-    //             message: "Wrong password"
-    //         })
-    //     }
-
-    //     else {
-    //         return res.status(200).json({
-    //             message: "Logged in",
-    //             result: result
-    //         })
-    //     }
-    // }
   },
 
   createAdmin: async (req, res) => {
@@ -187,16 +167,6 @@ const adminController = {
         throw new Error("Failed to create");
       }
 
-      // const products = await Product.findAll();
-      // console.log('my product list == >', products);
-      // const newStockData = products.map((product) => ({
-      //     BranchId: branch.id,
-      //     ProductId: product.id,
-      //     qty: 29,
-      // }));
-      // console.log('my newStockData ==>', newStockData);
-      // await Stock.bulkCreate(newStockData, { transaction: t });
-
       await t.commit();
       res.status(201).send("Create branches success");
     } catch (err) {
@@ -230,21 +200,29 @@ const adminController = {
   },
 
   deleteBranches: async (req, res) => {
+    const transaction = await sequelize.transaction();
+
     try {
       const { id } = req.params;
 
-      const branch = await Branch.findByPk(id);
+      const branch = await Branch.findByPk(id, { transaction });
       if (!branch) {
+        await transaction.rollback();
         return res.status(404).json({
-          message: "Branches not found",
+          message: "Branch not found",
         });
       }
 
-      await branch.destroy();
+      await branch.destroy({ transaction });
+
+      await transaction.commit();
+
       return res.status(200).json({
         message: "Branch deleted successfully",
       });
     } catch (err) {
+      await transaction.rollback();
+
       return res.status(400).json({
         message: err.message,
       });

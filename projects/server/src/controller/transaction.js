@@ -310,179 +310,179 @@ const transactionController = {
       });
     }
   },
-  getAllTransaction : async (req,res) => {
+  getAllTransaction: async (req, res) => {
     const page = parseInt(req.query.page) || 1
     const limit = parseInt(req.query.limit) || 5
-    const search = parseInt(req.query.search) || "" 
+    const search = parseInt(req.query.search) || ""
     const offset = limit * (page - 1)
     const sortBy = req.query.sortBy || "createdAt"
     const order = req.query.order || "DESC"
 
     const t = await sequelize.transaction();
 
-    try{
-    const totalRows = await Transaction_header.count({
-        where : {
-            [Op.or] : [
-                {
-                    BranchId : {[Op.like]: `%${search}%`}
-                },
-                {
-                    TransactionStatusId : {[Op.like]: `%${search}%`}
-                }
-            ]
-        }
-    },{transaction : t})
-    if(totalRows == 0) {
-        throw new Error('Fetching data failed')
-    }
-
-    const totalPage = Math.ceil(totalRows / limit)
-        const result = await Transaction_header.findAll({
-            where : {
-                [Op.or] : [
-                    {
-                        BranchId : {[Op.like]: `%${search}%`}
-                    },
-                    // {
-                    //     TransactionStatusId : {[Op.like]: `%${search}%`}
-                    // }
-                ]
+    try {
+      const totalRows = await Transaction_header.count({
+        where: {
+          [Op.or]: [
+            {
+              BranchId: { [Op.like]: `%${search}%` }
             },
-            include: [ {
-              model: Transaction_status,
-              attributes: ["name"],
-            }, {
-              model: Branch,
-              attributes: ["name"],
-            }, {
-              model: User,
-              attributes: ["email"],
-            }],
-            offset: offset,
-            limit: limit,
-            order: [
-                [sortBy, order]
-            ]
-        }, {transaction: t})
-
-        if(!result){
-            throw new Error('Fetching all transaction failed')
+            {
+              TransactionStatusId: { [Op.like]: `%${search}%` }
+            }
+          ]
         }
+      }, { transaction: t })
+      if (totalRows == 0) {
+        throw new Error('Fetching data failed')
+      }
 
-        res.status(201).json({
-            result : result,
-            page: page,
-            limit: limit,
-            totalRows: totalRows,
-            totalPage: totalPage,
-            order : order
-        })
-        await t.commit();
-} catch (err) {
-      return res.status(401).json({message : err.message})  
+      const totalPage = Math.ceil(totalRows / limit)
+      const result = await Transaction_header.findAll({
+        where: {
+          [Op.or]: [
+            {
+              BranchId: { [Op.like]: `%${search}%` }
+            },
+            // {
+            //     TransactionStatusId : {[Op.like]: `%${search}%`}
+            // }
+          ]
+        },
+        include: [{
+          model: Transaction_status,
+          attributes: ["name"],
+        }, {
+          model: Branch,
+          attributes: ["name"],
+        }, {
+          model: User,
+          attributes: ["email"],
+        }],
+        offset: offset,
+        limit: limit,
+        order: [
+          [sortBy, order]
+        ]
+      }, { transaction: t })
+
+      if (!result) {
+        throw new Error('Fetching all transaction failed')
+      }
+
+      res.status(201).json({
+        result: result,
+        page: page,
+        limit: limit,
+        totalRows: totalRows,
+        totalPage: totalPage,
+        order: order
+      })
+      await t.commit();
+    } catch (err) {
+      return res.status(401).json({ message: err.message })
     }
   },
-  getTransactionItem: async (req,res) => {
-    const {id} = req.params
+  getTransactionItem: async (req, res) => {
+    const { id } = req.params
 
     try {
 
-      const data = await Transaction_item.findAll({where: {TransactionHeaderId : id}, include: {model: Product, attributes: ["name", "weight", "price"]} })
-      
-      if(!data) throw new Error('Failed fetch transaction items')
+      const data = await Transaction_item.findAll({ where: { TransactionHeaderId: id }, include: { model: Product, attributes: ["name", "weight", "price"] } })
+
+      if (!data) throw new Error('Failed fetch transaction items')
 
       res.status(201).json({
-        result : data
+        result: data
       })
 
     } catch (err) {
-      return res.status(401).json({message: err.message})
+      return res.status(401).json({ message: err.message })
     }
   },
-  getTransactionByBranch : async (req,res) => {
+  getTransactionByBranch: async (req, res) => {
     const page = parseInt(req.query.page) || 1
     const limit = parseInt(req.query.limit) || 5
-    const search = parseInt(req.query.search) || "" 
+    const search = parseInt(req.query.search) || ""
     const offset = limit * (page - 1)
     const sortBy = req.query.sortBy || "createdAt"
     const order = req.query.order || "DESC"
     const id = req.params.id
     const t = await sequelize.transaction();
 
-    try{
-    const totalRows = await Transaction_header.count({
-        where : {
-            [Op.and] : [
-              {
-                BranchId : id
-              },
-                {
-                    TransactionStatusId : {[Op.like]: `%${search}%`}
-                },
-            ]
-        }
-    },{transaction : t})
-    if(totalRows == 0) {
-        throw new Error('Fetching data failed')
-    }
-
-    const totalPage = Math.ceil(totalRows / limit)
-        const result = await Transaction_header.findAll({
-            where : {
-                [Op.and] : [
-                  {
-                    BranchId : id
-                  },
-                    {
-                        TransactionStatusId : {[Op.like]: `%${search}%`}
-                    },
-                ]
+    try {
+      const totalRows = await Transaction_header.count({
+        where: {
+          [Op.and]: [
+            {
+              BranchId: id
             },
-            include: [ {
-              model: Transaction_status,
-              attributes: ["name"],
-            }, {
-              model: Branch,
-              attributes: ["name"],
-            }, {
-              model: User,
-              attributes: ["email"],
-            }],
-            offset: offset,
-            limit: limit,
-            order: [
-                [sortBy, order]
-            ]
-        }, {transaction: t})
-
-        if(!result){
-            throw new Error('Fetching all transaction failed')
+            {
+              TransactionStatusId: { [Op.like]: `%${search}%` }
+            },
+          ]
         }
+      }, { transaction: t })
+      if (totalRows == 0) {
+        throw new Error('Fetching data failed')
+      }
 
-        res.status(201).json({
-            result : result,
-            page: page,
-            limit: limit,
-            totalRows: totalRows,
-            totalPage: totalPage,
-            order : order
-        })
-        await t.commit();
-} catch (err) {
-      return res.status(401).json({message : err.message})  
+      const totalPage = Math.ceil(totalRows / limit)
+      const result = await Transaction_header.findAll({
+        where: {
+          [Op.and]: [
+            {
+              BranchId: id
+            },
+            {
+              TransactionStatusId: { [Op.like]: `%${search}%` }
+            },
+          ]
+        },
+        include: [{
+          model: Transaction_status,
+          attributes: ["name"],
+        }, {
+          model: Branch,
+          attributes: ["name"],
+        }, {
+          model: User,
+          attributes: ["email"],
+        }],
+        offset: offset,
+        limit: limit,
+        order: [
+          [sortBy, order]
+        ]
+      }, { transaction: t })
+
+      if (!result) {
+        throw new Error('Fetching all transaction failed')
+      }
+
+      res.status(201).json({
+        result: result,
+        page: page,
+        limit: limit,
+        totalRows: totalRows,
+        totalPage: totalPage,
+        order: order
+      })
+      await t.commit();
+    } catch (err) {
+      return res.status(401).json({ message: err.message })
     }
   },
-  getTransactionStatus : async (req,res) => {
+  getTransactionStatus: async (req, res) => {
 
-    try{
+    try {
       const result = await Transaction_status.findAll()
 
-      if(!result) throw new Error('Failed fetching Transaction Status')
+      if (!result) throw new Error('Failed fetching Transaction Status')
 
-      res.status(201).json({result : result})
+      res.status(201).json({ result: result })
     } catch (err) {
-      return res.status(401).json({message : err.message})
+      return res.status(401).json({ message: err.message })
     }
 
   },
@@ -536,13 +536,13 @@ const transactionController = {
         order: order,
       });
 
-      res.status(200).json({
+      return res.status(200).json({
         message: "Sales data by product",
         result: data,
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
+      return res.status(400).json({
         message: err,
       });
     }
@@ -599,13 +599,13 @@ const transactionController = {
         order: order,
       });
 
-      res.status(200).json({
+      return res.status(200).json({
         message: "Sales data by product for branch " + branchId,
         result: data,
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
+      return res.status(400).json({
         message: err,
       });
     }
@@ -655,13 +655,13 @@ const transactionController = {
         order: order,
       });
 
-      res.status(200).json({
+      return res.status(200).json({
         message: "Transaction data",
         result: data,
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
+      return res.status(400).json({
         message: err,
       });
     }
@@ -715,13 +715,13 @@ const transactionController = {
         order: order,
       });
 
-      res.status(200).json({
+      return res.status(200).json({
         message: "Transaction data",
         result: data,
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
+      return res.status(400).json({
         message: err,
       });
     }
@@ -750,13 +750,13 @@ const transactionController = {
         order: [["totalGrandPrice", grandTotal]],
       });
 
-      res.status(200).json({
+      return res.status(200).json({
         message: "Total Grand Price data for each user",
         result: data,
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
+      return res.status(400).json({
         message: err,
       });
     }
@@ -789,18 +789,19 @@ const transactionController = {
         order: [["totalGrandPrice", grandTotal]],
       });
 
-      res.status(200).json({
+      return res.status(200).json({
         message: "Total Grand Price data for each user in a branch",
         result: data,
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
+      return res.status(400).json({
         message: err,
       });
     }
   },
   adminCancelTransaction: async (req, res) => {
+    const transaction = await sequelize.transaction();
     try {
       const transactionHeaderId = req.params.id;
 
@@ -811,6 +812,7 @@ const transactionController = {
         include: {
           model: Product,
         },
+        transaction: transaction,
       });
 
       await Promise.all(
@@ -820,7 +822,7 @@ const transactionController = {
 
           await Product.update(
             { stock: product.stock + qtyToAdd },
-            { where: { id: product.id } }
+            { where: { id: product.id }, transaction: transaction }
           );
         })
       );
@@ -833,16 +835,20 @@ const transactionController = {
           where: {
             id: transactionHeaderId,
           },
+          transaction: transaction,
         }
       );
 
-      res.status(200).json({
+      await transaction.commit();
+
+      return res.status(200).json({
         message: "Transaction canceled successfully.",
         result: updatedTransactionHeader,
       });
     } catch (err) {
+      await transaction.rollback();
       console.log(err);
-      res.status(400).json({
+      return res.status(400).json({
         message: err,
       });
     }
@@ -861,13 +867,13 @@ const transactionController = {
         }
       );
 
-      res.status(200).json({
+      return res.status(200).json({
         message: "Transaction Delivered.",
         result: updatedTransactionHeader,
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
+      return res.status(400).json({
         message: err,
       });
     }

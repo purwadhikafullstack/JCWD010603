@@ -177,29 +177,27 @@ const cartController = {
     const { id } = req.params;
     const { qty } = req.body;
 
+    const t = await sequelize.transaction();
     try {
       const cartItem = await Cart.findOne({ where: { id } });
 
       if (!cartItem) {
-        return res.status(404).json({ message: "Cart item not found" });
+        throw new Error("Cart item not found");
       }
 
       const checkProduct = await Product.findByPk(cartItem.ProductId);
 
       if (!checkProduct) {
-        return res.status(401).json({
-          message: `Product id ${cartItem.ProductId} does not exist`,
-        });
+        throw new Error(`Product id ${cartItem.ProductId} does not exist`);
       }
 
       const availableStock = checkProduct.stock - qty;
       if (availableStock < 0) {
-        return res.status(401).json({
-          message: `Stock is not enough. Available stock is ${checkProduct.stock}.`,
-        });
+        throw new Error(`Stock is not enough. Available stock is ${checkProduct.stock}.`);
       }
 
-      await cartItem.update({ qty });
+      await cartItem.update({ qty }, { transaction: t });
+      await t.commit();
 
       return res.status(200).json({
         message: "Cart item updated successfully",
@@ -207,8 +205,9 @@ const cartController = {
       });
     } catch (err) {
       console.log(err);
+      await t.rollback();
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -221,9 +220,11 @@ const cartController = {
       });
     }
 
+    const t = await sequelize.transaction();
     try {
-      const checkProduct = await Product.findByPk(ProductId);
+      const checkProduct = await Product.findByPk(ProductId, { transaction: t });
       if (!checkProduct) {
+        await t.rollback();
         return res.status(401).json({
           message: `Product id ${ProductId} does not exist`,
         });
@@ -239,11 +240,13 @@ const cartController = {
           model: Product,
           attributes: ["BranchId", "stock"],
         },
+        transaction: t,
       }); // get all cart items of the user
 
       if (cartItems.length > 0) {
         const firstCartItemBranchId = cartItems[0].Product.BranchId;
         if (branchId !== firstCartItemBranchId) {
+          await t.rollback();
           return res.status(401).json({
             message:
               "You cannot add products from different branch. Please remove all items in your cart before changing location.",
@@ -253,12 +256,14 @@ const cartController = {
 
       const availableStock = checkProduct.stock - qty;
       if (availableStock < 0) {
+        await t.rollback();
         return res.status(401).json({
           message: `Stock is not enough. Available stock is ${checkProduct.stock}.`,
         });
       }
 
       if (availableStock === 0) {
+        await t.rollback();
         return res.status(401).json({
           message: `The product is out of stock.`,
         });
@@ -272,23 +277,27 @@ const cartController = {
         defaults: {
           qty: qty,
         },
+        transaction: t,
       });
 
       if (!created) {
         cartItem.qty = qty;
-        await cartItem.save();
+        await cartItem.save({ transaction: t });
       }
 
+      await t.commit();
       return res.status(200).json({
         message: "Cart item created/updated",
         result: cartItem,
       });
     } catch (err) {
+      await t.rollback();
       return res.status(400).json({
         message: err.message,
       });
     }
   },
+
 };
 
 module.exports = cartController;
