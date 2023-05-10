@@ -13,7 +13,7 @@ export default function CatsContainer() {
 
     //FETCH CATEGORY
     async function fetchCategory() {
-        await axiosInstance.get('/admin/categories').then((res) => {
+        await axiosInstance.get('api/admin/categories').then((res) => {
             setCategoryData([...res.data.result])
         })
     };

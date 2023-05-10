@@ -29,6 +29,9 @@ import Navbar from "../components/navbar"; //loggedin
 import { axiosInstance } from "../config/config";
 import { BiTrash, BiEdit, BiChevronRight, BiChevronLeft } from "react-icons/bi";
 import { Link as ReachLink } from "react-router-dom";
+import { ArrowBackIcon } from '@chakra-ui/icons';
+import { useNavigate } from "react-router-dom";
+
 export default function Cart() {
   const [cartData, setCartData] = useState([]);
   const [pages, setPages] = useState(1);
@@ -41,6 +44,11 @@ export default function Cart() {
   const [editInput, setEditInput] = useState(0);
   const cancelRef = React.useRef();
   const toast = useToast();
+  const navigate = useNavigate();
+
+  function handleBackClick() {
+    navigate(-1);
+  }
 
   // STYLE
   const deleteButtonStyle = {
@@ -199,6 +207,10 @@ export default function Cart() {
         {/* <Heading textAlign='center' color='#2C3639' my={5}>
                     Cart
                 </Heading> */}
+        <IconButton
+          aria-label="backButton" icon={<ArrowBackIcon boxSize='1.5em' _hover={{ boxSize: '1.6em' }} />}
+          w='30px' bg='none' _hover={{ bg: 'none', color: '#141617' }} onClick={handleBackClick}
+        />
         <Flex w="85%" m="0 auto">
           <Text my={3} fontWeight="bold" color="#2C3639">
             Cart
