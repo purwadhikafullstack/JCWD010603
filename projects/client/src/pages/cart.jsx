@@ -3,11 +3,12 @@ import {
   Button, Link, Center,
   AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody,
   AlertDialogFooter, FormControl, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper,
-  NumberDecrementStepper,
+  NumberDecrementStepper, useToast
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import React from "react";
-import Navbar from "../components/navbar";
+import NavBar from "../components/navbarhome"; //not loggedin
+import Navbar from "../components/navbar"; //loggedin
 import { axiosInstance } from "../config/config";
 import { BiTrash, BiEdit, BiChevronRight, BiChevronLeft } from "react-icons/bi";
 import { Link as ReachLink } from "react-router-dom";
@@ -21,7 +22,8 @@ export default function Cart() {
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [editDialog, setEditDialog] = useState(false);
   const [editInput, setEditInput] = useState(0);
-  const cancelRef = React.useRef()
+  const cancelRef = React.useRef();
+  const toast = useToast();
 
   // STYLE
   const deleteButtonStyle = {
@@ -90,7 +92,8 @@ export default function Cart() {
 
   // CART DATA
   async function fetchCartData() {
-    await axiosInstance.get(`/cart/getcart?page=${pages}`).then((res) => {
+    const userId = localStorage.getItem("userID");
+    await axiosInstance.get(`/cart/getcart/${userId}?page=${pages}`).then((res) => {
       setCartData(res.data.result);
       setNumOfPage(res.data.totalPages);
       setCartTotal(res.data.totalPrice);
@@ -104,7 +107,7 @@ export default function Cart() {
   function handleEditInput(value) {
     setEditInput(value)
   }
-  console.log("berapa input nomor = " + editInput);
+
   function editCart(id) {
     setEditId(id);
     setEditDialog(true);
@@ -116,12 +119,29 @@ export default function Cart() {
     const data = {
       qty: editInput
     }
-    await axiosInstance.patch(`/cart/editcart/${editId}`, data).then(() => {
+    try {
+      await axiosInstance.patch(`/cart/editcart/${editId}`, data);
       fetchCartData();
-    }).finally(() => {
+      toast({
+        title: 'Cart edited',
+        description: 'Your cart has been successfully edited.',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: 'Cart edit failed',
+        description: error.response.data.message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
       setEditDialog(false);
       setEditInput('');
-    })
+    }
   }
 
   // DELETE CART
@@ -135,16 +155,23 @@ export default function Cart() {
 
   async function confirmDelete() {
     await axiosInstance.delete(`/cart/deleteCart/${cartId}`).then(() => {
-      fetchCartData();
+      if (cartData.length > 1) {
+        fetchCartData();
+      } else {
+        setCartData([]);
+        setNumOfPage(1);
+        setCartTotal(0);
+      }
     }).finally(() => {
       setDeleteDialog(false);
     })
   }
-  console.log(`my cart data = ${cartData}`);
 
   return (
     <Flex direction="column">
-      <Navbar />
+      {
+        localStorage.getItem("userID") ? (<Navbar />) : (<NavBar />)
+      }
 
       <Flex w="430px" h="90vh" m="0 auto" direction="column" sx={scrollStyle}>
         {" "}
@@ -202,7 +229,7 @@ export default function Cart() {
                         overflow="hidden"
                       >
                         <Image
-                          src="https://images.unsplash.com/photo-1512372388054-a322888e67a6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80"
+                          src={val.Product.imgProduct}
                           objectFit="cover"
                           w="100%"
                           h="auto"
@@ -409,16 +436,20 @@ export default function Cart() {
           w="85%"
           h="40px"
           m="20px auto 0px"
-          bg="#2C3639"
+          bg={cartData.length > 0 ? "#2C3639" : "#BEBEBE"}
           color="white"
-          sx={confirmButtonStyle}
+          sx={cartData.length > 0 ? confirmButtonStyle : {}}
+          disabled={cartData.length === 0}
           p="0px"
+          cursor={cartData.length > 0 ? "pointer" : "context-menu"}
         >
-          <Link href="/new-order" w='100%' h='100%'>
-            <Center h='100%'>
-              Confirm & Buy
-            </Center>
-          </Link>
+          {cartData.length > 0 ? (
+            <Link href="/new-order" w="100%" h="100%" _hover={{ textStyle: 'none' }}>
+              <Center h="100%">Confirm & Buy</Center>
+            </Link>
+          ) : (
+            <Center h="100%">Confirm & Buy</Center>
+          )}
         </Button>
       </Flex>
     </Flex>

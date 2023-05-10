@@ -31,11 +31,17 @@ import {
   Text,
   Stack,
   useToast,
-  Modal, ModalOverlay, ModalHeader, ModalCloseButton, ModalBody, FormControl, ModalFooter, FormHelperText, ModalContent
+  Modal,
+  ModalOverlay,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  FormControl,
+  ModalFooter,
+  FormHelperText,
+  ModalContent,
 } from "@chakra-ui/react";
-import {
-  FaFolder
-} from "react-icons/fa";
+import { FaFolder } from "react-icons/fa";
 import { BiLeftArrowAlt, BiRightArrowAlt } from "react-icons/bi";
 import { AiOutlineSearch } from "react-icons/ai";
 import { MdOutlineDelete, MdBorderColor } from "react-icons/md";
@@ -46,25 +52,32 @@ import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-
 export default function ProductPage(props) {
   const data = props.data;
   const datacat = props.datacat;
   const fetchData = props.fetchData;
-  // console.log(data);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const firstField = React.useRef();
-  const secondField = React.useRef();
   const [search, setSearch] = useState("");
   const [product, setProduct] = useState([]);
   const [page, setPage] = useState(1);
-  
-  
-  const { isOpen : isOpenModal, onOpen : onOpenModal, onClose : onCloseModal} = useDisclosure();
-  const { isOpen : isOpenEditModal, onOpen : onOpenEditModal, onClose : onCloseEditModal} = useDisclosure();
-  const { isOpen : isOpenDelModal, onOpen : onOpenDelModal, onClose : onCloseDelModal} = useDisclosure();
-  const initialRef = React.useRef(null);
 
+  const {
+    isOpen: isOpenModal,
+    onOpen: onOpenModal,
+    onClose: onCloseModal,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenEditModal,
+    onOpen: onOpenEditModal,
+    onClose: onCloseEditModal,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenDelModal,
+    onOpen: onOpenDelModal,
+    onClose: onCloseDelModal,
+  } = useDisclosure();
+  const initialRef = React.useRef(null);
 
   const selectPageHandle = (selectPage) => {
     if (
@@ -97,16 +110,18 @@ export default function ProductPage(props) {
         });
   }
 
-
-
   // IAN
-  const [cat, setCat] = useState([{
-    'id' : 0,
-    'name': ""
-  }])
+  const [cat, setCat] = useState([
+    {
+      id: 0,
+      name: "",
+    },
+  ]);
 
   const [msg, setMsg] = useState("");
-  
+
+  const [userData, setUserData] = useState([{}]);
+
   const NotifyError = useToast({
     title: "Failed",
     description: msg,
@@ -124,215 +139,267 @@ export default function ProductPage(props) {
     position: "bottom-left",
   });
 
+  const handleFile = (e) => {
+    const uploaded = e.target.files[0];
 
-  const handleFile = (event) => {
-    const uploaded = event.target.files[0];
-    console.log(uploaded);
-    formikEdit.setFieldValue("imgProduct", uploaded)
+    formikEdit.setFieldValue("imgProduct", uploaded);
   };
 
-  const [editProd, setEditProd] = useState([{
-    'id' : 0,
-    'name': "",
-    'price': 0,
-    'stock': 0,
-    'weight': 0,
-    'CategoryId': 0,
-    'imgProduct': "",
-    'desc': "",
-  }])
+  const stockSubmit = (e) => {
+    formikEdit.setFieldValue("stock", e.target.value);
+    formik.setFieldValue("stock", e.target.value);
+    formikEdit.setFieldValue("status", 1);
+    formik.setFieldValue("status", 1);
+  };
+
+  const [editProd, setEditProd] = useState([
+    {
+      id: 0,
+      name: "",
+      price: 0,
+      stock: 0,
+      weight: 0,
+      CategoryId: 0,
+      imgProduct: "",
+      desc: "",
+      BranchId: 0,
+    },
+  ]);
 
   const deleteSubmit = async (id) => {
-      try {
-        await axiosInstance.delete(`/product/delete/${id}`)
-        setTimeout(()=> {
-          NotifySuccess()
-          fetchData()
-          onCloseDelModal()
-      }, 300)
-      } catch (err) {
-        console.log(err.response.data.message)
-        setMsg(err.response.data.message)
-        setTimeout(()=> {
-          NotifyError()
-          fetchData()
-          onCloseDelModal()
-        }, 300)
-      }
-  }
+    try {
+      await axiosInstance.delete(
+        `/product/delete/${id}?BranchId=${userData.BranchId}`
+      );
+      setTimeout(() => {
+        NotifySuccess();
+        fetchData();
+        onCloseDelModal();
+      }, 300);
+    } catch (err) {
+      setMsg(err.response.data.message);
+      setTimeout(() => {
+        NotifyError();
+        fetchData();
+        onCloseDelModal();
+      }, 300);
+    }
+  };
 
   const editSubmit = () => {
-    formikEdit.setFieldValue("id", editProd.id)
-    formikEdit.handleSubmit()
-  }
-  
+    formikEdit.setFieldValue("id", editProd.id);
+    formikEdit.handleSubmit();
+  };
+
   const editHandlerModal = async (id) => {
-    const response = await axiosInstance.get(`/product/detail-product/${id}`)
+    const response = await axiosInstance.get(`/product/detail-product/${id}`);
     // .then((res)=> {
     //   setEditProd(res.data.result)
     //   console.log(res.data.result.CategoryId);
-    // })    
-    const result = response.data.result
-    setEditProd(result)
-    
-    setTimeout(() =>{
-      console.log(editProd.CategoryId);
-      // console.log(editProd.CategoryId);
-      onOpenEditModal()
-    }, 100)
-  }
+    // })
+    const result = response.data.result;
+    setEditProd(result);
+
+    setTimeout(() => {
+      onOpenEditModal();
+    }, 100);
+  };
 
   const deleteHandlerModal = async (id) => {
-    const response = await axiosInstance.get(`/product/detail-product/${id}`)
-    const result = response.data.result
+    const response = await axiosInstance.get(`/product/detail-product/${id}`);
+    const result = response.data.result;
     // console.log(result);
-    setEditProd(result)
+    setEditProd(result);
 
-    console.log(result);
-    onOpenDelModal()
-  }
+    // console.log(result);
+    onOpenDelModal();
+  };
 
   const fetchCategory = async () => {
-    const response = await axiosInstance.get("/admin/categories")
-    const result = response.data.result
-    // console.log(result)
-    setCat(result)
-    
-  }
+    const response = await axiosInstance.get("/admin/categories");
+    const result = response.data.result;
+    setCat(result);
+  };
   useEffect(() => {
-    fetchCategory()
-  },[])
+    fetchCategory();
+    setUserData(JSON.parse(localStorage.getItem("data")));
+  }, []);
 
+  const submitData = () => {
+    formik.setFieldValue("BranchId", userData?.BranchId ?? 0);
+    formik.handleSubmit();
+  };
+  // console.log(userData?.BranchId);
+  // console.log(JSON.parse(localStorage.getItem("data")));
   const formik = useFormik({
-      initialValues : {   
-          name : "",
-          price : 0,
-          stock : 0,
-          weight : 0,
-          desc : "",
-          imgProduct : "",
-          category : 0,
-      } ,
-      validationSchema : Yup.object().shape({
-          name: Yup.string().required("Product name must be filled"),
-          price: Yup.number("Price must be a number").nullable(),
-          imgProduct: Yup.mixed()
-          .nullable()
-          .required("Product image must be a filled")
-          .test(
-            "type",
-            "Invalid file format selection",
-            (e) => {
-            return e && (e.type === "image/jpg" || e.type === "image/jpeg" || e.type === "image/png" || e.type === "image/gif")}
-          ).test(
-            "size",
-            "File size is too big",
-            (e) => {return e && e.size <= 1000 * 1000} // 1MB
-          )
-         
-    
-      }),
-      onSubmit:  async (values) => {
-          try{
-            const {name, price, stock, weight, desc, imgProduct, category} = values
-            const formData = new FormData()
+    initialValues: {
+      name: "",
+      price: 0,
+      stock: 0,
+      weight: 0,
+      desc: "",
+      imgProduct: "",
+      category: 0,
+      status: 0,
+      BranchId: 0,
+    },
+    validationSchema: Yup.object().shape({
+      name: Yup.string().required("Product name must be filled"),
+      category: Yup.number().required("Category must be choosed"),
+      price: Yup.number("Price must be a number").nullable(),
+      stock: Yup.number("Stock must be a number"),
+      imgProduct: Yup.mixed()
+        .nullable()
+        .required("Product image must be a filled")
+        .test("type", "Invalid file format selection", (e) => {
+          return (
+            e &&
+            (e.type === "image/jpg" ||
+              e.type === "image/jpeg" ||
+              e.type === "image/png" ||
+              e.type === "image/gif")
+          );
+        })
+        .test(
+          "size",
+          "File size is too big",
+          (e) => {
+            return e && e.size <= 1000 * 1000;
+          } // 1MB
+        ),
+    }),
+    onSubmit: async (values) => {
+      try {
+        const {
+          name,
+          price,
+          stock,
+          weight,
+          desc,
+          imgProduct,
+          category,
+          BranchId,
+          status,
+        } = values;
+        const formData = new FormData();
 
-            formData.append("name", name)
-            formData.append("price", price)
-            formData.append("stock", stock)
-            formData.append("weight", weight)
-            formData.append("desc", desc)
-            formData.append("imgProduct", imgProduct)
-            formData.append("CategoryId", category)
+        formData.append("name", name);
+        formData.append("price", price);
+        formData.append("stock", stock);
+        formData.append("weight", weight);
+        formData.append("desc", desc);
+        formData.append("imgProduct", imgProduct);
+        formData.append("CategoryId", category);
+        formData.append("BranchId", BranchId);
 
-            await axiosInstance.post("/product/create", formData)
-              setTimeout(()=> {
-                NotifySuccess()
-                onCloseModal()
-               }, 300)
-          }catch(err){
-            console.log(err);
-            setMsg(err.response.data.message);
-            setTimeout(()=> {
-              NotifyError()
-              fetchData()
-              onCloseModal()
-             }, 300)
-          }
-          
+        await axiosInstance.post(`/product/create?status=${status}`, formData);
+        setTimeout(() => {
+          NotifySuccess();
+          fetchData();
+          onCloseModal();
+        }, 300);
+      } catch (err) {
+        console.log(err);
+        setMsg(err.response.data.message);
+        setTimeout(() => {
+          NotifyError();
+          fetchData();
+          onCloseModal();
+        }, 300);
       }
-    })
+    },
+  });
 
   const formikEdit = useFormik({
-      
-      initialValues : {
-          id : editProd?.id ?? "", 
-          name : editProd?.name ?? "",
-          price : editProd?.price ?? 0,
-          stock : editProd?.stock ?? 0,
-          weight :editProd?.weight ?? 0,
-          category : editProd?.CategoryId ?? 0,
-          imgProduct : editProd?.imgProduct ?? "",
-          desc : editProd?.desc ?? "",
-      } ,
-      enableReinitialize : true,
-      validationSchema : Yup.object().shape({
-          imgProduct: Yup.mixed()
-          .test(
-            "type",
-            "Invalid file format selection",
-            (e) => {
-            return !e || (e.type === "image/jpg" || e.type === "image/jpeg" || e.type === "image/png" || e.type === "image/gif")}
-          ).test(
-            "size",
-            "File size is too big",
-            (e) => {return !e || e.size <= 1000 * 1000} // 1MB
-          )
-      }),
-      onSubmit:  async (values)=> {
-        console.log(values);
-        try{
-          const {id, imgProduct, name, price, stock, weight, category, desc} = values
-          
-          const formData = new FormData()
-          formData.append("id", id)
-          formData.append("imgProduct", imgProduct)
-          formData.append("name", name)
-          formData.append("price", price)
-          formData.append("stock", stock)
-          formData.append("weight", weight)
-          formData.append("CategoryId", category)
-          formData.append("desc", desc)
-          
-          // console.log(formData);
-            await axiosInstance.patch(`/product/edit/${id}`, formData)
-            setTimeout(()=> {
-              NotifySuccess()
-              fetchData()
-              onCloseEditModal()
-             }, 300)
-          }catch(err){
-            console.log(err);
-            setMsg(err.response.data.message);
-            setTimeout(()=> {
-              NotifyError()
-              fetchData()
-              onCloseEditModal()
-             }, 300)
-          }
-          
+    initialValues: {
+      id: editProd?.id ?? "",
+      name: editProd?.name ?? "",
+      price: editProd?.price ?? 0,
+      stock: editProd?.stock ?? 0,
+      weight: editProd?.weight ?? 0,
+      category: editProd?.CategoryId ?? 0,
+      imgProduct: editProd?.imgProduct ?? "",
+      desc: editProd?.desc ?? "",
+      BranchId: editProd?.BranchId ?? "",
+    },
+    enableReinitialize: true,
+    validationSchema: Yup.object().shape({
+      imgProduct: Yup.mixed()
+        .test("type", "Invalid file format selection", (e) => {
+          return (
+            !e ||
+            e ||
+            e.type === "image/jpg" ||
+            e.type === "image/jpeg" ||
+            e.type === "image/png" ||
+            e.type === "image/gif"
+          );
+        })
+        .test(
+          "size",
+          "File size is too big",
+          (e) => {
+            return !e || e || e.size <= 1000 * 1000;
+          } // 1MB
+        ),
+    }),
+    onSubmit: async (values) => {
+      const {
+        id,
+        imgProduct,
+        name,
+        price,
+        stock,
+        weight,
+        category,
+        desc,
+        status,
+        BranchId,
+      } = values;
+
+      const formData = new FormData();
+      formData.append("id", id);
+      formData.append("imgProduct", imgProduct);
+      formData.append("name", name);
+      formData.append("price", price);
+      formData.append("stock", stock);
+      formData.append("weight", weight);
+      formData.append("CategoryId", category);
+      formData.append("desc", desc);
+      formData.append("BranchId", BranchId);
+
+      // console.log(formData);
+      try {
+        await axiosInstance.patch(
+          `/product/edit/${id}?status=${status}`,
+          formData
+        );
+        setTimeout(() => {
+          NotifySuccess();
+          fetchData();
+          onCloseEditModal();
+        }, 300);
+      } catch (err) {
+        console.log(err);
+        setMsg(err.response.data.message);
+        setTimeout(() => {
+          NotifyError();
+          fetchData();
+          onCloseEditModal();
+        }, 300);
       }
-    })
+    },
+  });
   return (
     <>
       <Flex
         zIndex={40}
-        w="800px"
+        w={["200px", "400px", "600px", "800px"]}
         gap={2}
         paddingTop="20px"
         paddingBottom={"20px"}
         justifyContent="start"
-        fontFamily={"Roboto"}
+        // fontFamily={"Roboto"}
         flexWrap="wrap"
         flexDir={"column"}
         overflowX={"auto"}
@@ -527,7 +594,11 @@ export default function ProductPage(props) {
                 </DrawerFooter>
               </DrawerContent>
             </Drawer>
-            <Button leftIcon={<BsPlusCircleFill />} colorScheme="blue" onClick={onOpenModal}>
+            <Button
+              leftIcon={<BsPlusCircleFill />}
+              colorScheme="blue"
+              onClick={onOpenModal}
+            >
               Add Product
             </Button>
           </InputGroup>
@@ -552,21 +623,31 @@ export default function ProductPage(props) {
           h="full"
         >
           {data.slice(page * 6 - 6, page * 6)?.map((product, index) => {
-            {/* console.log(product.imgProduct) */}
             return (
               <>
-                <Box minW="246px" h="300px">
-                  <Flex justifyContent="left">
+                <Center
+                  minW={["100px", "150px", "200px", "250px"]}
+                  h={["100px", "150px", "200px", "250px"]}
+                  border="2px solid #E2E8F0"
+                  borderRadius={"5%"}
+                  boxShadow="rgba(0,0,0,0.56) 4px 0px 19px -2px"
+                >
+                  <Flex justifyContent="center">
                     <Link to={`/`}>
-                    <Box roundedTop="lg" w="190px" h="190px">
-                      <Image
-                        src={product?.imgProduct}
-                        alt={`Picture of ${product?.name}`}
-                        w="inherit"                        
-                        h="inherit"                        
-                        roundedTop={"inherit"}                        
-                        zIndex="0"
-                      />
+                      <Box
+                        roundedTop="lg"
+                        w={["50px", "100px", "150px", "190px"]}
+                        h={["50px", "100px", "150px", "190px"]}
+                        px={2}
+                      >
+                        <Image
+                          src={product?.imgProduct}
+                          alt={`Picture of ${product?.name}`}
+                          w="inherit"
+                          h="inherit"
+                          roundedTop={"inherit"}
+                          zIndex="0"
+                        />
                       </Box>
                     </Link>
                   </Flex>
@@ -575,34 +656,70 @@ export default function ProductPage(props) {
                     justifyContent="space-between"
                     alignContent="center"
                     flexDir={"column"}
-                    w="194px"
+                    w="200px"
+                    h="175px"
                   >
-                    <Box
-                      fontSize="14px"
-                      fontWeight="semibold"
-                      as="h4"
-                      lineHeight="tight"
-                    >
-                      {product?.category}
-                    </Box>
-                    <Box fontSize="16px" fontWeight={"Bold"} as="h4" lineHeight="tight">
-                      {product?.name}
-                    </Box>
+                    <Flex h="75px" flexDir={"column"}>
+                      <Box
+                        fontSize="14px"
+                        fontWeight="semibold"
+                        as="h4"
+                        lineHeight="tight"
+                      >
+                        {product?.category}
+                      </Box>
+                      <Box
+                        fontSize="16px"
+                        fontWeight={"Bold"}
+                        as="h4"
+                        lineHeight="tight"
+                      >
+                        {product?.name}
+                      </Box>
 
-                    <Box fontSize="14px" as="h4">
-                      <Text>
-                        {" "}
-                        Harga : Rp. {product?.price.toLocaleString()}
-                      </Text>
-                    </Box>
-                    <Stack w={"inherit"} borderRadius={"50%"} marginY={"5px"} height={"2px"} bgColor={`rgb(111,111,111,0.1)`} />
-                    <Flex marginTop={"3px"} paddingX={"35px"}>
-                      <Button onClick={()=> {editHandlerModal(product?.id)}} colorScheme="yellow" h={"25px"} fontSize={"14px"}><MdBorderColor color="white" size={15}/></Button>
-                      <Spacer/>
-                      <Button onClick={()=> {deleteHandlerModal(product?.id)}} colorScheme="red" h={"25px"} fontSize={"14px"}><MdOutlineDelete size={18}/></Button>
-                      </Flex>
+                      <Box fontSize="14px" as="h4">
+                        <Text>
+                          {" "}
+                          Harga : Rp. {product?.price.toLocaleString()}
+                        </Text>
+                      </Box>
+                      <Stack
+                        w={"inherit"}
+                        borderRadius={"50%"}
+                        marginY={"5px"}
+                        height={"2px"}
+                        bgColor={`rgb(111,111,111,0.1)`}
+                      />
+                    </Flex>
+                    <Center marginTop={"3px"} paddingX={"35px"} gap={3}>
+                      <Button
+                        onClick={() => {
+                          editHandlerModal(product?.id);
+                        }}
+                        colorScheme="yellow"
+                        h={"50px"}
+                        w={"50px"}
+                        borderRadius={"100%"}
+                        fontSize={"14px"}
+                      >
+                        <MdBorderColor color="white" size={15} />
+                      </Button>
+                      <Spacer />
+                      <Button
+                        onClick={() => {
+                          deleteHandlerModal(product?.id);
+                        }}
+                        colorScheme="red"
+                        h={"50px"}
+                        w={"50px"}
+                        borderRadius={"100%"}
+                        fontSize={"14px"}
+                      >
+                        <MdOutlineDelete size={18} />
+                      </Button>
+                    </Center>
                   </Flex>
-                </Box>
+                </Center>
               </>
             );
           })}
@@ -676,65 +793,132 @@ export default function ProductPage(props) {
       </Flex>
 
       <Modal
-          initialFocusRef={initialRef}
-          isOpen={isOpenEditModal}
-          onClose={onCloseEditModal}
-        >
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Edit Product</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody pb={6}>
-            <Input type="hidden" name="id" defaultValue={editProd?.id} onChange={(e)=> formikEdit.setFieldValue("id", e.target.value )} />
-              <FormControl id="name">
-                <FormLabel>Product Name</FormLabel>
-                <Input placeholder="Name" type="text" name="name" defaultValue={editProd?.name} onChange={(e)=> formikEdit.setFieldValue("name", e.target.value )} />
-                <FormHelperText  w={"inherit"} marginTop={"5px"} color={"red.500"} fontSize={"9px"} >
-                    {formikEdit.errors.name}
-                </FormHelperText>
-              </FormControl>
-              <FormControl id="price">
-                <FormLabel>Product Price</FormLabel>
-                <Input placeholder="Price" type="text" name="price" defaultValue={editProd?.price} onChange={(e)=> formikEdit.setFieldValue("price", e.target.value )} />
-                <FormHelperText  w={"inherit"} marginTop={"5px"} color={"red.500"} fontSize={"9px"} >
-                    {formikEdit.errors.price}
-                </FormHelperText>
-              </FormControl>
-              <FormControl id="weight">
-                <FormLabel>Product Weight</FormLabel>
-                <Input placeholder="In grams" type="text" name="weight" defaultValue={editProd?.weight} onChange={(e)=> formikEdit.setFieldValue("weight", e.target.value )} />
-                <FormHelperText  w={"inherit"} marginTop={"5px"} color={"red.500"} fontSize={"9px"} >
-                    {formikEdit.errors.weight}
-                </FormHelperText>
-              </FormControl>
-              <FormControl id="stock">
-                <FormLabel>Product Stock</FormLabel>
-                <Input placeholder="Stock" type="text" name="stock" defaultValue={editProd?.stock} onChange={(e)=> formikEdit.setFieldValue("stock", e.target.value )} />
-                <FormHelperText  w={"inherit"} marginTop={"5px"} color={"red.500"} fontSize={"9px"} >
-                    {formikEdit.errors.stock}
-                </FormHelperText>
-              </FormControl>
-              <FormControl id="category">
-                <FormLabel>Product Category</FormLabel>
-                <Select  name='category' placeholder='Select' defaultValue={editProd?.CategoryId} onChange={(e)=> formikEdit.setFieldValue("category", e.target.value )}>
-                {
-                      cat.map((c)=> {
-                        return (
-                        <option key = {c.id} value= {c.id}>{c.name}</option>
-                        )
-                      })
-                    }
-                </Select>
-                <FormHelperText  w={"inherit"} marginTop={"5px"} color={"red.500"} fontSize={"9px"} >
-                    {formikEdit.errors.category}
-                </FormHelperText>
-              </FormControl>
-              <FormControl id="address">
+        initialFocusRef={initialRef}
+        isOpen={isOpenEditModal}
+        onClose={onCloseEditModal}
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Edit Product</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <Input
+              type="hidden"
+              name="id"
+              defaultValue={editProd?.id}
+              onChange={(e) => formikEdit.setFieldValue("id", e.target.value)}
+            />
+            <FormControl id="name">
+              <FormLabel>Product Name</FormLabel>
+              <Input
+                placeholder="Name"
+                type="text"
+                name="name"
+                defaultValue={editProd?.name}
+                onChange={(e) =>
+                  formikEdit.setFieldValue("name", e.target.value)
+                }
+              />
+              <FormHelperText
+                w={"inherit"}
+                marginTop={"5px"}
+                color={"red.500"}
+                fontSize={"9px"}
+              >
+                {formikEdit.errors.name}
+              </FormHelperText>
+            </FormControl>
+            <FormControl id="price">
+              <FormLabel>Product Price</FormLabel>
+              <Input
+                placeholder="Price"
+                type="text"
+                name="price"
+                defaultValue={editProd?.price}
+                onChange={(e) =>
+                  formikEdit.setFieldValue("price", e.target.value)
+                }
+              />
+              <FormHelperText
+                w={"inherit"}
+                marginTop={"5px"}
+                color={"red.500"}
+                fontSize={"9px"}
+              >
+                {formikEdit.errors.price}
+              </FormHelperText>
+            </FormControl>
+            <FormControl id="weight">
+              <FormLabel>Product Weight</FormLabel>
+              <Input
+                placeholder="In grams"
+                type="text"
+                name="weight"
+                defaultValue={editProd?.weight}
+                onChange={(e) =>
+                  formikEdit.setFieldValue("weight", e.target.value)
+                }
+              />
+              <FormHelperText
+                w={"inherit"}
+                marginTop={"5px"}
+                color={"red.500"}
+                fontSize={"9px"}
+              >
+                {formikEdit.errors.weight}
+              </FormHelperText>
+            </FormControl>
+            <FormControl id="stock">
+              <FormLabel>Product Stock</FormLabel>
+              <Input
+                placeholder="Stock"
+                type="text"
+                name="stock"
+                defaultValue={editProd?.stock}
+                onChange={(e) => stockSubmit(e)}
+              />
+              <FormHelperText
+                w={"inherit"}
+                marginTop={"5px"}
+                color={"red.500"}
+                fontSize={"9px"}
+              >
+                {formikEdit.errors.stock}
+              </FormHelperText>
+            </FormControl>
+            <FormControl id="category">
+              <FormLabel>Product Category</FormLabel>
+              <Select
+                name="category"
+                placeholder="Select"
+                defaultValue={editProd?.CategoryId}
+                onChange={(e) =>
+                  formikEdit.setFieldValue("category", e.target.value)
+                }
+              >
+                {cat.map((c) => {
+                  return (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  );
+                })}
+              </Select>
+              <FormHelperText
+                w={"inherit"}
+                marginTop={"5px"}
+                color={"red.500"}
+                fontSize={"9px"}
+              >
+                {formikEdit.errors.category}
+              </FormHelperText>
+            </FormControl>
+            <FormControl id="description">
               <FormLabel>Product Description</FormLabel>
               <Textarea
                 placeholder="Description"
                 type="text"
-                name="address"
+                name="description"
                 bgColor="white"
                 maxH={"150px"}
                 validationSchema
@@ -752,88 +936,146 @@ export default function ProductPage(props) {
                 {formikEdit.errors.desc}
               </FormHelperText>
             </FormControl>
-              <FormControl id="imgProduct">
-                <FormLabel>Product Image</FormLabel>
-                <Input paddingTop="4px" type="file" name="imgProduct" onChange={handleFile} />
-                <FormHelperText  w={"inherit"} marginTop={"5px"} color={"red.500"} fontSize={"9px"} >
-                    {formikEdit.errors.imgProduct}
-                </FormHelperText>
-              </FormControl>
-            </ModalBody>
-            <ModalFooter>
-              <Button colorScheme='blue' mr={3} onClick={editSubmit}>
-                Submit
-              </Button>
-              <Button onClick={onCloseEditModal}>Cancel</Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+            <FormControl id="imgProduct">
+              <FormLabel>Product Image</FormLabel>
+              <Input
+                paddingTop="4px"
+                type="file"
+                name="imgProduct"
+                onChange={handleFile}
+              />
+              <FormHelperText
+                w={"inherit"}
+                marginTop={"5px"}
+                color={"red.500"}
+                fontSize={"9px"}
+              >
+                {formikEdit.errors.imgProduct}
+              </FormHelperText>
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={editSubmit}>
+              Submit
+            </Button>
+            <Button onClick={onCloseEditModal}>Cancel</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
 
       <Modal
-          initialFocusRef={initialRef}
-          isOpen={isOpenModal}
-          onClose={onCloseModal}
-        >
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Add New Products</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody pb={6}>
-  
-              <FormControl id="name">
-                <FormLabel>Product Name</FormLabel>
-                <Input placeholder="Name" type="text" name="name" onChange={(e)=> formik.setFieldValue("name", e.target.value )} />
-                <FormHelperText  w={"inherit"} marginTop={"5px"} color={"red.500"} fontSize={"9px"} >
-                    {formik.errors.name}
-                </FormHelperText>
-              </FormControl>
-              <FormControl id="price">
-                <FormLabel>Product Price</FormLabel>
-                <Input placeholder="Price" type="text" name="price" onChange={(e)=> formik.setFieldValue("price", e.target.value )} />
-                <FormHelperText  w={"inherit"} marginTop={"5px"} color={"red.500"} fontSize={"9px"} >
-                    {formik.errors.price}
-                </FormHelperText>
-              </FormControl>
-              <FormControl id="weight">
-                <FormLabel>Product Weight</FormLabel>
-                <Input placeholder="In grams" type="text" name="weight" onChange={(e)=> formik.setFieldValue("weight", e.target.value )} />
-                <FormHelperText  w={"inherit"} marginTop={"5px"} color={"red.500"} fontSize={"9px"} >
-                    {formik.errors.weight}
-                </FormHelperText>
-              </FormControl>
-              <FormControl id="stock">
-                <FormLabel>Product Stock</FormLabel>
-                <Input placeholder="Stock" type="text" name="stock" onChange={(e)=> formik.setFieldValue("stock", e.target.value )} />
-                <FormHelperText  w={"inherit"} marginTop={"5px"} color={"red.500"} fontSize={"9px"} >
-                    {formik.errors.stock}
-                </FormHelperText>
-              </FormControl>
-              <FormControl id="category">
-                <FormLabel>Product Category</FormLabel>
-                <Select  name='category' placeholder='Select' onChange={(e)=> formik.setFieldValue("category", e.target.value )}>
-                {
-                      cat.map((c)=> {
-                        return (
-                        <option key = {c.id} value= {c.id}>{c.name}</option>
-                        )
-                      })
-                    }
-                </Select>
-                <FormHelperText  w={"inherit"} marginTop={"5px"} color={"red.500"} fontSize={"9px"} >
-                    {formik.errors.category}
-                </FormHelperText>
-              </FormControl>
-              <FormControl id="address">
+        initialFocusRef={initialRef}
+        isOpen={isOpenModal}
+        onClose={onCloseModal}
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Add New Products</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <FormControl id="name">
+              <FormLabel>Product Name</FormLabel>
+              <Input
+                placeholder="Name"
+                type="text"
+                name="name"
+                onChange={(e) => formik.setFieldValue("name", e.target.value)}
+              />
+              <FormHelperText
+                w={"inherit"}
+                marginTop={"5px"}
+                color={"red.500"}
+                fontSize={"9px"}
+              >
+                {formik.errors.name}
+              </FormHelperText>
+            </FormControl>
+            <FormControl id="price">
+              <FormLabel>Product Price</FormLabel>
+              <Input
+                placeholder="Price"
+                type="text"
+                name="price"
+                onChange={(e) => formik.setFieldValue("price", e.target.value)}
+              />
+              <FormHelperText
+                w={"inherit"}
+                marginTop={"5px"}
+                color={"red.500"}
+                fontSize={"9px"}
+              >
+                {formik.errors.price}
+              </FormHelperText>
+            </FormControl>
+            <FormControl id="weight">
+              <FormLabel>Product Weight</FormLabel>
+              <Input
+                placeholder="In grams"
+                type="text"
+                name="weight"
+                onChange={(e) => formik.setFieldValue("weight", e.target.value)}
+              />
+              <FormHelperText
+                w={"inherit"}
+                marginTop={"5px"}
+                color={"red.500"}
+                fontSize={"9px"}
+              >
+                {formik.errors.weight}
+              </FormHelperText>
+            </FormControl>
+            <FormControl id="stock">
+              <FormLabel>Product Stock</FormLabel>
+              <Input
+                placeholder="Stock"
+                type="text"
+                name="stock"
+                onChange={(e) => stockSubmit(e)}
+              />
+              <FormHelperText
+                w={"inherit"}
+                marginTop={"5px"}
+                color={"red.500"}
+                fontSize={"9px"}
+              >
+                {formik.errors.stock}
+              </FormHelperText>
+            </FormControl>
+            <FormControl id="category">
+              <FormLabel>Product Category</FormLabel>
+              <Select
+                name="category"
+                placeholder="Select"
+                onChange={(e) =>
+                  formik.setFieldValue("category", e.target.value)
+                }
+              >
+                {cat.map((c) => {
+                  return (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  );
+                })}
+              </Select>
+              <FormHelperText
+                w={"inherit"}
+                marginTop={"5px"}
+                color={"red.500"}
+                fontSize={"9px"}
+              >
+                {formik.errors.category}
+              </FormHelperText>
+            </FormControl>
+            <FormControl id="description">
               <FormLabel>Product Description</FormLabel>
               <Textarea
                 placeholder="Description"
                 type="text"
-                name="address"
+                name="description"
                 bgColor="white"
                 maxH={"150px"}
-                onChange={(e) =>
-                  formik.setFieldValue("desc", e.target.value)
-                }
+                onChange={(e) => formik.setFieldValue("desc", e.target.value)}
               />
               <FormHelperText
                 w={"inherit"}
@@ -844,27 +1086,39 @@ export default function ProductPage(props) {
                 {formik.errors.desc}
               </FormHelperText>
             </FormControl>
-              <FormControl id="imgProduct">
-                <FormLabel>Product Image</FormLabel>
-                <Input paddingTop="4px" type="file" name="imgProduct" onChange={(e)=>formik.setFieldValue("imgProduct", e.target.files[0])} />
-                <FormHelperText  w={"inherit"} marginTop={"5px"} color={"red.500"} fontSize={"9px"} >
-                    {formik.errors.imgProduct}
-                </FormHelperText>
-              </FormControl>
-            </ModalBody>
-            <ModalFooter>
-              <Button colorScheme='blue' mr={3} onClick={formik.handleSubmit}>
-                Submit
-              </Button>
-              <Button onClick={onCloseModal}>Cancel</Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
-        
+            <FormControl id="imgProduct">
+              <FormLabel>Product Image</FormLabel>
+              <Input
+                paddingTop="4px"
+                type="file"
+                name="imgProduct"
+                onChange={(e) =>
+                  formik.setFieldValue("imgProduct", e.target.files[0])
+                }
+              />
+              <FormHelperText
+                w={"inherit"}
+                marginTop={"5px"}
+                color={"red.500"}
+                fontSize={"9px"}
+              >
+                {formik.errors.imgProduct}
+              </FormHelperText>
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={submitData}>
+              Submit
+            </Button>
+            <Button onClick={onCloseModal}>Cancel</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
       <Modal
-          initialFocusRef={initialRef}
-          isOpen={isOpenDelModal}
-          onClose={onCloseDelModal}
+        initialFocusRef={initialRef}
+        isOpen={isOpenDelModal}
+        onClose={onCloseDelModal}
       >
         <ModalOverlay />
         <ModalContent>
@@ -875,14 +1129,19 @@ export default function ProductPage(props) {
           </ModalBody>
 
           <ModalFooter>
-            <Button mr={3} colorScheme={"red"} onClick={ ()=> {deleteSubmit(editProd?.id)}}>Delete</Button>
-            <Button onClick={onCloseDelModal}>
-              Close
+            <Button
+              mr={3}
+              colorScheme={"red"}
+              onClick={() => {
+                deleteSubmit(editProd?.id);
+              }}
+            >
+              Delete
             </Button>
+            <Button onClick={onCloseDelModal}>Close</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
-      
     </>
   );
 }

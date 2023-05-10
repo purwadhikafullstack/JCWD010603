@@ -10,40 +10,17 @@ import {
   AlertDialogContent,
   AlertDialogHeader,
   AlertDialogBody,
-  Radio,
   Spinner,
-  RadioGroup,
-  Switch,
-  Heading,
-  Accordion,
-  Avatar,
-  AvatarBadge,
-  IconButton,
-  Checkbox,
-  AccordionButton,
-  AccordionItem,
-  AccordionIcon,
-  AccordionPanel,
   AlertDialogFooter,
-  Box,
   Select,
-  Input,
-  Spacer,
   Link,
-  Stack,
-  InputGroup,
   Image,
-  Alert,
-  AlertIcon,
   useDisclosure,
   Badge,
-  useToast,
   Text,
-  FormHelperText,
-  InputRightElement,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { GrFormPrevious } from "react-icons/gr";
+
 import { BiNotepad } from "react-icons/bi";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
 import { TfiLocationPin } from "react-icons/tfi";
@@ -51,22 +28,12 @@ import { BsShop } from "react-icons/bs";
 import { TbDiscount } from "react-icons/tb";
 import React from "react";
 import { axiosInstance, beautyScroll } from "../config/config";
-import { IoIosArrowBack, IoIosCloseCircleOutline } from "react-icons/io";
-import { SmallCloseIcon } from "@chakra-ui/icons";
-import { FaUserCircle, FaShippingFast } from "react-icons/fa";
-import { FiEdit } from "react-icons/fi";
-import { GrClose } from "react-icons/gr";
-import { BiTrash, BiEdit, BiChevronRight, BiChevronLeft } from "react-icons/bi";
-import { AiFillCamera } from "react-icons/ai";
-import { userLogin } from "../redux/middleware/userauth";
-import { useDispatch } from "react-redux";
+import { IoIosArrowBack } from "react-icons/io";
+
+import { FaShippingFast } from "react-icons/fa";
+
 import { useNavigate } from "react-router-dom";
 import { Link as ReachLink } from "react-router-dom";
-import { useLocation } from "react-router-dom";
-import Logo from "../assets/logo.png";
-import { useSelector } from "react-redux";
-import { useFormik } from "formik";
-import * as Yup from "yup";
 
 export default function NewOrder(props) {
   const moment = require("moment");
@@ -82,37 +49,42 @@ export default function NewOrder(props) {
     onOpen: onOpenType,
     onClose: onCloseType,
   } = useDisclosure();
+  const {
+    isOpen: isOpenAddress,
+    onOpen: onOpenAddress,
+    onClose: onCloseAddress,
+  } = useDisclosure();
+  const listaddress = props.datalist;
+
   const dataaddress = props.dataaddress;
-  console.log(data);
   const [voucherInput, setVoucherInput] = useState("Use Promo");
   const [serviceInput, setServiceInput] = useState("Select Service Shipping");
   const [voucherApply, setVoucherApply] = useState("");
+  const [detailAddress, setDetailAddress] =
+    useState(`${dataaddress.Ket} | ${dataaddress?.address},
+                                ${dataaddress?.district}, ${dataaddress?.city}
+                                ${dataaddress?.province}, ${dataaddress?.postalCode}`);
+  const [enable, setEnable] = useState(true);
   const [orderList, setOrderList] = useState([]);
   const [cost, setCost] = useState(0);
   const [nominal, setNominal] = useState(0);
-  const [origin, setOrigin] = useState(1);
-  const [destination, setDestination] = useState(2);
+  const [origin, setOrigin] = useState(
+    `${data.filterCart[0].Product.Branch.idCity}`
+  );
+
+  const [destination, setDestination] = useState(`${dataaddress.idCity}`);
   const [weight, setWeight] = useState(1000);
   const [service, setService] = useState([]);
   const [courier, setCourier] = useState("jne");
   const [cartTotal, setCartTotal] = useState(0);
   const [countHeader, setCountHeader] = useState(0);
-  const [cartData, setCartData] = useState();
   const [nameBranch, setNameBranch] = useState("");
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const tgl = moment().format("YYYYMMDD");
-  const BranchId = localStorage.getItem("branchID");
+
   const cancelRef = React.useRef();
-  function handlevoucherInput(e) {}
-  const confirmButtonStyle = {
-    _hover: {
-      bg: "#3e4b4f",
-    },
-    _active: {
-      bg: "#232b2e",
-    },
-  };
+
   const fetchcounttransaction = async () => {
     setIsLoading(true);
     await axiosInstance
@@ -138,18 +110,7 @@ export default function NewOrder(props) {
       })
       .finally(() => setIsLoading(false));
   };
-  const fetchdestination = async () => {
-    setIsLoading(true);
-    await axiosInstance
-      .get("/address/primaryaddress/" + localStorage.getItem("userID"))
-      .then((response) => {
-        setDestination(response.data.result.idCity);
-      })
-      .catch((error) => {
-        console.log({ error });
-      })
-      .finally(() => setIsLoading(false));
-  };
+
   const fetchweight = async () => {
     setIsLoading(true);
     await axiosInstance
@@ -168,7 +129,6 @@ export default function NewOrder(props) {
     await axiosInstance
       .get(`/cart/getcartbyUserId/${userId}`)
       .then((res) => {
-        setCartData(res.data.result);
         setOrderList(res.data.result.filterCart);
       })
       .finally(() => setIsLoading(false));
@@ -176,7 +136,7 @@ export default function NewOrder(props) {
   useEffect(() => {
     fetchcounttransaction();
     fetchorigin();
-    fetchdestination();
+    // fetchdestination();
     fetchweight();
     fetchCartData();
   }, []);
@@ -190,7 +150,9 @@ export default function NewOrder(props) {
     setIsLoading(true);
     await axiosInstance
       .post(
-        `http://localhost:8000/api_rajaongkir/cost/${origin}/${destination}/${weight}/${courier}`
+        `http://localhost:8000/api_rajaongkir/cost/${origin}/${parseInt(
+          destination
+        )}/${weight}/${courier}`
       )
       .then((response) => {
         setService(response.data[0].costs);
@@ -198,12 +160,14 @@ export default function NewOrder(props) {
       .catch((err) => {
         console.log(err.message);
       })
-      .finally(() => setIsLoading(false));
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
   useEffect(() => {
     fetchCost();
   }, [courier]);
-  console.log(courier);
+
   const noTrans = `TRS-${tgl}000${countHeader + 1}`;
   async function ConfirmTransaction() {
     setOrderList([...orderList]);
@@ -288,7 +252,7 @@ export default function NewOrder(props) {
               <Flex
                 flexDir={"column"}
                 w="85%"
-                h="140px"
+                h="150px"
                 m="0 auto"
                 align="left"
                 color={"black"}
@@ -315,30 +279,85 @@ export default function NewOrder(props) {
                       px={7}
                       textAlign={"left"}
                     >
-                      <Flex gap={2}>
-                        <Flex fontSize="12px" color="#2C3639">
-                          {dataaddress?.Ket} |
-                        </Flex>
-                        <Flex fontSize="12px" color="#2C3639">
-                          {dataaddress?.isPrimary == 1 ? (
-                            <Badge variant="solid" colorScheme="green">
-                              Primary Address
-                            </Badge>
-                          ) : null}
-                        </Flex>
-                      </Flex>
-                      <Flex fontSize="12px" color="#2C3639">
-                        {dataaddress?.address}
-                      </Flex>
-                      <Text fontSize="12px" color="#2C3639">
-                        {dataaddress?.district}, {dataaddress?.city}
-                      </Text>
-                      <Text fontSize="12px" color="#2C3639">
-                        {dataaddress?.province}, {dataaddress?.postalCode}
-                      </Text>
+                      <Flex gap={2}>{detailAddress}</Flex>
                     </Flex>
                   </Flex>
+                  <Button
+                    gap={2}
+                    py={2}
+                    _hover={{
+                      bg: "white",
+                      color: "#2C3639",
+                    }}
+                    onClick={onOpenAddress}
+                  >
+                    Change Address
+                  </Button>
                 </Flex>
+
+                <AlertDialog
+                  isOpen={isOpenAddress}
+                  leastDestructiveRef={cancelRef}
+                  onClose={onCloseAddress}
+                >
+                  <AlertDialogOverlay>
+                    <AlertDialogContent>
+                      <AlertDialogHeader
+                        fontSize="lg"
+                        fontWeight="bold"
+                        textAlign="center"
+                      >
+                        List Address
+                      </AlertDialogHeader>
+
+                      <AlertDialogBody>
+                        <FormControl id="address1">
+                          <Flex
+                            spacing={5}
+                            direction="column"
+                            color="black"
+                            gap={3}
+                            onClick={(e) => {
+                              setDetailAddress(e.target.textContent);
+                              setDestination(e.target.value);
+                            }}
+                          >
+                            {listaddress.map((address, val) => (
+                              <Button
+                                bgColor="#DCD7C9"
+                                onClick={onCloseAddress}
+                                _hover={{
+                                  bg: "#2C3639",
+                                  color: "white",
+                                }}
+                                w="400px"
+                                h="75px"
+                                borderRadius={"3%"}
+                                flexWrap="wrap"
+                                position={"relative"}
+                                p={2}
+                                size="xs"
+                                value={address.idCity}
+                              >
+                                {address?.Ket} | {address?.address}, <br />
+                                {address?.district},{address?.city},<br />
+                                {address?.province}, {address?.postalCode}
+                              </Button>
+                            ))}
+                          </Flex>
+                        </FormControl>
+                      </AlertDialogBody>
+
+                      <AlertDialogFooter>
+                        <Flex>
+                          <Button ref={cancelRef} onClick={onCloseAddress}>
+                            Cancel
+                          </Button>
+                        </Flex>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialogOverlay>
+                </AlertDialog>
 
                 <Flex
                   justify="flex-end"
@@ -348,24 +367,7 @@ export default function NewOrder(props) {
                   align="center"
                 ></Flex>
               </Flex>
-              <Flex
-                flexDir={"column"}
-                w="85%"
-                h="30px"
-                m="0 auto"
-                align="left"
-                color={"black"}
-                fontSize={["xs", "sm"]}
-                gap={3}
-                justify="space-between"
-              >
-                <Flex fontSize={["xs", "sm"]} fontWeight="bold" gap={2}>
-                  <Flex gap={2}>
-                    <Icon as={BsShop} w="20px" h="20px"></Icon>
-                    {nameBranch}
-                  </Flex>
-                </Flex>
-              </Flex>
+
               <Flex
                 flexDir={"column"}
                 sx={beautyScroll}
@@ -378,10 +380,10 @@ export default function NewOrder(props) {
                 {data.filterCart?.map((val) => {
                   return (
                     <>
-                      <Flex w="100%" align="left" px={8}>
+                      <Flex w="100%" h="150px" align="left" px={8}>
                         <Flex
-                          w={["65px", "70px", "75px"]}
-                          h={["65px", "70px", "75px"]}
+                          w={["65px", "70px", "85px"]}
+                          h={["65px", "70px", "100px"]}
                           borderRadius={5}
                           overflow="hidden"
                         >
@@ -394,12 +396,21 @@ export default function NewOrder(props) {
                         </Flex>
                         <Flex
                           w={["65%", "70%", "75%", "80%"]}
-                          h={["65px", "70px", "75px"]}
+                          h={["65px", "70px", "100px"]}
                           pl={3}
                           direction="column"
                           justify="space-between"
                         >
-                          <Flex flexDir={"column"} textAlign={"left"} gap={2}>
+                          <Flex
+                            flexDir={"column"}
+                            textAlign={"left"}
+                            gap={2}
+                            paddingBottom={3}
+                          >
+                            <Flex gap={2} color={"black"}>
+                              <Icon as={BsShop} w="20px" h="20px"></Icon>
+                              {val.Product.Branch.name}
+                            </Flex>
                             <Text
                               color="#2C3639"
                               fontWeight="bold"
@@ -422,6 +433,7 @@ export default function NewOrder(props) {
                       <Flex
                         justify="flex-end"
                         w="100%"
+                        py={2}
                         h={["5px", "10px", "15px"]}
                         borderBottom="1px solid white"
                         align="center"
@@ -501,7 +513,8 @@ export default function NewOrder(props) {
                                 gap={3}
                                 onClick={(e) => {
                                   setCost(e.target.value);
-                                  setServiceInput("Service Shipping Applied");
+                                  setServiceInput(e.target.textContent);
+                                  setEnable(false);
                                 }}
                               >
                                 {service.map((val) => {
@@ -662,8 +675,10 @@ export default function NewOrder(props) {
                                   // color={"#2C3639"}
                                   w="400px"
                                   onClick={(e) => {
-                                    setNominal(e.target.value);
-                                    setVoucherInput("Promo Applied");
+                                    setNominal(
+                                      e.target.value > 0 ? e.target.value : cost
+                                    );
+                                    setVoucherInput(e.target.textContent);
                                   }}
                                   p={3}
                                 >
@@ -794,6 +809,7 @@ export default function NewOrder(props) {
                     bg: "white",
                     color: "#2C3639",
                   }}
+                  isDisabled={enable ? true : null}
                   onClick={ConfirmTransaction}
                 >
                   Create Order
@@ -803,22 +819,6 @@ export default function NewOrder(props) {
           </Flex>
         </Center>
       )}
-    </>
-  );
-}
-
-function Loading() {
-  return (
-    <>
-      <Button
-        isLoading
-        loadingText="Loading"
-        colorScheme="teal"
-        variant="outline"
-        spinnerPlacement="start"
-      >
-        Submit
-      </Button>
     </>
   );
 }

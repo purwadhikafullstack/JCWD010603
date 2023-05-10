@@ -29,7 +29,6 @@ export default function UpdateAdress(props) {
   const [postalCode, setPostalCode] = useState("");
   const data = props.data;
   const location = useLocation();
-
   const [idCity, setIdCity] = useState(0);
   const [isPrimary, setIsPrimary] = useState(0);
   const [id, setId] = useState(0);
@@ -46,10 +45,7 @@ export default function UpdateAdress(props) {
   const handleId = (e) => {
     setIdProv(e);
   };
-  const [user, setUser] = useState({
-    username: "",
-    password: "",
-  });
+
   const [addressdetail, setAddressDetail] = useState([]);
   const [provinceAPI, setProvinceAPI] = useState([
     {
@@ -87,7 +83,6 @@ export default function UpdateAdress(props) {
 
   const fetchCity = async () => {
     try {
-      console.log(idProv);
       const response = await axiosInstance.get(
         `http://localhost:8000/api_rajaongkir/city/${idProv}`
       );
@@ -106,7 +101,7 @@ export default function UpdateAdress(props) {
       .get("/address/update-address/" + idAddress)
       .then((response) => {
         setAddressDetail(response.data.result);
-        console.log(response.data.result);
+
         setId(response.data.result.id);
         setDistrict(response.data.result.district);
         setProvinces(response.data.result.province);
@@ -117,12 +112,12 @@ export default function UpdateAdress(props) {
         setKet(response.data.result.Ket);
         setUserId(response.data.result.UserId);
         setIdCity(response.data.result.idCity);
+        setIdProv(response.data.result.idProv);
       })
       .catch((error) => {
         console.log({ error });
       });
   };
-  console.log(data?.isPrimary);
 
   const [addresses, setAddresses] = useState([]);
 
@@ -150,13 +145,12 @@ export default function UpdateAdress(props) {
       Ket,
       UserId,
       idCity,
+      idProv,
     };
 
     try {
-      console.log(Data);
       await axiosInstance.patch("/address/editaddress?id=" + Data.id, Data);
       navigate("/list-address");
-      console.log("user edited");
     } catch (error) {
       console.error(error);
     }
@@ -232,7 +226,7 @@ export default function UpdateAdress(props) {
                   const selectedProvince = provinceAPI.find(
                     (val) => val.province === e.target.value
                   );
-                  setProvinces(e.target.p.province);
+                  setProvinces(e.target.province);
                   handleId(selectedProvince.province_id);
                 }}
               >

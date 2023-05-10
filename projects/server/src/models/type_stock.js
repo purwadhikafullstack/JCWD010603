@@ -15,7 +15,6 @@ module.exports = (sequelize, DataTypes) => {
   }
   Type_stock.init({
     name: DataTypes.STRING,
-    add: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'Type_stock',

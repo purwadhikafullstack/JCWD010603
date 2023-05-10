@@ -3,21 +3,25 @@ const { sequelize } = require("../models");
 const db = require("../models");
 const Cart = db.cart;
 const Product = db.product;
+const Branch = db.branch;
 
 const cartController = {
   getCartData: async (req, res) => {
     const page = parseInt(req.query.page) || 1; // default to page 1 if not provided
     const pageSize = 5;
+    const { userId } = req.params; // assuming that the userId is passed as a parameter in the request
 
     try {
-      const totalCount = await Cart.count();
+      const totalCount = await Cart.count({ where: { UserId: userId } });
       const totalPages = Math.ceil(totalCount / pageSize);
 
       // Adjust the page number to the last page if it is greater than the total number of pages
       if (page > totalPages) {
         page = totalPages;
       }
+
       const result = await Cart.findAll({
+        where: { UserId: userId },
         attributes: ["id", "qty", "ProductId", "UserId"],
         include: [
           {
@@ -26,6 +30,7 @@ const cartController = {
           },
         ],
       });
+
       const totalPrice = result.reduce((acc, item) => {
         return acc + item.Product.price * item.qty;
       }, 0);
@@ -112,7 +117,11 @@ const cartController = {
         include: [
           {
             model: Product,
-            attributes: ["name", "price", "imgProduct", "weight"],
+            attributes: ["name", "price", "imgProduct", "weight", "BranchId"],
+            include: {
+              model: Branch,
+              attributes: ["name", "idCity"],
+            },
           },
         ],
         where: {
@@ -206,6 +215,11 @@ const cartController = {
 
   addCart: async (req, res) => {
     const { qty, ProductId, UserId } = req.body;
+    if (!UserId) {
+      return res.status(400).json({
+        message: "Please Login first",
+      });
+    }
 
     try {
       const checkProduct = await Product.findByPk(ProductId);
@@ -244,6 +258,12 @@ const cartController = {
         });
       }
 
+      if (availableStock === 0) {
+        return res.status(401).json({
+          message: `The product is out of stock.`,
+        });
+      }
+
       const [cartItem, created] = await Cart.findOrCreate({
         where: {
           ProductId: ProductId,
@@ -269,7 +289,6 @@ const cartController = {
       });
     }
   },
-
 };
 
 module.exports = cartController;

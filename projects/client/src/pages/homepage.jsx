@@ -76,6 +76,7 @@ export default function UserPage() {
       }
 
       setNearestId(branches[nearestIndex].id);
+      localStorage.setItem("branchID", branches[nearestIndex].id);
       setBranchId(branches[nearestIndex].id);
     }
   }, [currentCoords, branches]);
@@ -91,7 +92,9 @@ export default function UserPage() {
   }, [branchId])
   //handle on change Select Branch
   const handleBranchChange = (e) => {
-    setBranchId(e.target.value);
+    const selectedId = e.target.value
+    localStorage.setItem("branchID", selectedId);
+    setBranchId(selectedId);
   };
 
   async function addToCart(id) {
@@ -110,8 +113,10 @@ export default function UserPage() {
         isClosable: true,
       });
     } catch (error) {
+      // console.log(error.response.data);
       toast({
-        title: "Please remove all items in your cart before changing location",
+        title: "Failed adding item",
+        description: error.response.data.message,
         status: "warning",
         duration: 2000,
         isClosable: true,
@@ -133,7 +138,7 @@ export default function UserPage() {
       {nearestId && (
         <Select defaultValue={nearestId} w="430px" m='0 auto' onChange={handleBranchChange} cursor='pointer' size='sm'>
           {branches?.map((val) => (
-            <option value={val.id} key={val.id}>
+            <option value={val.id} key={val.id} >
               {val.city}
             </option>
           ))}
@@ -150,7 +155,7 @@ export default function UserPage() {
                   direction='column' justify='space-between' mb={4} cursor='pointer'
                 >
                   <Link to={"/detail-product/" + val?.id} as={ReachLink}>
-                    <Image src='https://cf.shopee.co.id/file/91f5d7c0182342102185ff9dfcb2d7e0' w='100%' h='120px' objectFit='cover' />
+                    <Image src={val.imgProduct} w='100%' h='120px' objectFit='cover' />
                   </Link>
 
                   <Text ml={1} fontSize='sm'>{val.name}</Text>

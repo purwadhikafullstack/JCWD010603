@@ -1,10 +1,9 @@
 import Sidebar from "../components/sidebar_admin";
-
 import { useEffect, useState } from "react";
 import { axiosInstance } from "../config/config";
 import { Flex, Center, Spinner } from "@chakra-ui/react";
 import Products from "../components/product";
-import SidebarProduct from "../components/sidebar_product";
+
 export default function PageProducts() {
   const [data, setData] = useState();
   const [datacat, setDataCat] = useState();
@@ -12,23 +11,7 @@ export default function PageProducts() {
   const [sort, setSort] = useState("ASC");
   const [sortby, setSortBy] = useState("name");
   const [categories1, setCategories1] = useState([]);
-  const [page, setPage] = useState(0);
 
-  // async function fetchData(limit) {
-  //   if (limit < 0) {
-  //     limit = 0;
-  //   }
-
-  //   await axiosInstance
-  //     .get("/product-all", {
-  //       params: {
-  //         page: limit,
-  //       },
-  //     })
-  //     .then((res) => {
-  //       setData(res.data.result);
-  //     });
-  // }
   async function fetchData() {
     await axiosInstance.get("/product/productall").then((res) => {
       setData(res.data.result);
@@ -67,14 +50,6 @@ export default function PageProducts() {
     callback?.();
   };
 
-  // useEffect(() => {
-  //   // fetchPosts();
-  //   fetchData();
-  //   fetchDataCat();
-  //   setTimeout(() => {
-  //     setIsLoading(false);
-  //   }, 500);
-  // }, []);
   console.log(`data nya = ${data}`);
   useEffect(() => {
     // fetchPosts();
@@ -84,14 +59,6 @@ export default function PageProducts() {
       setIsLoading(false);
     }, 500);
   }, []);
-  // useEffect(() => {
-  //   // fetchPosts();
-  //   fetchData();
-  //   fetchDataCat();
-  //   setTimeout(() => {
-  //     setIsLoading(false);
-  //   }, 500);
-  // }, [data]);
   useEffect(() => {
     console.log(categories1);
   }, [categories1]);
@@ -105,23 +72,13 @@ export default function PageProducts() {
         <>
           <Flex flexDir={"row"} pos="fixed" left={"0"}>
             <Sidebar />
-            {/* <SidebarProduct
-              data={datacat}
-              cat={[...categories1]}
-              setCat={setCategories1}
-              sort={[...sort]}
-              sortby={[...sortby]}
-              setSort={setSort}
-              setSortBy={setSortBy}
-              filter={fetchFilPro}
-            /> */}
           </Flex>
           <Center marginLeft={["85px", "100px", "150px"]} w="100%">
             <Products
               data={data}
               fin={fetchFinPro}
               cat={[...categories1]}
-              fetchData = {fetchData}
+              fetchData={fetchData}
               datacat={datacat}
               setCat={setCategories1}
               sort={[...sort]}
@@ -129,9 +86,9 @@ export default function PageProducts() {
               setSort={setSort}
               setSortBy={setSortBy}
               filter={fetchFilPro}
-            // page={page}
-            // setPage={setPage}
-            // fetchData={fetchData}
+              // page={page}
+              // setPage={setPage}
+              // fetchData={fetchData}
             />
           </Center>
         </>
