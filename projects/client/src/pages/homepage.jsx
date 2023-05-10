@@ -22,7 +22,7 @@ import "../style/homepage.css";
 
 export default function UserPage() {
   const [branches, setBranches] = useState([]);
-  const [currentCoords, setCurrentCoords] = useState('');
+  const [currentCoords, setCurrentCoords] = useState("");
   const [nearestId, setNearestId] = useState(null);
   const [products, setProducts] = useState([]);
   const [branchId, setBranchId] = useState(null);
@@ -109,7 +109,7 @@ export default function UserPage() {
   }, [branchId]);
   //handle on change Select Branch
   const handleBranchChange = (e) => {
-    const selectedId = e.target.value
+    const selectedId = e.target.value;
     localStorage.setItem("branchID", selectedId);
     setBranchId(selectedId);
   };
@@ -206,11 +206,11 @@ export default function UserPage() {
                     objectFit="cover"
                   />
                 </Link>
-                  <Flex w='100%' overflow='auto'>
+                <Flex w="100%" overflow="auto">
                   <Text ml={1} fontSize="sm">
-                  {val.name}
-                </Text>
-                  </Flex>
+                    {val.name}
+                  </Text>
+                </Flex>
                 <Text ml={1} fontSize="sm" fontWeight="bold">
                   Rp{val.price.toLocaleString()}
                 </Text>
