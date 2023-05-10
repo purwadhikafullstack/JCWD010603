@@ -216,7 +216,7 @@ export default function AdminSetting() {
     }),
     onSubmit: async () => {
       const res = await axiosInstance
-        .post("/admin/register_branch_admin", formik.values, {
+        .post("/api/admin/register_branch_admin", formik.values, {
           headers: {
             Authorization:
               "Bearer" + " " + JSON.parse(localStorage.getItem("admintoken")),
@@ -253,6 +253,7 @@ export default function AdminSetting() {
       city: "",
       province: "",
       postalCode: "",
+      idCity: 0,
     },
     validationSchema: Yup.object().shape({
       name: Yup.string().required("Please enter a name for your branch"),
@@ -263,7 +264,7 @@ export default function AdminSetting() {
     }),
     onSubmit: async () => {
       const res = await axiosInstance
-        .post("/admin/create_branch", branchformik.values, {
+        .post("/api/admin/create_branch", branchformik.values, {
           headers: {
             Authorization:
               "Bearer" + " " + JSON.parse(localStorage.getItem("admintoken")),
@@ -572,9 +573,16 @@ export default function AdminSetting() {
                         <Select
                           placeholder="-"
                           name="city"
-                          onChange={(e) =>
-                            branchformik.setFieldValue("city", e.target.value)
-                          }
+                          onChange={(e) => {
+                            const selectedCity = city.find(
+                              (val) => val.city_name === e.target.value
+                            );
+                            branchformik.setFieldValue("city", e.target.value);
+                            branchformik.setFieldValue(
+                              "idCity",
+                              selectedCity.city_id
+                            );
+                          }}
                         >
                           {city?.map((val) => {
                             return (
