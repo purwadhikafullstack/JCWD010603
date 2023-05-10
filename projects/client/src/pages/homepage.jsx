@@ -22,7 +22,7 @@ import "../style/homepage.css";
 
 export default function UserPage() {
   const [branches, setBranches] = useState([]);
-  const [currentCoords, setCurrentCoords] = useState("");
+  const [currentCoords, setCurrentCoords] = useState('');
   const [nearestId, setNearestId] = useState(null);
   const [products, setProducts] = useState([]);
   const [branchId, setBranchId] = useState(null);
@@ -109,7 +109,7 @@ export default function UserPage() {
   }, [branchId]);
   //handle on change Select Branch
   const handleBranchChange = (e) => {
-    const selectedId = e.target.value;
+    const selectedId = e.target.value
     localStorage.setItem("branchID", selectedId);
     setBranchId(selectedId);
   };
@@ -176,39 +176,64 @@ export default function UserPage() {
         </Select>
       )}
 
-      <Flex w="430px" m='0 auto' h='500px' direction='column' py={5}>
-        <Grid w='100%' gap={1} templateColumns='repeat(3, 1fr)' justifyItems='center' px={1}>
-          {
-            products?.map((val) => {
-              return (
-                <Flex
-                  w='133px' h='215px' key={val.id} borderRadius={10} overflow='hidden' boxShadow='rgba(0, 0, 0, 0.09) 0px 3px 12px'
-                  direction='column' justify='space-between' mb={4} cursor='pointer'
-                >
-                  <Link to={"/detail-product/" + val?.id} as={ReachLink}>
-                    <Image src={val.imgProduct} w='100%' h='120px' objectFit='cover' />
-                  </Link>
+      <Flex w="430px" m="0 auto" h="500px" direction="column" py={5}>
+        <Grid
+          w="100%"
+          gap={1}
+          templateColumns="repeat(3, 1fr)"
+          justifyItems="center"
+          px={1}
+        >
+          {products?.map((val) => {
+            return (
+              <Flex
+                w="133px"
+                h="215px"
+                key={val.id}
+                borderRadius={10}
+                overflow="hidden"
+                boxShadow="rgba(0, 0, 0, 0.09) 0px 3px 12px"
+                direction="column"
+                justify="space-between"
+                mb={4}
+                cursor="pointer"
+              >
+                <Link to={"/detail-product/" + val?.id} as={ReachLink}>
+                  <Image
+                    src={val.imgProduct}
+                    w="100%"
+                    h="120px"
+                    objectFit="cover"
+                  />
+                </Link>
                   <Flex w='100%' overflow='auto'>
-                    <Text ml={1} fontSize='sm'>{val.name}</Text>
+                  <Text ml={1} fontSize="sm">
+                  {val.name}
+                </Text>
                   </Flex>
-                  <Text ml={1} fontSize='sm' fontWeight='bold'>Rp{val.price.toLocaleString()}</Text>
+                <Text ml={1} fontSize="sm" fontWeight="bold">
+                  Rp{val.price.toLocaleString()}
+                </Text>
 
-                  <Button size='sm' borderRadius='none' bg='#2C3639' color='white'
-                    _hover={{
-                      bg: '#4A5568'
-                    }}
-                    _active={{
-                      transform: 'scale(0.98)',
-                      bg: '#373e4a'
-                    }}
-                    onClick={() => addToCart(val.id)}
-                  >
-                    Add to cart
-                  </Button>
-                </Flex>
-              )
-            })
-          }
+                <Button
+                  size="sm"
+                  borderRadius="none"
+                  bg="#2C3639"
+                  color="white"
+                  _hover={{
+                    bg: "#4A5568",
+                  }}
+                  _active={{
+                    transform: "scale(0.98)",
+                    bg: "#373e4a",
+                  }}
+                  onClick={() => addToCart(val.id)}
+                >
+                  Add to cart
+                </Button>
+              </Flex>
+            );
+          })}
         </Grid>
       </Flex>
 
