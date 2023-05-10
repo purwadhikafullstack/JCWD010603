@@ -204,7 +204,7 @@ const transactionController = {
           {
             stockBefore: product.dataValues.stock,
             stockAfter: product.dataValues.stock - val.qty,
-            desc: "pengurangan stock transaction",
+            desc: `Decrease stock ${product.dataValues.name}, because transaction success`,
             TypeStockId: 5,
             ProductId: val.ProductId,
           },
@@ -348,9 +348,9 @@ const transactionController = {
               {
                 BranchId: { [Op.like]: `%${search}%` },
               },
-              // {
-              //     TransactionStatusId : {[Op.like]: `%${search}%`}
-              // }
+              {
+                  TransactionStatusId : {[Op.like]: `%${search}%`}
+              }
             ],
           },
           include: [
@@ -476,7 +476,8 @@ const transactionController = {
       if (!result) {
         throw new Error("Fetching all transaction failed");
       }
-
+      
+      await t.commit();
       res.status(201).json({
         result: result,
         page: page,
@@ -485,10 +486,9 @@ const transactionController = {
         totalPage: totalPage,
         order: order,
       });
-      await t.commit();
     } catch (err) {
-      return res.status(401).json({ message: err.message });
       await t.rollback();
+      return res.status(401).json({ message: err.message });
     }
   },
   getTransactionStatus: async (req, res) => {
@@ -817,7 +817,7 @@ const transactionController = {
     }
   },
   adminCancelTransaction: async (req, res) => {
-    const transaction = await sequelize.transaction();
+    const t = await sequelize.transaction();
     try {
       const transactionHeaderId = req.params.id;
 
@@ -828,8 +828,8 @@ const transactionController = {
         include: {
           model: Product,
         },
-        transaction: transaction,
-      });
+      },{ transaction: t });
+      
 
       await Promise.all(
         transactionItems.map(async (item) => {
@@ -838,9 +838,9 @@ const transactionController = {
 
           await Product.update(
             { stock: product.stock + qtyToAdd },
-            { where: { id: product.id }, transaction: transaction }
+            { where: { id: product.id }}
           );
-        })
+        },{ transaction: t })
       );
 
       const updatedTransactionHeader = await Transaction_header.update(
@@ -850,19 +850,18 @@ const transactionController = {
         {
           where: {
             id: transactionHeaderId,
-          },
-          transaction: transaction,
-        }
+          }
+        },{ transaction: t }
       );
 
-      await transaction.commit();
+      await t.commit();
 
       return res.status(200).json({
         message: "Transaction canceled successfully.",
         result: updatedTransactionHeader,
       });
     } catch (err) {
-      await transaction.rollback();
+      await t.rollback();
       console.log(err);
       return res.status(400).json({
         message: err,
