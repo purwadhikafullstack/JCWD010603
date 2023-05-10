@@ -1,12 +1,12 @@
 module.exports = {
   development: {
-    username: process.env.user, 
+    username: process.env.user,
     password: process.env.pass,
     database: process.env.database,
     host: process.env.host,
     dialect: process.env.db_dialect,
-    timezone: '+07:00'
-  }
+    timezone: "+07:00",
+  },
 
   // test= {
   //   username= "root",
@@ -22,5 +22,4 @@ module.exports = {
   //   host= "127.0.0.1",
   //   dialect= "mysql"
   // }
-
-}
+};
