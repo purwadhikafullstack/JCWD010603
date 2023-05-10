@@ -12,7 +12,7 @@ export default function PageProducts() {
   const [dataBranch, setDataBranch] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [sort, setSort] = useState("ASC");
-  const [idBranch, setIdBranch] = useState(1);
+  const [idBranch, setIdBranch] = useState(0);
   const [sortby, setSortBy] = useState("name");
   const [categories1, setCategories1] = useState([]);
   const [page, setPage] = useState(0);
@@ -35,6 +35,7 @@ export default function PageProducts() {
   }
   const fetchProductBranch = async () => {
     try {
+      const idBranch = localStorage.getItem("branchID");
       const response = await axiosInstance.get(
         `/product/productbybranch/${idBranch}`
       );
