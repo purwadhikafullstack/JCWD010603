@@ -5,6 +5,7 @@ const { sequelize } = require("../models");
 const jwt = require("jsonwebtoken");
 const secret_key = process.env.secret_key;
 const opencage = require("opencage-api-client");
+const apiKey = process.env.OPENCAGE_API_KEY;
 
 const Admins = db.admin;
 const Branch = db.branch;
