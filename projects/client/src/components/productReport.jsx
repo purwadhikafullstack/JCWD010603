@@ -266,7 +266,7 @@ export default function ProductReport() {
                           w="80px"
                           h="80px"
                           src={
-                            "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/flat-white-3402c4f.jpg"
+                            val.Product.imgProduct
                           }
                           borderRadius={20}
                           m="0 auto"
@@ -540,7 +540,7 @@ export default function ProductReport() {
                           w="80px"
                           h="80px"
                           src={
-                            "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/flat-white-3402c4f.jpg"
+                            val.Product.imgProduct
                           }
                           borderRadius={20}
                           m="0 auto"
