@@ -27,9 +27,9 @@ import AddProductPage from "../pages/addproduct";
 import NewOrder from "../pages/neworder_page";
 import Upload from "../pages/upload_page";
 import Report from "../pages/report";
-import RecordStock from "../pages/record_stock"
-import AllBranchTrans from "../pages/all_branch_transactions"
-
+import RecordStock from "../pages/record_stock";
+import AllBranchTrans from "../pages/all_branch_transactions";
+import UserTrans from "../pages/user_transactions";
 
 const routes = [
   {
@@ -55,6 +55,10 @@ const routes = [
   {
     path: "/record-stock",
     element: <RecordStock />,
+  },
+  {
+    path: "/user-transactions",
+    element: <UserTrans />,
   },
   {
     path: "/all-branch-transactions",

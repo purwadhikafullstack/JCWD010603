@@ -46,7 +46,7 @@ export default function ListAddressPage() {
 
   async function categoryConfirmDelete() {
     await axiosInstance
-      .delete(`/address/delete-address?id=${addressId}`)
+      .delete(`/api/address/delete-address?id=${addressId}`)
       .then(() => {
         fetchData();
       })
@@ -56,7 +56,7 @@ export default function ListAddressPage() {
   }
   async function fetchData() {
     await axiosInstance
-      .get("address/listaddress/" + userSelector?.id)
+      .get("/api/address/listaddress/" + userSelector?.id)
       .then((res) => {
         setData(res.data.result);
       });

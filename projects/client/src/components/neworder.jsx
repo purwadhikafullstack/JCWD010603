@@ -16,7 +16,6 @@ import {
   Link,
   Image,
   useDisclosure,
-  Badge,
   Text,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
@@ -55,30 +54,24 @@ export default function NewOrder(props) {
     onClose: onCloseAddress,
   } = useDisclosure();
   const listaddress = props.datalist;
-
-  const dataaddress = props.dataaddress;
+  const [addAddress, setAddAdress] = useState("Add Address");
   const [voucherInput, setVoucherInput] = useState("Use Promo");
   const [serviceInput, setServiceInput] = useState("Select Service Shipping");
   const [voucherApply, setVoucherApply] = useState("");
-  const [detailAddress, setDetailAddress] =
-    useState(`${dataaddress.Ket} | ${dataaddress?.address},
-                                ${dataaddress?.district}, ${dataaddress?.city}
-                                ${dataaddress?.province}, ${dataaddress?.postalCode}`);
+  const [detailAddress, setDetailAddress] = useState("");
   const [enable, setEnable] = useState(true);
   const [orderList, setOrderList] = useState([]);
   const [cost, setCost] = useState(0);
   const [nominal, setNominal] = useState(0);
-  const [origin, setOrigin] = useState(
-    `${data.filterCart[0].Product.Branch.idCity}`
-  );
+  const [origin, setOrigin] = useState(0);
 
-  const [destination, setDestination] = useState(`${dataaddress.idCity}`);
+  const [destination, setDestination] = useState(0);
   const [weight, setWeight] = useState(1000);
   const [service, setService] = useState([]);
-  const [courier, setCourier] = useState("jne");
+  const [courier, setCourier] = useState("");
   const [cartTotal, setCartTotal] = useState(0);
   const [countHeader, setCountHeader] = useState(0);
-  const [nameBranch, setNameBranch] = useState("");
+
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const tgl = moment().format("YYYYMMDD");
@@ -88,7 +81,7 @@ export default function NewOrder(props) {
   const fetchcounttransaction = async () => {
     setIsLoading(true);
     await axiosInstance
-      .get("/transaction/counttransaction")
+      .get("/api/transaction/counttransaction")
       .then((response) => {
         setCountHeader(response.data.result);
       })
@@ -100,10 +93,9 @@ export default function NewOrder(props) {
   const fetchorigin = async (User_id) => {
     setIsLoading(true);
     await axiosInstance
-      .get("/address/address-branches/" + localStorage.getItem("branchID"))
+      .get("/api/address/address-branches/" + localStorage.getItem("branchID"))
       .then((response) => {
         setOrigin(response.data.result.idCity);
-        setNameBranch(response.data.result.name);
       })
       .catch((error) => {
         console.log({ error });
@@ -114,7 +106,7 @@ export default function NewOrder(props) {
   const fetchweight = async () => {
     setIsLoading(true);
     await axiosInstance
-      .get("/cart/getweightcartbyUserId/" + localStorage.getItem("userID"))
+      .get("/api/cart/getweightcartbyUserId/" + localStorage.getItem("userID"))
       .then((response) => {
         setWeight(response.data.result.totalWeight);
       })
@@ -127,7 +119,7 @@ export default function NewOrder(props) {
     setIsLoading(true);
     const userId = localStorage.getItem("userID");
     await axiosInstance
-      .get(`/cart/getcartbyUserId/${userId}`)
+      .get(`/api/cart/getcartbyUserId/${userId}`)
       .then((res) => {
         setOrderList(res.data.result.filterCart);
       })
@@ -150,9 +142,7 @@ export default function NewOrder(props) {
     setIsLoading(true);
     await axiosInstance
       .post(
-        `http://localhost:8000/api_rajaongkir/cost/${origin}/${parseInt(
-          destination
-        )}/${weight}/${courier}`
+        `http://localhost:8000/api/api_rajaongkir/cost/${origin}/${destination}/${weight}/${courier}`
       )
       .then((response) => {
         setService(response.data[0].costs);
@@ -166,7 +156,7 @@ export default function NewOrder(props) {
   };
   useEffect(() => {
     fetchCost();
-  }, [courier]);
+  }, [courier, destination]);
 
   const noTrans = `TRS-${tgl}000${countHeader + 1}`;
   async function ConfirmTransaction() {
@@ -174,7 +164,7 @@ export default function NewOrder(props) {
     const userId = localStorage.getItem("userID");
     const BranchId = localStorage.getItem("branchID");
     await axiosInstance
-      .post("/transaction/create-transaction/" + userId, {
+      .post("/api/transaction/create-transaction/" + userId, {
         noTrans: noTrans,
         grandPrice: cartTotal,
         orderList: JSON.stringify([...orderList]),
@@ -291,7 +281,7 @@ export default function NewOrder(props) {
                     }}
                     onClick={onOpenAddress}
                   >
-                    Change Address
+                    {addAddress}
                   </Button>
                 </Flex>
 
@@ -320,6 +310,7 @@ export default function NewOrder(props) {
                             onClick={(e) => {
                               setDetailAddress(e.target.textContent);
                               setDestination(e.target.value);
+                              setAddAdress("Change Address");
                             }}
                           >
                             {listaddress.map((address, val) => (
@@ -337,7 +328,7 @@ export default function NewOrder(props) {
                                 position={"relative"}
                                 p={2}
                                 size="xs"
-                                value={address.idCity}
+                                value={address?.idCity}
                               >
                                 {address?.Ket} | {address?.address}, <br />
                                 {address?.district},{address?.city},<br />
@@ -473,6 +464,7 @@ export default function NewOrder(props) {
                         setServiceInput("Select Service Shipping");
                       }}
                     >
+                      <option>Choose Your Courier</option>
                       <option value="jne"> JNE</option>
                       <option value="tiki"> TIKI</option>
                       <option value="pos"> POS</option>

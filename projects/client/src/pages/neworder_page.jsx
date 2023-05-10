@@ -16,7 +16,7 @@ export default function NewOrderPage() {
     const userId = localStorage.getItem("userID");
     await axiosInstance
 
-      .get(`/cart/getcartbyUserId/${userId}`)
+      .get(`/api/cart/getcartbyUserId/${userId}`)
       .then((res) => {
         setCartData(res.data.result);
       })
@@ -26,7 +26,7 @@ export default function NewOrderPage() {
     setIsLoading(true);
     const userId = localStorage.getItem("userID");
     await axiosInstance
-      .get(`/address/primaryaddress/${userId}`)
+      .get(`/api/address/primaryaddress/${userId}`)
       .then((res) => {
         setisPrimary(res.data.result);
       })
@@ -37,7 +37,7 @@ export default function NewOrderPage() {
     setIsLoading(true);
     const userId = localStorage.getItem("userID");
     await axiosInstance
-      .get(`/address/listaddress/ ${userId}`)
+      .get(`/api/address/listaddress/ ${userId}`)
       .then((res) => {
         setListAddress(res.data.result);
       })
@@ -47,7 +47,7 @@ export default function NewOrderPage() {
     setIsLoading(true);
 
     await axiosInstance
-      .get(`/voucher_discount/listvoucher`)
+      .get(`/api/voucher_discount/listvoucher`)
       .then((res) => {
         setVoucher(res.data.result);
       })

@@ -169,7 +169,7 @@ export default function ProductPage(props) {
   const deleteSubmit = async (id) => {
     try {
       await axiosInstance.delete(
-        `/product/delete/${id}?BranchId=${userData.BranchId}`
+        `/api/product/delete/${id}?BranchId=${userData.BranchId}`
       );
       setTimeout(() => {
         NotifySuccess();
@@ -192,7 +192,9 @@ export default function ProductPage(props) {
   };
 
   const editHandlerModal = async (id) => {
-    const response = await axiosInstance.get(`/product/detail-product/${id}`);
+    const response = await axiosInstance.get(
+      `/api/product/detail-product/${id}`
+    );
     // .then((res)=> {
     //   setEditProd(res.data.result)
     //   console.log(res.data.result.CategoryId);
@@ -206,7 +208,9 @@ export default function ProductPage(props) {
   };
 
   const deleteHandlerModal = async (id) => {
-    const response = await axiosInstance.get(`/product/detail-product/${id}`);
+    const response = await axiosInstance.get(
+      `/api/product/detail-product/${id}`
+    );
     const result = response.data.result;
     // console.log(result);
     setEditProd(result);
@@ -216,7 +220,7 @@ export default function ProductPage(props) {
   };
 
   const fetchCategory = async () => {
-    const response = await axiosInstance.get("/admin/categories");
+    const response = await axiosInstance.get("/api/admin/categories");
     const result = response.data.result;
     setCat(result);
   };
@@ -292,7 +296,10 @@ export default function ProductPage(props) {
         formData.append("CategoryId", category);
         formData.append("BranchId", BranchId);
 
-        await axiosInstance.post(`/product/create?status=${status}`, formData);
+        await axiosInstance.post(
+          `/api/product/create?status=${status}`,
+          formData
+        );
         setTimeout(() => {
           NotifySuccess();
           fetchData();
@@ -371,7 +378,7 @@ export default function ProductPage(props) {
       // console.log(formData);
       try {
         await axiosInstance.patch(
-          `/product/edit/${id}?status=${status}`,
+          `/api/product/edit/${id}?status=${status}`,
           formData
         );
         setTimeout(() => {

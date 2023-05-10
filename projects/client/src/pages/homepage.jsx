@@ -2,17 +2,27 @@ import NavBar from "../components/navbarhome"; //not loggedin
 import Navbar from "../components/navbar"; //loggedin
 import Banner from "../components/banner";
 import CatsContainer from "../components/lp_categories";
-import { Flex, Grid, Select, Image, Heading, Text, Button, Link, useToast, } from "@chakra-ui/react";
+import {
+  Flex,
+  Grid,
+  Select,
+  Image,
+  Heading,
+  Text,
+  Button,
+  Link,
+  useToast,
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { axiosInstance } from "../config/config";
 import { Link as ReachLink } from "react-router-dom";
-import adsImg from "../asset/ads.png"
+import adsImg from "../asset/ads.png";
 import LogoHD from "../asset/logo.png";
-import "../style/homepage.css"
+import "../style/homepage.css";
 
 export default function UserPage() {
   const [branches, setBranches] = useState([]);
-  const [currentCoords, setCurrentCoords] = useState('');
+  const [currentCoords, setCurrentCoords] = useState("");
   const [nearestId, setNearestId] = useState(null);
   const [products, setProducts] = useState([]);
   const [branchId, setBranchId] = useState(null);
@@ -25,9 +35,9 @@ export default function UserPage() {
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(toRadians(lat1)) *
-      Math.cos(toRadians(lat2)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
+        Math.cos(toRadians(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = R * c;
     return distance;
@@ -38,9 +48,9 @@ export default function UserPage() {
   }
   //fetch branch + get user position
   async function getBranches() {
-    await axiosInstance.get("/admin/branchesgeometry").then((res) => {
-      setBranches([...res.data.result])
-    })
+    await axiosInstance.get("/api/admin/branchesgeometry").then((res) => {
+      setBranches([...res.data.result]);
+    });
   }
   useEffect(() => {
     getBranches();
@@ -66,7 +76,12 @@ export default function UserPage() {
         const branch = branches[i];
         const lat2 = branch.coordinate[0];
         const lon2 = branch.coordinate[1];
-        const distance = haversine(currentCoords.latitude, currentCoords.longitude, lat2, lon2); //FUNGSI ASLI
+        const distance = haversine(
+          currentCoords.latitude,
+          currentCoords.longitude,
+          lat2,
+          lon2
+        ); //FUNGSI ASLI
         // const distance = haversine(-6.155661729116352, 106.90503790831906, lat2, lon2); //BUAT TESTING CUSTOM KOORDINAT (COPY DARI GOOGLE MAP)
 
         if (distance < nearestDistance) {
@@ -83,16 +98,18 @@ export default function UserPage() {
 
   //fetch product suggestion
   async function getProduct() {
-    await axiosInstance.get(`/product/productsuggestion/${branchId}`).then((res) => {
-      setProducts([...res.data.result])
-    })
+    await axiosInstance
+      .get(`/api/product/productsuggestion/${branchId}`)
+      .then((res) => {
+        setProducts([...res.data.result]);
+      });
   }
   useEffect(() => {
     getProduct();
-  }, [branchId])
+  }, [branchId]);
   //handle on change Select Branch
   const handleBranchChange = (e) => {
-    const selectedId = e.target.value
+    const selectedId = e.target.value;
     localStorage.setItem("branchID", selectedId);
     setBranchId(selectedId);
   };
@@ -102,10 +119,10 @@ export default function UserPage() {
     const data = {
       qty: 1,
       ProductId: id,
-      UserId: userId
-    }
+      UserId: userId,
+    };
     try {
-      await axiosInstance.post("/cart/addToCart", data);
+      await axiosInstance.post("/api/cart/addToCart", data);
       toast({
         title: "Item added to cart",
         status: "success",
@@ -126,19 +143,33 @@ export default function UserPage() {
 
   return (
     <>
-      {
-        localStorage.getItem("userID") ? (<Navbar />) : (<NavBar />)
-      }
+      {localStorage.getItem("userID") ? <Navbar /> : <NavBar />}
       <Banner />
       <CatsContainer />
 
-      <Flex w="430px" h='229px' m='50px auto' direction='column' py={5} bgImage={adsImg} />
+      <Flex
+        w="430px"
+        h="229px"
+        m="50px auto"
+        direction="column"
+        py={5}
+        bgImage={adsImg}
+      />
 
-      <Heading size='md' p={5} textAlign='center' mt={10}>Suggestion</Heading>
+      <Heading size="md" p={5} textAlign="center" mt={10}>
+        Suggestion
+      </Heading>
       {nearestId && (
-        <Select defaultValue={nearestId} w="430px" m='0 auto' onChange={handleBranchChange} cursor='pointer' size='sm'>
+        <Select
+          defaultValue={nearestId}
+          w="430px"
+          m="0 auto"
+          onChange={handleBranchChange}
+          cursor="pointer"
+          size="sm"
+        >
           {branches?.map((val) => (
-            <option value={val.id} key={val.id} >
+            <option value={val.id} key={val.id}>
               {val.city}
             </option>
           ))}
@@ -181,39 +212,36 @@ export default function UserPage() {
         </Grid>
       </Flex>
 
-      <Flex w='430px' h='120px' bg='#2C3639' m='40px auto 0px' p='20px 0px 0px 20px' align='center' justify='space-between'>
-        <Flex w='30%' h='100%' direction='column' mr={3}>
-          <Heading size='md' color='white'>
+      <Flex
+        w="430px"
+        h="120px"
+        bg="#2C3639"
+        m="40px auto 0px"
+        p="20px 0px 0px 20px"
+        align="center"
+        justify="space-between"
+      >
+        <Flex w="30%" h="100%" direction="column" mr={3}>
+          <Heading size="md" color="white">
             KOPIO
           </Heading>
-          <Flex w='100%' color='whiteAlpha.700' mt={3} direction='column'>
-            <Link fontSize='xs'>
-              About us
-            </Link>
-            <Link fontSize='xs'>
-              Career
-            </Link>
-            <Link fontSize='xs'>
-              Blog
-            </Link>
+          <Flex w="100%" color="whiteAlpha.700" mt={3} direction="column">
+            <Link fontSize="xs">About us</Link>
+            <Link fontSize="xs">Career</Link>
+            <Link fontSize="xs">Blog</Link>
           </Flex>
         </Flex>
 
-        <Flex w='35%' h='100%' direction='column'>
-          <Heading size='md' color='white'>
+        <Flex w="35%" h="100%" direction="column">
+          <Heading size="md" color="white">
             Collaboration
           </Heading>
-          <Flex w='100%' color='whiteAlpha.700' mt={3} direction='column'>
-            <Link fontSize='xs'>
-              Join us
-            </Link>
-            <Link fontSize='xs'>
-              Membership
-            </Link>
+          <Flex w="100%" color="whiteAlpha.700" mt={3} direction="column">
+            <Link fontSize="xs">Join us</Link>
+            <Link fontSize="xs">Membership</Link>
           </Flex>
         </Flex>
-        <Image src={LogoHD} transform="rotate(-90deg)" h='20%' w='auto' m={0} />
-
+        <Image src={LogoHD} transform="rotate(-90deg)" h="20%" w="auto" m={0} />
       </Flex>
     </>
   );

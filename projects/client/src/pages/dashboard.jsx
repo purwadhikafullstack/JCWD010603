@@ -25,7 +25,7 @@ export default function Dashboard() {
   const [idBranch, setIdBranch] = useState(1);
 
   async function fetchDataBranch() {
-    await axiosInstance.get("/admin/branches").then((res) => {
+    await axiosInstance.get("/api/admin/branches").then((res) => {
       setDataBranch(res.data.result);
     });
   }
@@ -34,7 +34,7 @@ export default function Dashboard() {
     try {
       console.log(idBranch);
       const response = await axiosInstance.get(
-        `/transaction/transaction-detail/${idBranch}`
+        `/api/transaction/transaction-detail/${idBranch}`
       );
       const result = response.data.result;
       setDatachartline(result);
@@ -46,7 +46,9 @@ export default function Dashboard() {
   const fetchDataCountAdmin = async () => {
     try {
       console.log(idBranch);
-      const response = await axiosInstance.get(`/admin/countadmin/${idBranch}`);
+      const response = await axiosInstance.get(
+        `/api/admin/countadmin/${idBranch}`
+      );
       const result = response.data.result;
       setDataAdmin(result);
     } catch (err) {
@@ -58,7 +60,7 @@ export default function Dashboard() {
     try {
       console.log(idBranch);
       const response = await axiosInstance.get(
-        `/product/countproductbybranch/${idBranch}`
+        `/api/product/countproductbybranch/${idBranch}`
       );
       const result = response.data.result;
       setdataCountProduct(result);
@@ -71,7 +73,7 @@ export default function Dashboard() {
     try {
       console.log(idBranch);
       const response = await axiosInstance.get(
-        `/transaction/getIncomeTransactionByBranch/${idBranch}`
+        `/api/transaction/getIncomeTransactionByBranch/${idBranch}`
       );
       const result = response.data.result[0];
 
@@ -85,7 +87,7 @@ export default function Dashboard() {
     try {
       console.log(idBranch);
       const response = await axiosInstance.get(
-        `/product/totalstockbybranch/${idBranch}`
+        `/api/product/totalstockbybranch/${idBranch}`
       );
       const result = response.data.result[0];
 
@@ -99,7 +101,7 @@ export default function Dashboard() {
     try {
       console.log(idBranch);
       const response = await axiosInstance.get(
-        `transaction/counttransactionbybranch/${idBranch}`
+        `/api/transaction/counttransactionbybranch/${idBranch}`
       );
       const result = response.data.result;
 

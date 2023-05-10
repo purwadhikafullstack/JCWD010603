@@ -1,31 +1,21 @@
 import {
   Button,
-  Checkbox,
   Center,
   Flex,
   FormControl,
   FormLabel,
-  Heading,
   Input,
   Link,
-  Stack,
   Icon,
   Image,
   Alert,
   AlertIcon,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { userLogin } from "../redux/middleware/userauth";
-import { useDispatch } from "react-redux";
-// import { AxiosInstance } from 'axios';
-import { useNavigate } from "react-router-dom";
 import { Link as ReachLink } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import Logo from "../assets/logo.png";
 export default function Reset() {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
   const [user, setUser] = useState({
     username: "",
     password: "",

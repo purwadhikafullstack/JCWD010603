@@ -131,13 +131,13 @@ const cartController = {
       const totalPrice = filterCart.reduce((acc, item) => {
         return acc + item.Product.price * item.qty;
       }, 0);
-      res.status(200).json({
+      return res.status(200).json({
         message: "filter chart berdasarkan id",
         result: { filterCart, totalPrice },
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
+      return res.status(400).json({
         message: err,
       });
     }
@@ -167,7 +167,7 @@ const cartController = {
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
+      return res.status(400).json({
         message: err,
       });
     }
