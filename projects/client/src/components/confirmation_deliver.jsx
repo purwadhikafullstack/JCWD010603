@@ -38,7 +38,7 @@ export default function ConfirmationDeliver(props) {
   async function categoryConfirmDeliver() {
     const notrans = location.pathname?.split("/")[2];
     await axiosInstance
-      .patch(`/transaction/confirmtransaction/${notrans}`)
+      .patch(`/api/transaction/confirmtransaction/${notrans}`)
       .then(() => {
         navigate("/userpage");
       })

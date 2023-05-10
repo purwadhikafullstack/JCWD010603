@@ -55,7 +55,7 @@ export default function UpdateProfile(props) {
   }, []);
   const fetchuserdetail = async (User_id) => {
     await axiosInstance
-      .get("/user/" + User_id)
+      .get("/api/user/" + User_id)
       .then((response) => {
         setUserDetail(response.data.result);
 
@@ -105,7 +105,6 @@ export default function UpdateProfile(props) {
           "type",
           "Invalid file format selection",
           (value) =>
-            // console.log(value);
             !value || (value && SUPPORTED_FORMATS.includes(value?.type))
         ),
     }),
@@ -114,12 +113,8 @@ export default function UpdateProfile(props) {
       const formData = new FormData();
       formData.append("image", avatar);
       await axiosInstance
-        .patch(`user/updatefoto/${props?.user.id}`, formData)
+        .patch(`/api/user/updatefoto/${props?.user.id}`, formData)
         .then(async (res) => {
-          // await dispatch({
-          //   type: user_types.USER_LOGIN,
-          //   payload: res.data.result,
-          // });
           toast({
             title: "Account created",
             description: " Your Profile has been Updated",
@@ -160,29 +155,12 @@ export default function UpdateProfile(props) {
     };
 
     try {
-      await axiosInstance.patch("/user/editprofile/" + User_id, Data);
+      await axiosInstance.patch("/api/user/editprofile/" + User_id, Data);
       navigate("/userpage");
     } catch (error) {
       console.error(error);
     }
   };
-
-  // const saveFoto = async (e) => {
-  //   e.preventDefault();
-
-  //   const Data1 = {
-  //     User_id,
-  //     saveImage,
-  //   };
-  //   console.log(Data1);
-  //   try {
-  //     await axiosInstance.patch("/user/updatefoto/" + User_id, Data1);
-  //     navigate("/update-profile");
-  //     setErrorMessage("Sukses");
-  //   } catch (error) {
-  //     setErrorMessage("Gagal");
-  //   }
-  // };
 
   return (
     <>

@@ -67,7 +67,6 @@ export default function ProductUserPage(props) {
   const datacat = props.datacat;
   const databranch = props.databranch;
   const branchProduct = props.branchProduct;
-  console.log(data);
   const [openFilterDialog, setOpenFilterDialog] = useState(false);
   const [closeFilterDialog, setCloseFilterDialog] = useState(false);
   const [search, setSearch] = useState("");

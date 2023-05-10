@@ -77,7 +77,7 @@ export default function Register() {
     }),
     onSubmit: async () => {
       try {
-        await axiosInstance.post("/user/request-reset", formik.values);
+        await axiosInstance.post("/api/user/request-reset", formik.values);
         handleSuccess();
       } catch (err) {
         handleError(err.response.data.errors);

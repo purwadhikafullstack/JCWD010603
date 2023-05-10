@@ -19,17 +19,17 @@ export default function PageProducts() {
   const [branchProduct, setbranchProduct] = useState([]);
 
   async function fetchData() {
-    await axiosInstance.get("/product/productall").then((res) => {
+    await axiosInstance.get("/api/product/productall").then((res) => {
       setData(res.data.result);
     });
   }
   async function fetchDataCat() {
-    await axiosInstance.get("/product/category").then((res) => {
+    await axiosInstance.get("/api/product/category").then((res) => {
       setDataCat(res.data.result);
     });
   }
   async function fetchDataBranch() {
-    await axiosInstance.get("/admin/branches").then((res) => {
+    await axiosInstance.get("/api/admin/branches").then((res) => {
       setDataBranch(res.data.result);
     });
   }
@@ -37,7 +37,7 @@ export default function PageProducts() {
     try {
       const idBranch = localStorage.getItem("branchID");
       const response = await axiosInstance.get(
-        `/product/productbybranch/${idBranch}`
+        `/api/product/productbybranch/${idBranch}`
       );
       const result = response.data.result;
       setbranchProduct(result);
@@ -53,7 +53,7 @@ export default function PageProducts() {
 
     console.log(url);
 
-    await axiosInstance.get("/product/find?" + url).then((res) => {
+    await axiosInstance.get("/api/product/find?" + url).then((res) => {
       setData(res.data.result);
     });
   };
@@ -68,7 +68,7 @@ export default function PageProducts() {
 
     console.log(url);
 
-    await axiosInstance.get("/filter-user?" + url).then((res) => {
+    await axiosInstance.get("/api/product/filter-user?" + url).then((res) => {
       setbranchProduct(res.data.result);
     });
   };

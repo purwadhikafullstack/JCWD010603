@@ -5,10 +5,7 @@ import {
   Flex,
   FormControl,
   FormLabel,
-  Checkbox,
   Image,
-  Input,
-  Select,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
@@ -17,7 +14,6 @@ import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
-  BreadcrumbSeparator,
   Link,
   useToast,
 } from "@chakra-ui/react";
@@ -25,86 +21,28 @@ import { useEffect, useState } from "react";
 
 import { IoIosArrowBack } from "react-icons/io";
 
-import { useDispatch } from "react-redux";
 import { axiosInstance } from "../config/config";
-import { useNavigate } from "react-router-dom";
+
 import { Link as ReachLink } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
 export default function DetailProduct(props) {
   const [imgProduct, setImgProduct] = useState("");
   const [name, setName] = useState("");
-  const [idProv, setIdProv] = useState(0);
+
   const [price, setPrice] = useState(0);
   const [stock, setStock] = useState(0);
   const [category, setCategory] = useState("");
-  const data = props.data;
+
   const location = useLocation();
-  const [isPrimary, setIsPrimary] = useState(0);
+
   const [id, setId] = useState(0);
   const [description, setDescription] = useState("");
   const [idProduct, setidProduct] = useState(0);
   const [qty, setQty] = useState(1);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+
   const toast = useToast();
-  const handleId = (e) => {
-    setIdProv(e);
-  };
-  const [user, setUser] = useState({
-    username: "",
-    password: "",
-  });
-  const [productdetail, setProductDetail] = useState([]);
-  const [provinceAPI, setProvinceAPI] = useState([
-    {
-      province_id: 0,
-      province: "",
-    },
-  ]);
-  const [province, setProvince] = useState("");
-  const [cityAPI, setCityAPI] = useState([
-    {
-      city_id: 0,
-      city_name: "",
-      type: "",
-      postal_code: "",
-      province_id: 0,
-      province: "",
-    },
-  ]);
 
-  const fetchProvince = async () => {
-    try {
-      const response = await axiosInstance.get(
-        "http://localhost:8000/api_rajaongkir/province"
-      );
-      const result = response.data;
-
-      setProvinceAPI(result);
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
-  useEffect(() => {
-    fetchProvince();
-  }, []);
-
-  const fetchCity = async () => {
-    try {
-      console.log(idProv);
-      const response = await axiosInstance.get(
-        `http://localhost:8000/api_rajaongkir/city/${idProv}`
-      );
-      const result = response.data;
-      setCityAPI(result);
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
-  useEffect(() => {
-    fetchCity();
-  }, [idProv]);
   useEffect(() => {
     setidProduct(location.pathname?.split("/")[2]);
     fetchproductdetail(location.pathname?.split("/")[2]);
@@ -112,10 +50,8 @@ export default function DetailProduct(props) {
 
   const fetchproductdetail = async (idProduct) => {
     await axiosInstance
-      .get("/product/detail-product/" + idProduct)
+      .get("/api/product/detail-product/" + idProduct)
       .then((response) => {
-        setProductDetail(response.data.result);
-        console.log(response.data.result);
         setId(response.data.result.id);
         setName(response.data.result.name);
         setPrice(response.data.result.price);
@@ -137,7 +73,7 @@ export default function DetailProduct(props) {
       UserId: userId,
     };
     try {
-      await axiosInstance.post("/cart/addToCart", cartData);
+      await axiosInstance.post("/api/cart/addToCart", cartData);
       toast({
         title: "Item added to cart",
         status: "success",

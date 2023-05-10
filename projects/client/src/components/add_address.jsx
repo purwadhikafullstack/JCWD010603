@@ -34,7 +34,6 @@ export default function AddAdress(props) {
   const [idProv, setIdProv] = useState(0);
 
   const navigate = useNavigate();
-  const [enable, setEnable] = useState(false);
   const handleId = (e) => {
     setIdProv(e);
   };
@@ -57,7 +56,7 @@ export default function AddAdress(props) {
   const fetchProvince = async () => {
     try {
       const response = await axiosInstance.get(
-        "http://localhost:8000/api_rajaongkir/province"
+        "http://localhost:8000/api/api_rajaongkir/province"
       );
       const result = response.data;
 
@@ -73,7 +72,7 @@ export default function AddAdress(props) {
   const fetchCity = async () => {
     try {
       const response = await axiosInstance.get(
-        `http://localhost:8000/api_rajaongkir/city/${idProv}`
+        `http://localhost:8000/api/api_rajaongkir/city/${idProv}`
       );
       const result = response.data;
       setCityAPI(result);
@@ -107,7 +106,7 @@ export default function AddAdress(props) {
     }),
     onSubmit: async () => {
       const res = await axiosInstance
-        .post("/address/addaddress", formik.values)
+        .post("/api/address/addaddress", formik.values)
         .then(async (res) => {
           toast({
             title: "Address created.",
@@ -136,14 +135,6 @@ export default function AddAdress(props) {
       }
     },
   });
-  useEffect(() => {
-    let { district, city, address, province, postalCode } = formik.values;
-    if (district && city && address && province && postalCode) {
-      setEnable(true);
-    } else {
-      setEnable(false);
-    }
-  }, [formik.values]);
 
   return (
     <>

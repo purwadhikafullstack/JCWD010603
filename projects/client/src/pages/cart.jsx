@@ -1,9 +1,26 @@
 import {
-  Flex, Box, IconButton, Image, Text, Heading,
-  Button, Link, Center,
-  AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody,
-  AlertDialogFooter, FormControl, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper,
-  NumberDecrementStepper, useToast
+  Flex,
+  Box,
+  IconButton,
+  Image,
+  Text,
+  Heading,
+  Button,
+  Link,
+  Center,
+  AlertDialog,
+  AlertDialogOverlay,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogBody,
+  AlertDialogFooter,
+  FormControl,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+  useToast,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import React from "react";
@@ -17,7 +34,7 @@ export default function Cart() {
   const [pages, setPages] = useState(1);
   const [numOfPage, setNumOfPage] = useState(0);
   const [cartTotal, setCartTotal] = useState(0);
-  const [cartId, setCartId] = useState(null); //handle delete 
+  const [cartId, setCartId] = useState(null); //handle delete
   const [editId, setEditId] = useState(null); //handle edit
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [editDialog, setEditDialog] = useState(false);
@@ -93,11 +110,13 @@ export default function Cart() {
   // CART DATA
   async function fetchCartData() {
     const userId = localStorage.getItem("userID");
-    await axiosInstance.get(`/cart/getcart/${userId}?page=${pages}`).then((res) => {
-      setCartData(res.data.result);
-      setNumOfPage(res.data.totalPages);
-      setCartTotal(res.data.totalPrice);
-    });
+    await axiosInstance
+      .get(`/api/cart/getcart/${userId}?page=${pages}`)
+      .then((res) => {
+        setCartData(res.data.result);
+        setNumOfPage(res.data.totalPages);
+        setCartTotal(res.data.totalPrice);
+      });
   }
   useEffect(() => {
     fetchCartData();
@@ -105,7 +124,7 @@ export default function Cart() {
 
   // EDIT CART
   function handleEditInput(value) {
-    setEditInput(value)
+    setEditInput(value);
   }
 
   function editCart(id) {
@@ -113,34 +132,34 @@ export default function Cart() {
     setEditDialog(true);
   }
   function handleCloseEditDialog() {
-    setEditDialog(false)
+    setEditDialog(false);
   }
   async function confirmEdit() {
     const data = {
-      qty: editInput
-    }
+      qty: editInput,
+    };
     try {
-      await axiosInstance.patch(`/cart/editcart/${editId}`, data);
+      await axiosInstance.patch(`/api/cart/editcart/${editId}`, data);
       fetchCartData();
       toast({
-        title: 'Cart edited',
-        description: 'Your cart has been successfully edited.',
-        status: 'success',
+        title: "Cart edited",
+        description: "Your cart has been successfully edited.",
+        status: "success",
         duration: 5000,
         isClosable: true,
       });
     } catch (error) {
       console.error(error);
       toast({
-        title: 'Cart edit failed',
+        title: "Cart edit failed",
         description: error.response.data.message,
-        status: 'error',
+        status: "error",
         duration: 5000,
         isClosable: true,
       });
     } finally {
       setEditDialog(false);
-      setEditInput('');
+      setEditInput("");
     }
   }
 
@@ -154,24 +173,25 @@ export default function Cart() {
   }
 
   async function confirmDelete() {
-    await axiosInstance.delete(`/cart/deleteCart/${cartId}`).then(() => {
-      if (cartData.length > 1) {
-        fetchCartData();
-      } else {
-        setCartData([]);
-        setNumOfPage(1);
-        setCartTotal(0);
-      }
-    }).finally(() => {
-      setDeleteDialog(false);
-    })
+    await axiosInstance
+      .delete(`/api/cart/deleteCart/${cartId}`)
+      .then(() => {
+        if (cartData.length > 1) {
+          fetchCartData();
+        } else {
+          setCartData([]);
+          setNumOfPage(1);
+          setCartTotal(0);
+        }
+      })
+      .finally(() => {
+        setDeleteDialog(false);
+      });
   }
 
   return (
     <Flex direction="column">
-      {
-        localStorage.getItem("userID") ? (<Navbar />) : (<NavBar />)
-      }
+      {localStorage.getItem("userID") ? <Navbar /> : <NavBar />}
 
       <Flex w="430px" h="90vh" m="0 auto" direction="column" sx={scrollStyle}>
         {" "}
@@ -279,7 +299,8 @@ export default function Cart() {
                           color="gray.400"
                           bg="none"
                           cursor="pointer"
-                          mr={3} onClick={() => deleteCart(val.id)}
+                          mr={3}
+                          onClick={() => deleteCart(val.id)}
                           sx={deleteButtonStyle}
                         />
                         <IconButton
@@ -287,7 +308,8 @@ export default function Cart() {
                           as={BiEdit}
                           color="gray.400"
                           bg="none"
-                          cursor="pointer" onClick={() => editCart(val.id)}
+                          cursor="pointer"
+                          onClick={() => editCart(val.id)}
                           sx={editButtonStyle}
                         />
                       </Flex>
@@ -299,20 +321,28 @@ export default function Cart() {
           )}
           {/* Dialog Edit */}
           <AlertDialog
-            motionPreset='slideInBottom'
+            motionPreset="slideInBottom"
             isOpen={editDialog}
             leastDestructiveRef={cancelRef}
             onClose={handleCloseEditDialog}
           >
             <AlertDialogOverlay>
               <AlertDialogContent>
-                <AlertDialogHeader fontSize="lg" fontWeight="bold" textAlign='center'>
+                <AlertDialogHeader
+                  fontSize="lg"
+                  fontWeight="bold"
+                  textAlign="center"
+                >
                   Update Quantity
                 </AlertDialogHeader>
 
-                <AlertDialogBody textAlign='center'>
-                  <FormControl id="quantity" >
-                    <NumberInput defaultValue={1} min={1} onChange={handleEditInput}>
+                <AlertDialogBody textAlign="center">
+                  <FormControl id="quantity">
+                    <NumberInput
+                      defaultValue={1}
+                      min={1}
+                      onChange={handleEditInput}
+                    >
                       <NumberInputField />
                       <NumberInputStepper>
                         <NumberIncrementStepper />
@@ -336,18 +366,22 @@ export default function Cart() {
 
           {/* Dialog Delete */}
           <AlertDialog
-            motionPreset='slideInBottom'
+            motionPreset="slideInBottom"
             isOpen={deleteDialog}
             leastDestructiveRef={cancelRef}
             onClose={handleCloseDeleteDialog}
           >
             <AlertDialogOverlay>
               <AlertDialogContent>
-                <AlertDialogHeader fontSize="lg" fontWeight="bold" textAlign='center'>
+                <AlertDialogHeader
+                  fontSize="lg"
+                  fontWeight="bold"
+                  textAlign="center"
+                >
                   Remove Cart
                 </AlertDialogHeader>
 
-                <AlertDialogBody textAlign='center'>
+                <AlertDialogBody textAlign="center">
                   Are you sure you want to remove this product from the cart?
                 </AlertDialogBody>
 
@@ -362,7 +396,6 @@ export default function Cart() {
               </AlertDialogContent>
             </AlertDialogOverlay>
           </AlertDialog>
-
         </Flex>
         <Flex
           w="85%"
@@ -444,7 +477,12 @@ export default function Cart() {
           cursor={cartData.length > 0 ? "pointer" : "context-menu"}
         >
           {cartData.length > 0 ? (
-            <Link href="/new-order" w="100%" h="100%" _hover={{ textStyle: 'none' }}>
+            <Link
+              href="/new-order"
+              w="100%"
+              h="100%"
+              _hover={{ textStyle: "none" }}
+            >
               <Center h="100%">Confirm & Buy</Center>
             </Link>
           ) : (
