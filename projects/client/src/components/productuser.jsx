@@ -75,9 +75,9 @@ export default function ProductUserPage(props) {
   // const [branchId, setBranchId] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [branch, setBranch] = useState("");
-  const [idBranch, setIdBranch] = useState(1);
+  const [idBranch, setIdBranch] = useState(localStorage.getItem("branchID"));
   const [page, setPage] = useState(1);
-  const branchId = localStorage.getItem("branchID");
+
   const handleId = (e) => {
     setIdBranch(e);
   };
@@ -136,7 +136,7 @@ export default function ProductUserPage(props) {
           <Select
             name="city"
             bgColor="white"
-            value={branchId}
+            value={idBranch}
             onChange={(e) => {
               setBranch(e.target.value);
               handleId(e.target.value);
