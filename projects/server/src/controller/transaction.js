@@ -552,13 +552,13 @@ const transactionController = {
         order: order,
       });
 
-      res.status(200).json({
+      return res.status(200).json({
         message: "Sales data by product",
         result: data,
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
+      return res.status(400).json({
         message: err,
       });
     }
@@ -615,13 +615,13 @@ const transactionController = {
         order: order,
       });
 
-      res.status(200).json({
+      return res.status(200).json({
         message: "Sales data by product for branch " + branchId,
         result: data,
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
+      return res.status(400).json({
         message: err,
       });
     }
@@ -671,13 +671,13 @@ const transactionController = {
         order: order,
       });
 
-      res.status(200).json({
+      return res.status(200).json({
         message: "Transaction data",
         result: data,
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
+      return res.status(400).json({
         message: err,
       });
     }
@@ -731,13 +731,13 @@ const transactionController = {
         order: order,
       });
 
-      res.status(200).json({
+      return res.status(200).json({
         message: "Transaction data",
         result: data,
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
+      return res.status(400).json({
         message: err,
       });
     }
@@ -766,13 +766,13 @@ const transactionController = {
         order: [["totalGrandPrice", grandTotal]],
       });
 
-      res.status(200).json({
+      return res.status(200).json({
         message: "Total Grand Price data for each user",
         result: data,
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
+      return res.status(400).json({
         message: err,
       });
     }
@@ -805,18 +805,19 @@ const transactionController = {
         order: [["totalGrandPrice", grandTotal]],
       });
 
-      res.status(200).json({
+      return res.status(200).json({
         message: "Total Grand Price data for each user in a branch",
         result: data,
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
+      return res.status(400).json({
         message: err,
       });
     }
   },
   adminCancelTransaction: async (req, res) => {
+    const transaction = await sequelize.transaction();
     try {
       const transactionHeaderId = req.params.id;
 
@@ -827,6 +828,7 @@ const transactionController = {
         include: {
           model: Product,
         },
+        transaction: transaction,
       });
 
       await Promise.all(
@@ -836,7 +838,7 @@ const transactionController = {
 
           await Product.update(
             { stock: product.stock + qtyToAdd },
-            { where: { id: product.id } }
+            { where: { id: product.id }, transaction: transaction }
           );
         })
       );
@@ -849,16 +851,20 @@ const transactionController = {
           where: {
             id: transactionHeaderId,
           },
+          transaction: transaction,
         }
       );
 
-      res.status(200).json({
+      await transaction.commit();
+
+      return res.status(200).json({
         message: "Transaction canceled successfully.",
         result: updatedTransactionHeader,
       });
     } catch (err) {
+      await transaction.rollback();
       console.log(err);
-      res.status(400).json({
+      return res.status(400).json({
         message: err,
       });
     }
@@ -877,13 +883,13 @@ const transactionController = {
         }
       );
 
-      res.status(200).json({
+      return res.status(200).json({
         message: "Transaction Delivered.",
         result: updatedTransactionHeader,
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
+      return res.status(400).json({
         message: err,
       });
     }
