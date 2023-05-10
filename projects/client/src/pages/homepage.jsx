@@ -76,6 +76,7 @@ export default function UserPage() {
       }
 
       setNearestId(branches[nearestIndex].id);
+      localStorage.setItem("branchID", branches[nearestIndex].id);
       setBranchId(branches[nearestIndex].id);
     }
   }, [currentCoords, branches]);

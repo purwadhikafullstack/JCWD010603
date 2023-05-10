@@ -32,7 +32,7 @@ export default function AddAdress(props) {
   const [msg, setMsg] = useState("");
   const userSelector = useSelector((state) => state.auth);
   const [idProv, setIdProv] = useState(0);
-  console.log(userSelector);
+
   const navigate = useNavigate();
   const [enable, setEnable] = useState(false);
   const handleId = (e) => {
@@ -72,7 +72,6 @@ export default function AddAdress(props) {
 
   const fetchCity = async () => {
     try {
-      console.log(idProv);
       const response = await axiosInstance.get(
         `http://localhost:8000/api_rajaongkir/city/${idProv}`
       );
@@ -107,7 +106,6 @@ export default function AddAdress(props) {
       postalCode: Yup.number().required("maksimal 5 dan harus angka"),
     }),
     onSubmit: async () => {
-      console.log(formik.values);
       const res = await axiosInstance
         .post("/address/addaddress", formik.values)
         .then(async (res) => {
@@ -132,7 +130,6 @@ export default function AddAdress(props) {
           setStatus(true);
           setMsg(error.response.data.message);
         });
-      console.log(res.data);
 
       if (res.status === 200) {
         navigate("/list-address", { replace: true });

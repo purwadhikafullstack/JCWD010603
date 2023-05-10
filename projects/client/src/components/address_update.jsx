@@ -83,7 +83,6 @@ export default function UpdateAdress(props) {
 
   const fetchCity = async () => {
     try {
-      console.log(idProv);
       const response = await axiosInstance.get(
         `http://localhost:8000/api_rajaongkir/city/${idProv}`
       );
@@ -102,7 +101,7 @@ export default function UpdateAdress(props) {
       .get("/address/update-address/" + idAddress)
       .then((response) => {
         setAddressDetail(response.data.result);
-        console.log(response.data.result);
+
         setId(response.data.result.id);
         setDistrict(response.data.result.district);
         setProvinces(response.data.result.province);
@@ -119,7 +118,6 @@ export default function UpdateAdress(props) {
         console.log({ error });
       });
   };
-  console.log(data?.isPrimary);
 
   const [addresses, setAddresses] = useState([]);
 
@@ -151,10 +149,8 @@ export default function UpdateAdress(props) {
     };
 
     try {
-      console.log(Data);
       await axiosInstance.patch("/address/editaddress?id=" + Data.id, Data);
       navigate("/list-address");
-      console.log("user edited");
     } catch (error) {
       console.error(error);
     }

@@ -52,18 +52,7 @@ export default function NavbarHome(props) {
                 ></Image>
               </Link>
               <Flex px={"70px"} alignItems="center"></Flex>
-              <Flex px={3}>
-                <Icon
-                  boxSize={"7"}
-                  as={FiBell}
-                  color="white"
-                  sx={{
-                    _hover: {
-                      cursor: "pointer",
-                    },
-                  }}
-                ></Icon>
-              </Flex>
+
               <Flex px={3}>
                 <Link href="/cart">
                   <Icon

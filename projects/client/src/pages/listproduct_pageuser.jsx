@@ -2,9 +2,9 @@ import Sidebar from "../components/sidebar_admin";
 
 import { useEffect, useState } from "react";
 import { axiosInstance } from "../config/config";
-import { Flex, Center, Spinner } from "@chakra-ui/react";
+import { Center, Spinner } from "@chakra-ui/react";
 import Products from "../components/productuser";
-import SidebarProduct from "../components/sidebar_product";
+
 import Navbar from "../components/navbar";
 export default function PageProducts() {
   const [data, setData] = useState();
@@ -35,7 +35,6 @@ export default function PageProducts() {
   }
   const fetchProductBranch = async () => {
     try {
-      console.log(idBranch);
       const response = await axiosInstance.get(
         `/product/productbybranch/${idBranch}`
       );
