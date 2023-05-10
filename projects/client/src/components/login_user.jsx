@@ -1,16 +1,13 @@
 import {
   Button,
-  Checkbox,
   Center,
   Flex,
   FormControl,
   FormLabel,
-  Heading,
   Input,
   InputRightElement,
   InputGroup,
   Link,
-  Stack,
   Image,
   Alert,
   Icon,
@@ -21,13 +18,10 @@ import { userLogin } from "../redux/middleware/userauth";
 import { Link as ReachLink } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import { FaEyeSlash, FaEye } from "react-icons/fa";
-import * as Yup from "yup";
-import YupPassword from "yup-password";
-import { useFormik } from "formik";
+
 import { useDispatch } from "react-redux";
 // import { AxiosInstance } from 'axios';
 import { useNavigate } from "react-router-dom";
-import validator from "validator";
 import Logo from "../assets/logo.png";
 import ResetPassword from "../pages/reset_password_request";
 export default function Login() {
@@ -69,19 +63,6 @@ export default function Login() {
       [name]: value,
     });
   }
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const validateEmail = (event) => {
-    let email = event.target.value;
-    if (!validator.isEmail(email)) {
-      setEmailError("Please enter a valid email address");
-    } else {
-      setEmailError("");
-      setEmail(event.target.value);
-    }
-  };
 
   return (
     <>

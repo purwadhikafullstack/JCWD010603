@@ -16,7 +16,7 @@ export default function ConfirmationDeliverPage() {
     const notrans = location.pathname?.split("/")[2];
     console.log(notrans);
     await axiosInstance
-      .get("/transaction/gettransactionbynotrans/" + notrans)
+      .get("/api/transaction/gettransactionbynotrans/" + notrans)
       .then((res) => {
         setTransactionData(res.data.result);
       })

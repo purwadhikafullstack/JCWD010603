@@ -16,7 +16,6 @@ import {
   Link,
   Image,
   useDisclosure,
-  Badge,
   Text,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
@@ -56,7 +55,6 @@ export default function NewOrder(props) {
   } = useDisclosure();
   const listaddress = props.datalist;
   const [addAddress, setAddAdress] = useState("Add Address");
-  const dataaddress = props.dataaddress;
   const [voucherInput, setVoucherInput] = useState("Use Promo");
   const [serviceInput, setServiceInput] = useState("Select Service Shipping");
   const [voucherApply, setVoucherApply] = useState("");
@@ -73,7 +71,7 @@ export default function NewOrder(props) {
   const [courier, setCourier] = useState("");
   const [cartTotal, setCartTotal] = useState(0);
   const [countHeader, setCountHeader] = useState(0);
-  const [nameBranch, setNameBranch] = useState("");
+
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const tgl = moment().format("YYYYMMDD");
@@ -83,7 +81,7 @@ export default function NewOrder(props) {
   const fetchcounttransaction = async () => {
     setIsLoading(true);
     await axiosInstance
-      .get("/transaction/counttransaction")
+      .get("/api/transaction/counttransaction")
       .then((response) => {
         setCountHeader(response.data.result);
       })
@@ -95,10 +93,9 @@ export default function NewOrder(props) {
   const fetchorigin = async (User_id) => {
     setIsLoading(true);
     await axiosInstance
-      .get("/address/address-branches/" + localStorage.getItem("branchID"))
+      .get("/api/address/address-branches/" + localStorage.getItem("branchID"))
       .then((response) => {
         setOrigin(response.data.result.idCity);
-        setNameBranch(response.data.result.name);
       })
       .catch((error) => {
         console.log({ error });
@@ -109,7 +106,7 @@ export default function NewOrder(props) {
   const fetchweight = async () => {
     setIsLoading(true);
     await axiosInstance
-      .get("/cart/getweightcartbyUserId/" + localStorage.getItem("userID"))
+      .get("/api/cart/getweightcartbyUserId/" + localStorage.getItem("userID"))
       .then((response) => {
         setWeight(response.data.result.totalWeight);
       })
@@ -122,7 +119,7 @@ export default function NewOrder(props) {
     setIsLoading(true);
     const userId = localStorage.getItem("userID");
     await axiosInstance
-      .get(`/cart/getcartbyUserId/${userId}`)
+      .get(`/api/cart/getcartbyUserId/${userId}`)
       .then((res) => {
         setOrderList(res.data.result.filterCart);
       })
@@ -145,7 +142,7 @@ export default function NewOrder(props) {
     setIsLoading(true);
     await axiosInstance
       .post(
-        `http://localhost:8000/api_rajaongkir/cost/${origin}/${destination}/${weight}/${courier}`
+        `http://localhost:8000/api/api_rajaongkir/cost/${origin}/${destination}/${weight}/${courier}`
       )
       .then((response) => {
         setService(response.data[0].costs);
@@ -167,7 +164,7 @@ export default function NewOrder(props) {
     const userId = localStorage.getItem("userID");
     const BranchId = localStorage.getItem("branchID");
     await axiosInstance
-      .post("/transaction/create-transaction/" + userId, {
+      .post("/api/transaction/create-transaction/" + userId, {
         noTrans: noTrans,
         grandPrice: cartTotal,
         orderList: JSON.stringify([...orderList]),

@@ -71,7 +71,7 @@ export default function ChangePassword({ id }) {
     }
     try {
       const response = await axiosInstance.patch(
-        `/users/${userSelector?.id}/password`,
+        `/api/users/${userSelector?.id}/password`,
         {
           oldPassword,
           newPassword,

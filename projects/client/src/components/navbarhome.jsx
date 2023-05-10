@@ -16,14 +16,9 @@ import {
 } from "@chakra-ui/react";
 
 import { Link as ReachLink } from "react-router-dom";
-
 import { AiOutlineMenu } from "react-icons/ai";
-import { FiBell } from "react-icons/fi";
-
 import { SlBasket } from "react-icons/sl";
-
 import LogoHD from "../asset/logo.png";
-
 export default function NavbarHome(props) {
   return (
     <>
