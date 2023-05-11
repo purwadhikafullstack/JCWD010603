@@ -12,7 +12,7 @@ export default function PageProducts() {
   const [dataBranch, setDataBranch] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [sort, setSort] = useState("ASC");
-  const [idBranch, setIdBranch] = useState(0);
+  const [idBranch, setIdBranch] = useState(localStorage.getItem("branchID"));
   const [sortby, setSortBy] = useState("name");
   const [categories1, setCategories1] = useState([]);
   const [page, setPage] = useState(0);
@@ -35,7 +35,6 @@ export default function PageProducts() {
   }
   const fetchProductBranch = async () => {
     try {
-      const idBranch = localStorage.getItem("branchID");
       const response = await axiosInstance.get(
         `/api/product/productbybranch/${idBranch}`
       );
@@ -49,12 +48,12 @@ export default function PageProducts() {
   const fetchFinPro = async (search) => {
     let url = "";
 
-    url += `name=${search}`;
+    url += `name=${search}&branch=${idBranch}`;
 
     console.log(url);
 
-    await axiosInstance.get("/api/product/find?" + url).then((res) => {
-      setData(res.data.result);
+    await axiosInstance.get("/api/product/finduser?" + url).then((res) => {
+      setbranchProduct(res.data.result);
     });
   };
 
