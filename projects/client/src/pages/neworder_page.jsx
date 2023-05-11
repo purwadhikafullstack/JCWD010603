@@ -45,9 +45,11 @@ export default function NewOrderPage() {
   }
   async function fetchVouchersData() {
     setIsLoading(true);
-
+    const BranchId = localStorage.getItem("branchID");
     await axiosInstance
-      .get(`/api/voucher_discount/listvoucher`)
+      .get(
+        `http://localhost:8000/api/voucher_discount/listvouchertransaction?BranchId=${BranchId}`
+      )
       .then((res) => {
         setVoucher(res.data.result);
       })

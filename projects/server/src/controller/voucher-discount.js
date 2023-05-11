@@ -283,7 +283,53 @@ const voucherDiscountController = {
       });
     }
   },
+  getVoucherTransaction: async (req, res) => {
+    const branchId = req.query.BranchId;
 
+    try {
+      const today = new Date();
+      const result = await Voucher.findAll({
+        attributes: [
+          "id",
+          "name",
+          "code",
+          "expiredDate",
+          "nominal",
+          "presentase",
+          "ProductId",
+        ],
+        where: {
+          [Op.and]: [
+            {
+              BranchId: branchId,
+            }, // Filter by BranchId
+            {
+              expiredDate: { [Op.gte]: today }, // check if voucher is not deleted
+            },
+          ],
+        },
+        include: [
+          {
+            model: Voucher_type,
+            attributes: ["name"],
+          },
+          {
+            model: Product,
+            attributes: ["name"],
+          },
+        ],
+      });
+
+      return res.status(200).json({
+        message: "Voucher data successfully fetched",
+        result: result,
+      });
+    } catch (err) {
+      return res.status(400).json({
+        message: err,
+      });
+    }
+  },
   deleteVoucher: async (req, res) => {
     try {
       const { id } = req.params;

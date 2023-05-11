@@ -636,6 +636,9 @@ export default function NewOrder(props) {
                       bg: "white",
                       color: "#2C3639",
                     }}
+                    size="xs"
+                    h="50px"
+                    fontSize={"9px"}
                     onClick={onOpenType}
                   >
                     <Icon as={TbDiscount} w="20px" h="20px"></Icon>
@@ -677,11 +680,13 @@ export default function NewOrder(props) {
                                   <Button
                                     colorScheme="green"
                                     onClick={onCloseType}
+                                    size="xs"
                                     _hover={{
                                       bg: "#2C3639",
                                       color: "white",
                                     }}
-                                    w="400px"
+                                    w="500px"
+                                    h="50px"
                                     value={
                                       val.nominal
                                         ? val.nominal
@@ -692,12 +697,15 @@ export default function NewOrder(props) {
                                           )
                                     }
                                   >
-                                    {val.code} - {val.name}
+                                    {val.code} - {val.name} | <br />
+                                    {val.Voucher_type.name} | Until :
+                                    {moment(val.expiredDate).format(
+                                      "YYYY-MM-DD"
+                                    )}
                                   </Button>
                                 </Flex>
                               );
                             })}
-                            <Flex>{voucherApply}</Flex>
                           </Flex>
                         </FormControl>
                       </AlertDialogBody>
