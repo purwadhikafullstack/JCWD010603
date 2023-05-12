@@ -19,7 +19,8 @@ const Voucher = db.voucher;
 const userController = {
   register: async (req, res) => {
     const data = req.body;
-
+    console.log(req.body);
+    
     const t = await sequelize.transaction();
     try {
       // check password
@@ -53,7 +54,7 @@ const userController = {
       if (!userDetail) {
         throw new Error("Create user detail failed");
       }
-
+ 
       const dataAddress = {
         UserId: user.dataValues.id,
         address: data.address,
@@ -75,7 +76,7 @@ const userController = {
       const token = await jwt.sign({ ...user.dataValues }, secret_key, {
         expiresIn: "1d",
       });
-      const href = `http://localhost:3000/verify_email?token=${token}`;
+      const href = `http://localhost:3000/verify-email?token=${token}`;
       // verify via email
       const mail = await mailer(
         {

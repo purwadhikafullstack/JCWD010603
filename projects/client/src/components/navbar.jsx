@@ -105,14 +105,20 @@ export default function Navbar(props) {
                     <List fontSize={"14px"} color="#7D7D7D" gap={5}>
                       <Divider orientation="horizontal" m={2} />
                       <ListItem>
+                        <Link to={"/user-transactions"} as={ReachLink}>
+                          TRANSACTION LIST
+                        </Link>
+                      </ListItem>
+                      <Divider orientation="horizontal" m={2} />
+                      <ListItem>
                         <Link to={"/update-profile"} as={ReachLink}>
-                          UPDATE PROFILE
+                          PROFILE
                         </Link>
                       </ListItem>
                       <Divider orientation="horizontal" m={2} />
                       <ListItem>
                         <Link to={"/list-address"} as={ReachLink}>
-                          UPDATE ADDRESS
+                          ADDRESS
                         </Link>
                       </ListItem>
                       <Divider orientation="horizontal" m={2} />
