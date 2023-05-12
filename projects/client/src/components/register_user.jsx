@@ -77,7 +77,7 @@ export default function Register() {
   const fetchProvince = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8000/api/api_rajaongkir/province"
+        "https://jcwd010603.purwadhikabootcamp.com/api/api_rajaongkir/province"
       );
       const result = response.data;
 
@@ -110,7 +110,7 @@ export default function Register() {
     try {
       console.log(idProv);
       const response = await axios.get(
-        `http://localhost:8000/api/api_rajaongkir/city/${idProv}`
+        `https://jcwd010603.purwadhikabootcamp.com/api/api_rajaongkir/city/${idProv}`
       );
       const result = response.data;
       setCity(result);

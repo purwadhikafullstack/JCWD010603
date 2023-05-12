@@ -48,7 +48,7 @@ export default function NewOrderPage() {
     const BranchId = localStorage.getItem("branchID");
     await axiosInstance
       .get(
-        `http://localhost:8000/api/voucher_discount/listvouchertransaction?BranchId=${BranchId}`
+        `https://jcwd010603.purwadhikabootcamp.com/api/voucher_discount/listvouchertransaction?BranchId=${BranchId}`
       )
       .then((res) => {
         setVoucher(res.data.result);

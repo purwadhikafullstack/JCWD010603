@@ -142,7 +142,7 @@ export default function NewOrder(props) {
     setIsLoading(true);
     await axiosInstance
       .post(
-        `http://localhost:8000/api/api_rajaongkir/cost/${origin}/${destination}/${weight}/${courier}`
+        `https://jcwd010603.purwadhikabootcamp.com/api/api_rajaongkir/cost/${origin}/${destination}/${weight}/${courier}`
       )
       .then((response) => {
         setService(response.data[0].costs);
