@@ -37,6 +37,7 @@ import "bulma/css/bulma.css";
 export default function UserTrans() {
   const cancelRef = React.useRef();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen : isOpen1, onOpen : onOpen1, onClose : onClose1 } = useDisclosure();
   const { isOpen : isOpen2, onOpen : onOpen2, onClose : onClose2 } = useDisclosure();
   const [userTrans, setUserTrans] = useState([]);
   const [page, setPage] = useState(1);
@@ -52,13 +53,57 @@ export default function UserTrans() {
   const [idTrans, setIdTrans] = useState({});
 
   // STYLE
-  const deleteButtonStyle = {
+  const requestButtonStyle = {
     _hover: {
       bg: "none",
-      border: "2px solid #9e3939",
-      color: "#9e3939",
-      transform: "scale(1.05)",
+      border: "2px solid #FFB84C",
+      color: "#FFB84C",
+      transform: "scale(1.10)",
+ },
+    _active: {
+      size: "sm",
     },
+  };
+  const confirmButtonStyle = {
+    _hover: {
+      bg: "none",
+      border: "2px solid #0E8388",
+      color: "#0E8388",
+      transform: "scale(1.10)",
+ },
+    _active: {
+      size: "sm",
+    },
+  };
+  const deliveredButtonStyle = {
+    _hover: {
+      bg: "none",
+      border: "2px solid #3E54AC",
+      color: "#3E54AC",
+      transform: "scale(1.10)",
+ },
+    _active: {
+      size: "sm",
+    },
+  };
+  const arrivedButtonStyle = {
+    _hover: {
+      bg: "none",
+      border: "2px solid #1F8A70",
+      color: "#1F8A70",
+      transform: "scale(1.10)",
+ },
+    _active: {
+      size: "sm",
+    },
+  };
+  const canceledButtonStyle = {
+    _hover: {
+      bg: "none",
+      border: "2px solid #F45050",
+      color: "#F45050",
+      transform: "scale(1.10)",
+ },
     _active: {
       size: "sm",
     },
@@ -75,9 +120,20 @@ export default function UserTrans() {
       size: "sm",
     },
   };
-  const cancelButtonStyle = {
+  const cancelButtonModalStyle = {
     _hover: {
       bg: "#F45050",
+      // border: "2px solid #9e3939",
+      color: "#F1F6F9",
+      transform: "scale(1.05)",
+    },
+    _active: {
+      size: "sm",
+    },
+  };
+  const completeButtonModalStyle = {
+    _hover: {
+      bg: "#1F8A70",
       // border: "2px solid #9e3939",
       color: "#F1F6F9",
       transform: "scale(1.05)",
@@ -118,7 +174,9 @@ export default function UserTrans() {
     try {
       await axiosInstance.patch(
         `/api/transaction/userTransactionStatus/${e.id}?status=${e.status}`
-      );
+        );
+        fetchTransactions();
+        handleCloseCancelDialog()
       toast({
         title: "Status",
         description: `${e.msg} success`,
@@ -126,7 +184,6 @@ export default function UserTrans() {
         duration: 5000,
         isClosable: true,
       });
-      fetchTransactions();
     } catch (err) {
       toast({
         title: "Status",
@@ -153,16 +210,25 @@ export default function UserTrans() {
       });
   };
 
-  const cancelStatus1 = (e) => {
+  const changeStatus = (e) => {
     setIdTrans(e);
-    setCancelDialog(true);
     onOpen();
   };
+  const cancelStatus1 = (e) => {
+    setIdTrans(e);
+    onOpen1();
+  };
+  
   const cancelStatus2 = (e) => {
     setIdTrans(e);
-    setCancelDialog(true);
     onOpen2();
   };
+
+  const alertCancel = (e) => {
+    setCancelDialog(true);
+    if(e === 1) onClose()
+    if(e === 2) onClose2()
+  }
 
   useEffect(() => {
     fetchTransactions();
@@ -287,14 +353,14 @@ export default function UserTrans() {
                         <Button
                           size="xs"
                           // as={BiTrash}
-                          color="gray.400"
-                          bg="none"
+                          color="white"
+                          bg="#FFB84C"
                           cursor="pointer"
                           mr={3}
                           onClick={() =>
                             cancelStatus1({ id: val.id, noTrans: val.noTrans })
                           }
-                          sx={deleteButtonStyle}
+                          sx={requestButtonStyle}
                         >
                           {val.Transaction_status?.name}
                         </Button>
@@ -302,12 +368,37 @@ export default function UserTrans() {
                         <Button
                           size="xs"
                           // as={BiTrash}
-                          color="gray.400"
-                          bg="none"
+                          color="white"
+                          bg="#0E8388"
                           cursor="pointer"
                           mr={3}
                           onClick={() => cancelStatus2({id: val.id, noTrans: val.noTrans})}
-                          sx={deleteButtonStyle}
+                          sx={confirmButtonStyle}
+                        >
+                          {val.Transaction_status?.name}
+                        </Button>
+                      ) :  val.Transaction_status.id === 3 ? (
+                        <Button
+                          size="xs"
+                          // as={BiTrash}
+                          color="white"
+                          bg="#3E54AC"
+                          cursor="pointer"
+                          mr={3}
+                          onClick={() => changeStatus({id: val.id, noTrans: val.noTrans})}
+                          sx={deliveredButtonStyle}
+                        >
+                          {val.Transaction_status?.name}
+                        </Button>
+                      ) :  val.Transaction_status.id === 4 ? (
+                        <Button
+                          size="xs"
+                          // as={BiTrash}
+                          color="white"
+                          bg="#1F8A70"
+                          cursor="pointer"
+                          mr={3}
+                          sx={arrivedButtonStyle}
                         >
                           {val.Transaction_status?.name}
                         </Button>
@@ -316,12 +407,12 @@ export default function UserTrans() {
                         <Button
                           size="xs"
                           // as={BiTrash}
-                          color="gray.400"
-                          bg="none"
+                          color="white"
+                          bg="#F45050"
                           cursor="pointer"
                           mr={3}
                           // onClick={() => cancelStatus({id: val.id, noTrans: val.noTrans})}
-                          sx={deleteButtonStyle}
+                          sx={canceledButtonStyle}
                         >
                           {val.Transaction_status?.name}
                         </Button>
@@ -390,7 +481,7 @@ export default function UserTrans() {
             )} */}
         </Button>
       </Flex>
-      <Modal margin onClose={onClose} isOpen={isOpen} isCentered>
+      <Modal margin onClose={onClose1} isOpen={isOpen1} isCentered>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader fontSize={"2xl"} fontWeight={"bold"}>
@@ -412,14 +503,8 @@ export default function UserTrans() {
                   </Link>
                 </Button>
                 <Button
-                  onClick={() => {
-                    statusTrans({
-                      id: idTrans.id,
-                      status: 5,
-                      msg: `Order Canceled`,
-                    });
-                  }}
-                  sx={cancelButtonStyle}
+                  onClick={()=> {alertCancel(1)}}
+                  sx={cancelButtonModalStyle}
                 >
                   Cancel Order
                 </Button>
@@ -450,14 +535,8 @@ export default function UserTrans() {
                   </Link>
                 </Button> */}
                 <Button
-                  onClick={() => {
-                    statusTrans({
-                      id: idTrans.id,
-                      status: 5,
-                      msg: `Order Canceled`,
-                    });
-                  }}
-                  sx={cancelButtonStyle}
+                  onClick={()=> {alertCancel(2)}}
+                  sx={cancelButtonModalStyle}
                 >
                   Cancel Order
                 </Button>
@@ -466,6 +545,83 @@ export default function UserTrans() {
           </ModalBody>
         </ModalContent>
       </Modal>
+      <Modal margin onClose={onClose} isOpen={isOpen} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader fontSize={"2xl"} fontWeight={"bold"}>
+            Transaction Status
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody paddingBottom={9}>
+            <Center display={"Grid"} textAlign={"center"} rowGap={"35px"}>
+              <Text fontSize={"lg"} fontWeight={"semibold"}>
+                Are you sure the product has been arrived at destination? 
+              </Text>
+              <Flex justify={"center"} columnGap={"35px"}>
+                {/* <Button sx={uploadButtonStyle}>
+                  <Link
+                    to={`/upload-payment/${idTrans.noTrans}`}
+                    as={ReachLink}
+                  >
+                    Upload
+                  </Link>
+                </Button> */}
+                <Button
+                    onClick={() => {
+                    statusTrans({
+                      id: idTrans.id,
+                      status: 4,
+                      msg: `Order Complete`, 
+                    });
+                    onClose()
+                  }}  
+                  sx={completeButtonModalStyle}
+                >
+                  Order Complete
+                </Button>
+              </Flex>
+            </Center>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+      <AlertDialog
+            motionPreset="slideInBottom"
+            isOpen={cancelDialog}
+            leastDestructiveRef={cancelRef}
+            onClose={handleCloseCancelDialog}
+            isCentered
+          >
+            <AlertDialogOverlay>
+              <AlertDialogContent>
+                <AlertDialogHeader
+                  fontSize="lg"
+                  fontWeight="bold"
+                  textAlign="center"
+                >
+                  Transaction Cancel
+                </AlertDialogHeader>
+
+                <AlertDialogBody textAlign="center">
+                  Are you sure you want cancel this order?
+                </AlertDialogBody>
+
+                <AlertDialogFooter>
+                  <Button ref={cancelRef} onClick={handleCloseCancelDialog}>
+                    Back
+                  </Button>
+                  <Button colorScheme="red" onClick={() => {
+                    statusTrans({
+                      id: idTrans.id,
+                      status: 5,
+                      msg: `Order Canceled`, 
+                    });
+                  }} ml={3}>
+                    Cancel this order
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialogOverlay>
+          </AlertDialog>
     </Flex>
   );
 }
