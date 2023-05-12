@@ -34,23 +34,19 @@ export default function PageProducts() {
     });
   };
 
-  const fetchFilPro = async (callback) => {
-    let url = "";
+  const fetchFilPro = async () => {
+    let url = "filter[category]=";
     categories1.map((val, idx) => {
-      idx ? (url += `&${val}=${val}`) : (url += `${val}=${val}`);
+      idx ? (url += `,${val}`) : (url += `${val}`);
     });
 
-    url += `&order=${sort}&orderby=${sortby}`;
-
-    console.log(url);
+    url += `&order=${sort}&sort=${sortby}`;
 
     await axiosInstance.get("/api/product/filter?" + url).then((res) => {
       setData(res.data.result);
     });
-    callback?.();
   };
 
-  console.log(`data nya = ${data}`);
   useEffect(() => {
     // fetchPosts();
     fetchData();

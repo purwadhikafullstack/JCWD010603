@@ -451,9 +451,18 @@ export default function ProductPage(props) {
                 <Icon as={AiOutlineSearch} justifyContent="center"></Icon>
               </Center>{" "}
             </Flex>
-            <Button leftIcon={<TbFilter />} colorScheme="teal" onClick={onOpen}>
-              Filter
+
+            <Button
+              leftIcon={<TbFilter />}
+              colorScheme="teal"
+              onClick={() => {
+                props.setCat([]);
+              }}
+            >
+              {" "}
+              <Flex onClick={onOpen}>Filter </Flex>
             </Button>
+
             <Drawer
               isOpen={isOpen}
               placement="right"
@@ -524,7 +533,7 @@ export default function ProductPage(props) {
                                   <Checkbox
                                     colorScheme="cyan"
                                     onChange={(e) => {
-                                      CheckCategories(e, `${product?.name}`);
+                                      CheckCategories(e, `${product?.id}`);
                                     }}
                                   >
                                     {product?.name}
@@ -732,44 +741,6 @@ export default function ProductPage(props) {
           })}
         </Flex>
         <Center gap={10}>
-          {/* <Center minW="60px" h={"60px"}>
-            <IconButton
-              aria-label="right-arrow"
-              colorScheme="grey"
-              borderRadius="full"
-              borderStyle={"none"}
-              variant="outline"
-              zIndex={2}
-              onClick={() => {
-                if (props.page - 6 < 0) {
-                  props.setPage(0);
-                } else {
-                  props.setPage(props.page - 6);
-                }
-
-                props.fetchData(props.page - 6);
-              }}
-            >
-              <BiLeftArrowAlt />
-            </IconButton>
-          </Center>
-         
-          <Center minW="60px" h={"60px"}>
-            <IconButton
-              aria-label="right-arrow"
-              colorScheme="gray"
-              borderRadius="full"
-              borderStyle={"none"}
-              variant="outline"
-              zIndex={2}
-              onClick={() => {
-                props.setPage(props.page + 6);
-                props.fetchData(props.page + 6);
-              }}
-            >
-              <BiRightArrowAlt />
-            </IconButton>
-          </Center> */}
           {data.length > 0 && (
             <Flex gap={5}>
               <Button onClick={() => selectPageHandle(page - 1)}>
