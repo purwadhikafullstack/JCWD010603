@@ -924,6 +924,53 @@ const userController = {
       });
     }
   },
+  changePassword: async (req, res) => {
+    const t = await sequelize.transaction();
+    try {
+      const id = parseInt(req.params.id);
+      const { oldPassword, newPassword } = req.body;
+      const results = await User.findOne(
+        {
+          where: {
+            id: id,
+          },
+        },
+        { transaction: t }
+      );
+
+      const password = results.password;
+
+      const isPasswordCorrect = await bcrypt.compare(oldPassword, password);
+      if (!isPasswordCorrect) {
+        return res.status(401).json({
+          message: "Old password is incorrect",
+        });
+      }
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+      const result = await User.update(
+        {
+          password: hashedPassword,
+        },
+        {
+          where: {
+            id: id,
+          },
+        },
+        { transaction: t }
+      );
+      await t.commit();
+      return res.status(200).json({
+        message: "Password updated successfully",
+        result: result,
+      });
+    } catch (err) {
+      await t.rollback();
+      return res.status(400).json({
+        message: err,
+      });
+    }
+  },
 };
 
 module.exports = userController;

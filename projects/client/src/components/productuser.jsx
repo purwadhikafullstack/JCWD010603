@@ -160,7 +160,7 @@ export default function ProductUserPage(props) {
               }
               backgroundColor={"white"}
               type="tel"
-              placeholder="Search"
+              placeholder="Search Name Product"
               w="200px"
               h="35px"
               borderRadius={"none"}
@@ -264,7 +264,7 @@ export default function ProductUserPage(props) {
                                   colorScheme="cyan"
                                   borderColor={"black"}
                                   onChange={(e) => {
-                                    CheckCategories(e, `${product?.name}`);
+                                    CheckCategories(e, `${product?.id}`);
                                   }}
                                 >
                                   {product?.name}
