@@ -1,5 +1,5 @@
 import axios from "axios";
-export const API_URL = "https://jcwd010603.purwadhikabootcamp.com";
+export const API_URL = "https://jcwd010603.purwadhikabootcamp.com/api";
 //menciptakan base api url
 export const axiosInstance = axios.create({
   baseURL: API_URL,
