@@ -4,8 +4,8 @@ import user_types from "../auth/types";
 export function adminLogin(values) {
   return async function (dispatch) {
     try {
-      const res = await axiosInstance.post("/admin/adminlogin", values);
-      console.log("this is res =",res)
+      const res = await axiosInstance.post("/api/admin/adminlogin", values);
+      console.log("this is res =", res);
 
       const adminData = JSON.stringify(res.data.result);
       const adminToken = JSON.stringify(res.data.token);

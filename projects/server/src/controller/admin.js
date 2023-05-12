@@ -5,6 +5,7 @@ const { sequelize } = require("../models");
 const jwt = require("jsonwebtoken");
 const secret_key = process.env.secret_key;
 const opencage = require("opencage-api-client");
+const apiKey = process.env.OPENCAGE_API_KEY;
 
 const Admins = db.admin;
 const Branch = db.branch;
@@ -29,49 +30,24 @@ const adminController = {
 
       if (!result) {
         return res.status(400).json({
-          message: "User not found"
-        })
+          message: "User not found",
+        });
       }
       const isValid = await bcrypt.compare(password, result.password);
       if (!isValid) {
-        throw new Error("Incorrect Email / Password")
-        // return res.status(401).json({
-        //     message: 'email / password incorrect'
-        // })
+        throw new Error("Incorrect Email / Password");
       }
       let payload = { id: result.id, isSuperAdmin: result.isSuperAdmin };
-      const token = jwt.sign(
-        payload,
-        secret_key
-      )
+      const token = jwt.sign(payload, secret_key);
       return res.status(200).json({
         token,
         result: result,
-        message: 'logged in'
-      })
+        message: "logged in",
+      });
     } catch (error) {
       console.log(error.message);
-      return res.status(error.statusCode || 500).send(
-        error.message
-      )
+      return res.status(error.statusCode || 500).send(error.message);
     }
-
-    // else {
-    //     const check = bcrypt.compare(password, result.password)
-
-    //     if (!check) {
-    //         return res.status(400).json({
-    //             message: "Wrong password"
-    //         })
-    //     }
-
-    //     else {
-    //         return res.status(200).json({
-    //             message: "Logged in",
-    //             result: result
-    //         })
-    //     }
-    // }
   },
 
   createAdmin: async (req, res) => {
@@ -180,22 +156,13 @@ const adminController = {
         city: data.city,
         province: data.province,
         postalCode: data.postalCode,
+        idCity: data.idCity,
       };
       console.log({ ...dataBranch });
       const branch = await Branch.create({ ...dataBranch }, { transaction: t });
       if (!branch) {
         throw new Error("Failed to create");
       }
-
-      // const products = await Product.findAll();
-      // console.log('my product list == >', products);
-      // const newStockData = products.map((product) => ({
-      //     BranchId: branch.id,
-      //     ProductId: product.id,
-      //     qty: 29,
-      // }));
-      // console.log('my newStockData ==>', newStockData);
-      // await Stock.bulkCreate(newStockData, { transaction: t });
 
       await t.commit();
       res.status(201).send("Create branches success");
@@ -230,21 +197,29 @@ const adminController = {
   },
 
   deleteBranches: async (req, res) => {
+    const transaction = await sequelize.transaction();
+
     try {
       const { id } = req.params;
 
-      const branch = await Branch.findByPk(id);
+      const branch = await Branch.findByPk(id, { transaction });
       if (!branch) {
+        await transaction.rollback();
         return res.status(404).json({
-          message: "Branches not found",
+          message: "Branch not found",
         });
       }
 
-      await branch.destroy();
+      await branch.destroy({ transaction });
+
+      await transaction.commit();
+
       return res.status(200).json({
         message: "Branch deleted successfully",
       });
     } catch (err) {
+      await transaction.rollback();
+
       return res.status(400).json({
         message: err.message,
       });
@@ -340,14 +315,17 @@ const adminController = {
     try {
       const stock = await Stock.findOne({ where: { id: id } });
       if (!stock) {
-        throw new Error('Stock not found');
+        throw new Error("Stock not found");
       }
-      const updatedStock = await stock.update({ qty: data.qty }, { transaction: t });
+      const updatedStock = await stock.update(
+        { qty: data.qty },
+        { transaction: t }
+      );
       if (!updatedStock) {
-        throw new Error('update stock failed');
+        throw new Error("update stock failed");
       }
       await t.commit();
-      res.status(200).send('Update stock success');
+      res.status(200).send("Update stock success");
     } catch (err) {
       await t.rollback();
       return res.status(400).send(err.message);
@@ -358,20 +336,27 @@ const adminController = {
     try {
       const branch = await Branch.findOne({
         where: { id: req.params.id },
-        attributes: ["id", "name", "district", "city", "province", "postalCode"]
+        attributes: [
+          "id",
+          "name",
+          "district",
+          "city",
+          "province",
+          "postalCode",
+        ],
       });
       if (!branch) {
         return res.status(404).json({
-          message: "Branch not found"
+          message: "Branch not found",
         });
       }
       return res.status(200).json({
         message: "Branch data fetched",
-        result: branch
+        result: branch,
       });
     } catch (err) {
       return res.status(400).json({
-        message: err
+        message: err,
       });
     }
   },
@@ -413,6 +398,6 @@ const adminController = {
       });
     }
   },
-}
+};
 
 module.exports = adminController;

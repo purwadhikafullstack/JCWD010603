@@ -12,7 +12,7 @@ export default function UploadPage() {
   async function fetchData() {
     setIsLoading(true);
     axiosInstance
-      .get("/user/" + userSelector?.id)
+      .get("/api/user/" + userSelector?.id)
       .then((res) => {
         setData(res.data.result);
       })

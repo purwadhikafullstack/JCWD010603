@@ -13,12 +13,12 @@ export default function PageProducts() {
   const [categories1, setCategories1] = useState([]);
 
   async function fetchData() {
-    await axiosInstance.get("/product/productall").then((res) => {
+    await axiosInstance.get("/api/product/productall").then((res) => {
       setData(res.data.result);
     });
   }
   async function fetchDataCat() {
-    await axiosInstance.get("/product/category").then((res) => {
+    await axiosInstance.get("/api/product/category").then((res) => {
       setDataCat(res.data.result);
     });
   }
@@ -29,7 +29,7 @@ export default function PageProducts() {
 
     console.log(url);
 
-    await axiosInstance.get("/product/find?" + url).then((res) => {
+    await axiosInstance.get("/api/product/find?" + url).then((res) => {
       setData(res.data.result);
     });
   };
@@ -44,7 +44,7 @@ export default function PageProducts() {
 
     console.log(url);
 
-    await axiosInstance.get("/filter?" + url).then((res) => {
+    await axiosInstance.get("/api/product/filter?" + url).then((res) => {
       setData(res.data.result);
     });
     callback?.();

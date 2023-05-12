@@ -1,5 +1,5 @@
 const path = require("path");
-require("dotenv").config({path: path.resolve("../.env")});
+require("dotenv").config({path: path.resolve(__dirname,"../.env")});
 const express = require("express");
 const bcrypt = require("bcrypt");
 const cors = require("cors");
@@ -46,7 +46,7 @@ app.use(express.json());
 // ===========================
 // NOTE : Add your routes here
 
-app.get("/filter-user", (req, res) => {
+app.get("/api/product/filter-user", (req, res) => {
   const { order } = req.query;
   const { orderby } = req.query;
   const { BranchId } = req.query;
@@ -99,7 +99,7 @@ app.get("/filter-user", (req, res) => {
     });
   });
 });
-app.get("/filter", (req, res) => {
+app.get("/api/product/filter", (req, res) => {
   // console.log(req.query);
   const { order } = req.query;
   const { orderby } = req.query;
@@ -154,7 +154,7 @@ app.get("/filter", (req, res) => {
     });
   });
 });
-app.patch("/users/:id/password", (req, res) => {
+app.patch("/api/users/:id/password", (req, res) => {
   const id = parseInt(req.params.id);
   const { oldPassword, newPassword } = req.body;
   console.log(req.body);
@@ -199,15 +199,15 @@ app.patch("/users/:id/password", (req, res) => {
   );
 });
 
-app.use("/user", route.userRoute);
-app.use("/admin", route.adminRoute);
-app.use("/address", route.addressRoute);
-app.use("/cart", route.cartRoute);
-app.use("/product", route.productRoute);
-app.use("/stock", route.stockRoute);
-app.use("/voucher_discount", route.voucherDiscountRoute);
-app.use("/transaction", route.transactionRoute);
-app.use("/api_rajaongkir", route.rajaOngkirRoute);
+app.use("/api/user", route.userRoute);
+app.use("/api/admin", route.adminRoute);
+app.use("/api/address", route.addressRoute);
+app.use("/api/cart", route.cartRoute);
+app.use("/api/product", route.productRoute);
+app.use("/api/stock", route.stockRoute);
+app.use("/api/voucher_discount", route.voucherDiscountRoute);
+app.use("/api/transaction", route.transactionRoute);
+app.use("/api/api_rajaongkir", route.rajaOngkirRoute);
 app.use("/image_product", express.static(`${__dirname}/public/IMAGE_PRODUCT`));
 app.use("/user/avatar", express.static(`${__dirname}/public/IMAGE_USER`));
 app.use(

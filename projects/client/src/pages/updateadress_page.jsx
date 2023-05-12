@@ -17,7 +17,7 @@ export default function UpdateAdressPage() {
   }, []);
   async function fetchData() {
     await axiosInstance
-      .get("address/editdetailaddress/" + idAddress)
+      .get("/api/address/editdetailaddress/" + idAddress)
       .then((res) => {
         setData(res.data.result[0]);
         console.log(res.data.result[0]);

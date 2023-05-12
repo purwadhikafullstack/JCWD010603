@@ -5,7 +5,6 @@ import {
   Link,
   Divider,
   Icon,
-  useDisclosure,
   Popover,
   PopoverTrigger,
   PopoverContent,
@@ -17,13 +16,9 @@ import {
 } from "@chakra-ui/react";
 
 import { Link as ReachLink } from "react-router-dom";
-import { useRef } from "react";
 import { useSelector } from "react-redux";
 import { AiOutlineMenu } from "react-icons/ai";
-import { FiBell } from "react-icons/fi";
-
 import { SlBasket } from "react-icons/sl";
-
 import { useDispatch } from "react-redux";
 import user_types from "../redux/auth/types";
 import LogoHD from "../asset/logo.png";
