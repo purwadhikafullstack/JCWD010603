@@ -1,6 +1,7 @@
 import {
   Flex, Link, Button
 } from "@chakra-ui/react";
+import { Link as ReachLink } from "react-router-dom";
 import BannerImg from "../asset/bannerImage.png"
 
 export default function Banner() {
@@ -17,7 +18,7 @@ export default function Banner() {
         color: "white",
         boxShadow: "xl",
       }}>
-        <Link href="/product-list-user" _hover={{textStyle:"none"}}>
+        <Link to={"/product-list-user"} as={ReachLink} _hover={{textStyle:"none"}}>
           Shop now
         </Link>
       </Button>
