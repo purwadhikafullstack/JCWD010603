@@ -122,7 +122,6 @@ export default function Register() {
     fetchCity();
   }, [idProv]);
 
-
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -386,6 +385,7 @@ export default function Register() {
               <Select
                 placeholder="Select"
                 name="province"
+                bgColor="white"
                 textAlign={"center"}
                 onChange={(e) => {
                   formik.setFieldValue("province", e.target.value);
@@ -416,6 +416,7 @@ export default function Register() {
                 <Select
                   placeholder="Select "
                   name="city"
+                  bgColor="white"
                   textAlign={"center"}
                   onChange={(e) => formik.setFieldValue("city", e.target.value)}
                 >
