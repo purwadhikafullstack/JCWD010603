@@ -1,4 +1,5 @@
 import {
+  Spinner,
   Flex,
   Button,
   Stack,
@@ -11,23 +12,15 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
-  FormControl,
-  FormLabel,
-  Input,
-  useToast,
   Heading,
   IconButton,
   Tooltip,
   Table,
   Tr,
   Td,
-  Thead,
   Tbody,
   Select,
-  FormHelperText,
   Grid,
-  Textarea,
-  border,
   Popover,
   PopoverTrigger,
   PopoverContent,
@@ -35,13 +28,9 @@ import {
   PopoverHeader,
   PopoverCloseButton,
   PopoverBody,
-  PopoverFooter,
-  Text,
   Box,
   TableContainer,
-  Tfoot,
   TableCaption,
-  Th,
   GridItem,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
@@ -68,6 +57,7 @@ export default function Record() {
   const [order, setOrder] = useState("DESC");
   const [detailTrans, setDetailTrans] = useState({});
   const [transactionStatus, setTransactionStatus] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const superAdmin = JSON.parse(localStorage.getItem("data"))
     ? JSON.parse(localStorage.getItem("data")).isSuperAdmin
@@ -178,13 +168,6 @@ export default function Record() {
       setTransactionStatus(res.data.result);
     });
   };
-  useEffect(() => {
-    superAdmin ? fetchBranch() : fetchStatus();
-  }, []);
-  // console.log(transactionStatus);
-  useEffect(() => {
-    superAdmin ? fetchAllTrans() : fetchAllTransByBranch();
-  }, [page, order]);
 
   // FUNCTION CANCEL ORDER
   async function cancelOrder(orderId) {
@@ -211,8 +194,23 @@ export default function Record() {
     }
   }
 
-  console.log(allBranchTrans);
+  useEffect(() => {
+    superAdmin ? fetchBranch() : fetchStatus();
+  }, []);
+  useEffect(() => {
+    superAdmin ? fetchAllTrans() : fetchAllTransByBranch();
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+  }, [page, order]);
+
   return (
+    <>
+    {isLoading ? (
+      <Center w={"100vw"} h="100vh" alignContent={"center"}>
+        <Spinner size={"xl"} thickness="10px" color="blue.500" />
+      </Center>
+    ) : (
     <>
       <Flex w="100%" bg="gray.100">
         <SidebarAdmin />
@@ -254,7 +252,28 @@ export default function Record() {
                     margin={0}
                     padding={0}
                   >
-                    {allBranchTrans?.map((val, idx) => {
+                    {
+                      !allBranchTrans ?
+                      <Tr
+                            w="inherit"
+                            _hover={{
+                              backgroundColor: "gray.200",
+                            }}
+                          >
+                          <Flex
+                          flexDir={"column"}
+                          w="inherit"
+                          h="440px"
+                              justify={"center"}
+                              textAlign={"center"} fontSize={["xl", "3xl"]}
+                  fontWeight="semibold"
+                            >
+                            Transactions is empty
+                              </Flex>
+                          </Tr>
+                      :
+                      
+                      allBranchTrans?.map((val, idx) => {
                       return (
                         <Tr
                           w={"inherit"}
@@ -402,6 +421,10 @@ export default function Record() {
                     })}
                     {/* </Tbody> */}
                   </Table>
+
+                    {
+                      allBranchTrans ?
+                    <>
                   <Box w={"100%"} textAlign={"right"}>
                     Total Data: {rows} | Page: {rows ? page : 0} of {pages}
                   </Box>
@@ -412,6 +435,8 @@ export default function Record() {
                       className="pagination is-small is-centered"
                     >
                       <ReactPaginate
+                      pageRangeDisplayed={1}
+            marginPagesDisplayed={2}
                         previousLabel={"< Prev"}
                         nextLabel={"Next >"}
                         pageCount={pages}
@@ -425,7 +450,17 @@ export default function Record() {
                       />
                     </nav>
                   </Box>
+                  </>
+                  :
+                  null
+                    }
                 </Flex>
+
+                {
+                  allBranchTrans ?
+                
+
+
                 <Flex flexDirection={"row-reverse"} gap={"10px"}>
                   {superAdmin ? (
                     <Select
@@ -470,10 +505,15 @@ export default function Record() {
                     <option value="ASC">Earliest Transactions</option>
                   </Select>
                 </Flex>
+                :
+                      null
+      }
               </Stack>
+
             </Flex>
           </Center>
         </Flex>
+                      
       </Flex>
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
@@ -516,6 +556,8 @@ export default function Record() {
           </ModalFooter>
         </ModalContent>
       </Modal>
+    </>
+    )}
     </>
   );
 }

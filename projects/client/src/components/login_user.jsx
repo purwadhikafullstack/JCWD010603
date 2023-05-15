@@ -12,6 +12,7 @@ import {
   Alert,
   Icon,
   AlertIcon,
+  IconButton,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { userLogin } from "../redux/middleware/userauth";
@@ -123,7 +124,7 @@ export default function Login() {
                         <Icon
                           boxSize={"5"}
                           as={FaEyeSlash}
-                          color="#white"
+                          color="white"
                           sx={{
                             _hover: {
                               cursor: "pointer",
@@ -134,7 +135,7 @@ export default function Login() {
                         <Icon
                           boxSize={"5"}
                           as={FaEye}
-                          color="#white"
+                          color="white"
                           sx={{
                             _hover: {
                               cursor: "pointer",

@@ -11,12 +11,20 @@ import {
   FaCog,
   FaFolder,
 } from "react-icons/fa";
+import {AiOutlineHistory} from "react-icons/ai";
 import { useDispatch } from "react-redux";
 import user_types from "../redux/auth/types";
+
+import { useNavigate } from "react-router-dom";
 import { Link as ReachLink } from "react-router-dom";
 export default function SidebarAdmin() {
+  let navigate = useNavigate();
   let dispatch = useDispatch();
+
   const toast = useToast();
+  const superAdmin = JSON.parse(localStorage.getItem("data"))
+  ? JSON.parse(localStorage.getItem("data")).isSuperAdmin
+  : null;
 
   const linkStyles = {
     fontSize: "2xl",
@@ -45,7 +53,9 @@ export default function SidebarAdmin() {
       type: user_types.USER_LOGOUT,
     });
     localStorage.clear();
-    window.location.reload(true);
+    // window.location.reload(true);
+    navigate('/admin_login')
+
   }
   const userData = JSON.parse(localStorage.getItem("data"));
 
@@ -102,6 +112,40 @@ export default function SidebarAdmin() {
               Categories
             </Text>
           </Link>
+
+
+          {
+            superAdmin === 0 ? 
+            <Link
+            sx={linkStyles}
+            href="/record-stock"
+            display="flex"
+            alignItems="center"
+            className="sidebar-link"
+            onClick={() => {
+              if (!userData || userData.isSuperAdmin) {
+                toast({
+                  title: "Unauthorized",
+                  description: "You are not authorized to access this page.",
+                  status: "warning",
+                  duration: 3000,
+                  isClosable: true,
+                });
+              }
+            }}
+          >
+            <AiOutlineHistory />
+            <Text sx={spacing} className="sidebar-text">
+              Record Stock
+            </Text>
+          </Link>
+          :
+          null
+          }
+
+          
+
+
           <Link
             sx={linkStyles}
             to="/all-branch-transactions"
