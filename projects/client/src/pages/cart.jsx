@@ -29,7 +29,7 @@ import Navbar from "../components/navbar"; //loggedin
 import { axiosInstance } from "../config/config";
 import { BiTrash, BiEdit, BiChevronRight, BiChevronLeft } from "react-icons/bi";
 import { Link as ReachLink } from "react-router-dom";
-import { ArrowBackIcon } from "@chakra-ui/icons";
+import { ArrowBackIcon } from '@chakra-ui/icons';
 import { useNavigate } from "react-router-dom";
 
 export default function Cart() {

@@ -1,6 +1,9 @@
-import { Flex, Link, Button } from "@chakra-ui/react";
-import BannerImg from "../asset/bannerImage.png";
+import {
+  Flex, Link, Button
+} from "@chakra-ui/react";
 import { Link as ReachLink } from "react-router-dom";
+import BannerImg from "../asset/bannerImage.png"
+
 export default function Banner() {
   return (
     <Flex

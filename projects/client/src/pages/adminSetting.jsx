@@ -97,7 +97,7 @@ export default function AdminSetting() {
   const fetchProvince = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8000/api/api_rajaongkir/province"
+        "/api/api_rajaongkir/province"
       );
       const result = response.data;
 
@@ -117,7 +117,7 @@ export default function AdminSetting() {
   const fetchCity = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/api_rajaongkir/city/${idProv}`
+        `/api/api_rajaongkir/city/${idProv}`
       );
       const result = response.data;
       setCity(result);

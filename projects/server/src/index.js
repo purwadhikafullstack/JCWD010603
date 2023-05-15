@@ -1,5 +1,5 @@
 const path = require("path");
-require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
+require("dotenv").config({path: path.resolve(__dirname,"../.env")});
 const express = require("express");
 const bcrypt = require("bcrypt");
 const cors = require("cors");
@@ -19,7 +19,7 @@ const app = express();
 // );
 app.use(cors());
 const options = {
-  origin: "http://localhost:3000",
+  origin: "https://jcwd010603.purwadhikabootcamp.com",
 };
 app.use(cors(options));
 

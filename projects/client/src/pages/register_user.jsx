@@ -12,7 +12,7 @@ export default function RegisterPage() {
 
   // const fetchProvince = async () => {
   //   await axiosInstance
-  //     .get("http://localhost:8000/api_rajaongkir/province")
+  //     .get("https://jcwd010603.purwadhikabootcamp.com/api_rajaongkir/province")
   //     .then((res) => {
   //       setProvince([...province, res.data]);
   //     })
