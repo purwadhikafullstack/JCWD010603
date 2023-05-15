@@ -63,7 +63,7 @@ export default function UpdateAdress(props) {
   const fetchProvince = async () => {
     try {
       const response = await axiosInstance.get(
-        "https://jcwd010603.purwadhikabootcamp.com/api/api_rajaongkir/province"
+        "/api/api_rajaongkir/province"
       );
       const result = response.data;
 
@@ -79,7 +79,7 @@ export default function UpdateAdress(props) {
   const fetchCity = async () => {
     try {
       const response = await axiosInstance.get(
-        `https://jcwd010603.purwadhikabootcamp.com/api/api_rajaongkir/city/${idProv}`
+        `/api/api_rajaongkir/city/${idProv}`
       );
       const result = response.data;
       setCityAPI(result);

@@ -53,7 +53,7 @@ export default function Navbar(props) {
         >
           <Flex px={3} gap={5}>
             <Flex alignItems={"center"}>
-              <Link href="/">
+              <Link to="/" as={ReachLink}>
                 <Image
                   fontSize={"26px"}
                   color="#F68522"
@@ -65,7 +65,7 @@ export default function Navbar(props) {
               <Flex px={"70px"} alignItems="center"></Flex>
 
               <Flex px={3}>
-                <Link href="/cart">
+                <Link to="/cart" as={ReachLink}>
                   <Icon
                     boxSize={"7"}
                     as={SlBasket}
@@ -105,14 +105,20 @@ export default function Navbar(props) {
                     <List fontSize={"14px"} color="#7D7D7D" gap={5}>
                       <Divider orientation="horizontal" m={2} />
                       <ListItem>
-                        <Link to={"/update-profile"} as={ReachLink}>
-                          UPDATE PROFILE
+                        <Link to="/user-transactions" as={ReachLink}>
+                          TRANSACTION LIST
                         </Link>
                       </ListItem>
                       <Divider orientation="horizontal" m={2} />
                       <ListItem>
-                        <Link to={"/list-address"} as={ReachLink}>
-                          UPDATE ADDRESS
+                        <Link to="/update-profile" as={ReachLink}>
+                          PROFILE
+                        </Link>
+                      </ListItem>
+                      <Divider orientation="horizontal" m={2} />
+                      <ListItem>
+                        <Link to="/list-address" as={ReachLink}>
+                          ADDRESS
                         </Link>
                       </ListItem>
                       <Divider orientation="horizontal" m={2} />
@@ -123,7 +129,9 @@ export default function Navbar(props) {
                       </ListItem>
                       <Divider orientation="horizontal" m={2} />
                       <ListItem>
-                        <Link onClick={logOut}>LOGOUT </Link>{" "}
+                        <Link to="/userlogin" as={ReachLink} onClick={logOut}>
+                          LOGOUT{" "}
+                        </Link>{" "}
                       </ListItem>
                     </List>
                   </PopoverBody>

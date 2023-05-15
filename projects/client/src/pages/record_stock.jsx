@@ -1,4 +1,5 @@
 import {
+  Spinner,
   Flex,
   Button,
   Stack,
@@ -36,8 +37,10 @@ import { BiDetail } from "react-icons/bi";
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-
+import { useNavigate } from "react-router-dom";
+  
 export default function Record() {
+  let navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenDesc,
@@ -49,6 +52,8 @@ export default function Record() {
 
   const [msg, setMsg] = useState("");
   const [desc, setDesc] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+
 
   const NotifyError = useToast({
     title: "Failed",
@@ -89,6 +94,8 @@ export default function Record() {
     setDesc({ ...e });
     onOpenDesc();
   };
+
+   console.log(recordStock);
 
   const editStock = (id) => {
     axiosInstance.get(`/api/product/productbybranch/${id}`).then((res) => {
@@ -141,11 +148,23 @@ export default function Record() {
   });
 
   useEffect(() => {
+    JSON.parse(localStorage.getItem("data")).isSuperAdmin ?
+    navigate('/dashboard')
+    :
     fetchRecord(JSON.parse(localStorage.getItem("data")).BranchId);
     editStock(JSON.parse(localStorage.getItem("data")).BranchId);
+    setIsLoading(false)
   }, []);
+ 
+
 
   return (
+    <>
+    {isLoading ? (
+      <Center w={"100vw"} h="100vh" alignContent={"center"}>
+        <Spinner size={"xl"} thickness="10px" color="blue.500" />
+      </Center>
+    ) : (
     <>
       <Flex w="100%" bg="gray.100">
         <SidebarAdmin />
@@ -211,11 +230,30 @@ export default function Record() {
                       </Tr>
                     </Thead>
                     <Tbody>
-                      {recordStock?.map((val, idx) => {
+                      { !recordStock.length?
+                        <Tr
+                            w="inherit"
+                            _hover={{
+                              backgroundColor: "gray.200",
+                            }}
+                          >
+                          <Flex
+                          flexDir={"column"}
+                          w="700px"
+                          h="440px"
+                              justify={"center"}
+                              textAlign={"center"} fontSize={["xl", "3xl"]}
+                  fontWeight="semibold"
+                            >
+                            Record stock is empty
+                              </Flex>
+                          </Tr>
+                        :
+                        recordStock?.map((val, idx) => {
                         return (
                           <Tr
                             key={idx}
-                            w="100%"
+                            w="inherit"
                             p="3px 2px 2px 20px"
                             borderBottom="1px solid #2C3639"
                             _hover={{
@@ -388,6 +426,8 @@ export default function Record() {
           </ModalFooter>
         </ModalContent>
       </Modal>
+    </>
+    )}
     </>
   );
 }

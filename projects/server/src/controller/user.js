@@ -19,7 +19,8 @@ const Voucher = db.voucher;
 const userController = {
   register: async (req, res) => {
     const data = req.body;
-
+    console.log(req.body);
+    
     const t = await sequelize.transaction();
     try {
       // check password
@@ -53,7 +54,7 @@ const userController = {
       if (!userDetail) {
         throw new Error("Create user detail failed");
       }
-
+ 
       const dataAddress = {
         UserId: user.dataValues.id,
         address: data.address,
@@ -75,7 +76,7 @@ const userController = {
       const token = await jwt.sign({ ...user.dataValues }, secret_key, {
         expiresIn: "1d",
       });
-      const href = `http://localhost:3000/verify_email?token=${token}`;
+      const href = `http://localhost:3000/verify-email?token=${token}`;
       // verify via email
       const mail = await mailer(
         {
@@ -919,6 +920,53 @@ const userController = {
         result: result,
       });
     } catch (err) {
+      return res.status(400).json({
+        message: err,
+      });
+    }
+  },
+  changePassword: async (req, res) => {
+    const t = await sequelize.transaction();
+    try {
+      const id = parseInt(req.params.id);
+      const { oldPassword, newPassword } = req.body;
+      const results = await User.findOne(
+        {
+          where: {
+            id: id,
+          },
+        },
+        { transaction: t }
+      );
+
+      const password = results.password;
+
+      const isPasswordCorrect = await bcrypt.compare(oldPassword, password);
+      if (!isPasswordCorrect) {
+        return res.status(401).json({
+          message: "Old password is incorrect",
+        });
+      }
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+      const result = await User.update(
+        {
+          password: hashedPassword,
+        },
+        {
+          where: {
+            id: id,
+          },
+        },
+        { transaction: t }
+      );
+      await t.commit();
+      return res.status(200).json({
+        message: "Password updated successfully",
+        result: result,
+      });
+    } catch (err) {
+      await t.rollback();
       return res.status(400).json({
         message: err,
       });

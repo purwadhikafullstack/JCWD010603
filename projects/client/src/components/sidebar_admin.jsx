@@ -11,12 +11,20 @@ import {
   FaCog,
   FaFolder,
 } from "react-icons/fa";
+import {AiOutlineHistory} from "react-icons/ai";
 import { useDispatch } from "react-redux";
 import user_types from "../redux/auth/types";
 
+import { useNavigate } from "react-router-dom";
+import { Link as ReachLink } from "react-router-dom";
 export default function SidebarAdmin() {
+  let navigate = useNavigate();
   let dispatch = useDispatch();
+
   const toast = useToast();
+  const superAdmin = JSON.parse(localStorage.getItem("data"))
+  ? JSON.parse(localStorage.getItem("data")).isSuperAdmin
+  : null;
 
   const linkStyles = {
     fontSize: "2xl",
@@ -27,7 +35,7 @@ export default function SidebarAdmin() {
       bgColor: "rgba(255, 255, 255, 0.05)",
       transform: "scale(1.05)",
       transition: "1ms all",
-      color: 'white'
+      color: "white",
     },
     _active: {
       transform: "scale(1.04)",
@@ -45,7 +53,9 @@ export default function SidebarAdmin() {
       type: user_types.USER_LOGOUT,
     });
     localStorage.clear();
-    window.location.reload(true);
+    // window.location.reload(true);
+    navigate('/admin_login')
+
   }
   const userData = JSON.parse(localStorage.getItem("data"));
 
@@ -67,7 +77,8 @@ export default function SidebarAdmin() {
 
           <Link
             sx={linkStyles}
-            href="/dashboard"
+            to="/dashboard"
+            as={ReachLink}
             display="flex"
             alignItems="center"
             className="sidebar-link"
@@ -78,7 +89,8 @@ export default function SidebarAdmin() {
             </Text>
           </Link>
           <Link
-            href="/list-product"
+            to="/list-product"
+            as={ReachLink}
             sx={linkStyles}
             display="flex"
             alignItems="center"
@@ -91,7 +103,6 @@ export default function SidebarAdmin() {
           </Link>
           <Link
             sx={linkStyles}
-            href="/admin_category"
             display="flex"
             alignItems="center"
             className="sidebar-link"
@@ -101,9 +112,44 @@ export default function SidebarAdmin() {
               Categories
             </Text>
           </Link>
+
+
+          {
+            superAdmin === 0 ? 
+            <Link
+            sx={linkStyles}
+            href="/record-stock"
+            display="flex"
+            alignItems="center"
+            className="sidebar-link"
+            onClick={() => {
+              if (!userData || userData.isSuperAdmin) {
+                toast({
+                  title: "Unauthorized",
+                  description: "You are not authorized to access this page.",
+                  status: "warning",
+                  duration: 3000,
+                  isClosable: true,
+                });
+              }
+            }}
+          >
+            <AiOutlineHistory />
+            <Text sx={spacing} className="sidebar-text">
+              Record Stock
+            </Text>
+          </Link>
+          :
+          null
+          }
+
+          
+
+
           <Link
             sx={linkStyles}
-            href="/all-branch-transactions"
+            to="/all-branch-transactions"
+            as={ReachLink}
             display="flex"
             alignItems="center"
             className="sidebar-link"
@@ -115,7 +161,8 @@ export default function SidebarAdmin() {
           </Link>
           <Link
             sx={linkStyles}
-            href="/sales_report"
+            to="/sales_report"
+            as={ReachLink}
             display="flex"
             alignItems="center"
             className="sidebar-link"
@@ -127,7 +174,8 @@ export default function SidebarAdmin() {
           </Link>
           <Link
             sx={linkStyles}
-            href="/discount_voucher"
+            to="/discount_voucher"
+            as={ReachLink}
             display="flex"
             alignItems="center"
             className="sidebar-link"
@@ -139,7 +187,8 @@ export default function SidebarAdmin() {
           </Link>
           <Link
             sx={linkStyles}
-            href="/admin_setting"
+            to="/admin_setting"
+            as={ReachLink}
             display="flex"
             alignItems="center"
             className="sidebar-link"
@@ -166,6 +215,8 @@ export default function SidebarAdmin() {
           <Link
             fontSize="xl"
             mr={2}
+            to="/admin_login"
+            as={ReachLink}
             display="flex"
             alignItems="center"
             onClick={logOut}
