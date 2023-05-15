@@ -70,8 +70,9 @@ export default function ChangePassword({ id }) {
       return;
     }
     try {
+      const userId = localStorage.getItem("userID");
       const response = await axiosInstance.patch(
-        `/api/users/${userSelector?.id}/password`,
+        `/api/user/password/${userId}`,
         {
           oldPassword,
           newPassword,

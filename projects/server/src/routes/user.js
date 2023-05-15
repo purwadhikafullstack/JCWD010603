@@ -31,6 +31,7 @@ router.post("/request-reset", userController.resetRequest);
 router.post("/reset-password/:token", userController.resetPassword);
 router.get("/update-user", userController.getUserDetail);
 router.get("/:UserId", userController.getUserbyUserId);
+router.patch("/password/:id", userController.changePassword);
 // router.get("/countuser/:id", userController.getCountUserByBranch);
 router.patch("/editprofile/:id", userController.editProfile);
 module.exports = router;

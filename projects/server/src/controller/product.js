@@ -318,73 +318,84 @@ const productController = {
       });
     }
   },
-  // getFilterProductByNameByBranch: async (req, res) => {
-  // const { order } = req.query;
-  //   const { orderby } = req.query;
-  //   const { BranchId } = req.query;
-  //   delete req.query.order;
-  //   delete req.query.orderby;
-  //   delete req.query.BranchId;
-  //   const arrQuery = Object.entries(req.query);
-  //   let categories = arrQuery.filter((val) => {
-  //     return val[0];
-  //   });
-  //   const sortBy = req.query.sortBy || "createdAt";
-  //   const order = req.query.order || "DESC";
-  //   const id = req.params.id;
-  //   const t = await sequelize.transaction();
-  //   const name = req.query.name;
-  //   const branch = req.query.branch;
+  getFilterProductByNameByBranch: async (req, res, next) => {
+    const { filter, sort, BranchId, order } = req.query;
+    const paramQuerySQL = {};
 
-  //   try {
-  //     const filterProduct = await Product.findAll(
-  //       {
-  //         attributes: [
-  //           "name",
-  //           "price",
-  //           "imgProduct",
-  //           [Sequelize.literal("Category.name"), "categoryName"],
-  //         ],
-  //         include: [
-  //           {
-  //             model: Category,
-  //             attributes: ["name"],
-  //           },
-  //         ],
-  //         where: {
-  //           [Op.and]: [
-  //             {
-  //                 if(categoryName.length){
-  //                   categoryName.map((val,idx)=>{
-  //                     idx ? categoryName: {[Op.or]:
+    // filtering by category
+    if (filter !== "" && typeof filter !== "undefined") {
+      const query = filter.category.split(",").map((item) => ({
+        [Op.eq]: item,
+      }));
 
-  //                   })
-  //                 }
-  //                 [Op.like]: `%${name}%`,
-  //               },
-  //             },
-  //             { BranchId: branch },
-  //           ],
-  //         },
+      paramQuerySQL.where = {
+        [Op.and]: [{ BranchId: BranchId }, { CategoryId: { [Op.or]: query } }],
+      };
+    }
 
-  //         order: [[sortBy, order]],
-  //       },
-  //       { transaction: t }
-  //     );
-  //    if (!result) {
-  //       throw new Error("Fetching all product failed");
-  //     }
+    // sorting
+    if (sort !== "" && typeof sort !== "undefined") {
+      let query;
+      if (sort.charAt(0) !== "-") {
+        query = [[sort, order]];
+      } else {
+        query = [[sort.replace("-", ""), order]];
+      }
 
-  //     await t.commit();
-  //     res.status(201).json({
-  //       result: filterProduct,
-  //     });
-  //   } catch (err) {
-  //     await t.rollback();
-  //     return res.status(401).json({ message: err.message });
-  //   }
-  // },
+      paramQuerySQL.order = query;
+    }
 
+    try {
+      const data = await Product.findAll(paramQuerySQL);
+      if (data) {
+        res.status(200).json({
+          message: "filter product berhasil",
+          result: data,
+        });
+      }
+    } catch (err) {
+      next(err);
+    }
+  },
+  getFilterProductByNameByAllBranch: async (req, res, next) => {
+    const { filter, sort, order } = req.query;
+    const paramQuerySQL = {};
+
+    // filtering by category
+    if (filter !== "" && typeof filter !== "undefined") {
+      const query = filter.category.split(",").map((item) => ({
+        [Op.eq]: item,
+      }));
+
+      paramQuerySQL.where = {
+        CategoryId: { [Op.or]: query },
+      };
+    }
+
+    // sorting
+    if (sort !== "" && typeof sort !== "undefined") {
+      let query;
+      if (sort.charAt(0) !== "-") {
+        query = [[sort, order]];
+      } else {
+        query = [[sort.replace("-", ""), order]];
+      }
+
+      paramQuerySQL.order = query;
+    }
+
+    try {
+      const data = await Product.findAll(paramQuerySQL);
+      if (data) {
+        res.status(200).json({
+          message: "filter product berhasil",
+          result: data,
+        });
+      }
+    } catch (err) {
+      next(err);
+    }
+  },
   getProductById: async (req, res) => {
     try {
       const id = req.params.id;

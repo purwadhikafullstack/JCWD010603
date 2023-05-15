@@ -14,8 +14,9 @@ import {
 import {AiOutlineHistory} from "react-icons/ai";
 import { useDispatch } from "react-redux";
 import user_types from "../redux/auth/types";
-import { useNavigate } from "react-router-dom";
 
+import { useNavigate } from "react-router-dom";
+import { Link as ReachLink } from "react-router-dom";
 export default function SidebarAdmin() {
   let navigate = useNavigate();
   let dispatch = useDispatch();
@@ -34,7 +35,7 @@ export default function SidebarAdmin() {
       bgColor: "rgba(255, 255, 255, 0.05)",
       transform: "scale(1.05)",
       transition: "1ms all",
-      color: 'white'
+      color: "white",
     },
     _active: {
       transform: "scale(1.04)",
@@ -76,7 +77,8 @@ export default function SidebarAdmin() {
 
           <Link
             sx={linkStyles}
-            href="/dashboard"
+            to="/dashboard"
+            as={ReachLink}
             display="flex"
             alignItems="center"
             className="sidebar-link"
@@ -87,7 +89,8 @@ export default function SidebarAdmin() {
             </Text>
           </Link>
           <Link
-            href="/list-product"
+            to="/list-product"
+            as={ReachLink}
             sx={linkStyles}
             display="flex"
             alignItems="center"
@@ -100,7 +103,6 @@ export default function SidebarAdmin() {
           </Link>
           <Link
             sx={linkStyles}
-            href="/admin_category"
             display="flex"
             alignItems="center"
             className="sidebar-link"
@@ -146,7 +148,8 @@ export default function SidebarAdmin() {
 
           <Link
             sx={linkStyles}
-            href="/all-branch-transactions"
+            to="/all-branch-transactions"
+            as={ReachLink}
             display="flex"
             alignItems="center"
             className="sidebar-link"
@@ -158,7 +161,8 @@ export default function SidebarAdmin() {
           </Link>
           <Link
             sx={linkStyles}
-            href="/sales_report"
+            to="/sales_report"
+            as={ReachLink}
             display="flex"
             alignItems="center"
             className="sidebar-link"
@@ -170,7 +174,8 @@ export default function SidebarAdmin() {
           </Link>
           <Link
             sx={linkStyles}
-            href="/discount_voucher"
+            to="/discount_voucher"
+            as={ReachLink}
             display="flex"
             alignItems="center"
             className="sidebar-link"
@@ -182,7 +187,8 @@ export default function SidebarAdmin() {
           </Link>
           <Link
             sx={linkStyles}
-            href="/admin_setting"
+            to="/admin_setting"
+            as={ReachLink}
             display="flex"
             alignItems="center"
             className="sidebar-link"
@@ -209,6 +215,8 @@ export default function SidebarAdmin() {
           <Link
             fontSize="xl"
             mr={2}
+            to="/admin_login"
+            as={ReachLink}
             display="flex"
             alignItems="center"
             onClick={logOut}

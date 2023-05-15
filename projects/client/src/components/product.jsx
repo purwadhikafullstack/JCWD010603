@@ -453,9 +453,18 @@ export default function ProductPage(props) {
                 <Icon as={AiOutlineSearch} justifyContent="center"></Icon>
               </Center>{" "}
             </Flex>
-            <Button leftIcon={<TbFilter />} colorScheme="teal" onClick={onOpen}>
-              Filter
+
+            <Button
+              leftIcon={<TbFilter />}
+              colorScheme="teal"
+              onClick={() => {
+                props.setCat([]);
+              }}
+            >
+              {" "}
+              <Flex onClick={onOpen}>Filter </Flex>
             </Button>
+
             <Drawer
               isOpen={isOpen}
               placement="right"
@@ -526,7 +535,7 @@ export default function ProductPage(props) {
                                   <Checkbox
                                     colorScheme="cyan"
                                     onChange={(e) => {
-                                      CheckCategories(e, `${product?.name}`);
+                                      CheckCategories(e, `${product?.id}`);
                                     }}
                                   >
                                     {product?.name}
@@ -756,6 +765,36 @@ export default function ProductPage(props) {
         </Flex>
 
         {data === null || undefined ?
+
+        <Center gap={10}>
+          {data.length > 0 && (
+            <Flex gap={5}>
+              <Button onClick={() => selectPageHandle(page - 1)}>
+                <BiLeftArrowAlt />
+              </Button>
+              <Flex gap={5}>
+                {[...Array(Math.ceil(data.length / 6))].map((n, i) => {
+                  return (
+                    <>
+                      <Box
+                        className={`num ${page === i + 1 ? `numActive` : ""}`}
+                        onClick={() => selectPageHandle(i + 1)}
+                        // bgColor="#2C3639"
+                      >
+                        {i + 1}
+                      </Box>
+                    </>
+                  );
+                })}
+              </Flex>
+              <Button onClick={() => selectPageHandle(page + 1)}>
+                {" "}
+                <BiRightArrowAlt />
+              </Button>
+            </Flex>
+          )}
+        </Center>
+      </Flex>
 
         <Flex w="100%" h="50px" m="0 auto" justify={"center"} align="center">
           <nav

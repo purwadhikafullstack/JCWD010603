@@ -218,7 +218,7 @@ export default function UserTrans() {
     setIdTrans(e);
     onOpen1();
   };
-  
+
   const cancelStatus2 = (e) => {
     setIdTrans(e);
     onOpen2();
@@ -417,7 +417,7 @@ export default function UserTrans() {
                           {val.Transaction_status?.name}
                         </Button>
                       )
-                      
+
                       }
                       {/* <Flex mr={4} py={2}>
                           <IconButton
@@ -555,7 +555,7 @@ export default function UserTrans() {
           <ModalBody paddingBottom={9}>
             <Center display={"Grid"} textAlign={"center"} rowGap={"35px"}>
               <Text fontSize={"lg"} fontWeight={"semibold"}>
-                Are you sure the product has been arrived at destination? 
+                Are you sure the product has been arrived at destination?
               </Text>
               <Flex justify={"center"} columnGap={"35px"}>
                 {/* <Button sx={uploadButtonStyle}>
@@ -571,10 +571,10 @@ export default function UserTrans() {
                     statusTrans({
                       id: idTrans.id,
                       status: 4,
-                      msg: `Order Complete`, 
+                      msg: `Order Complete`,
                     });
                     onClose()
-                  }}  
+                  }}
                   sx={completeButtonModalStyle}
                 >
                   Order Complete
@@ -613,7 +613,7 @@ export default function UserTrans() {
                     statusTrans({
                       id: idTrans.id,
                       status: 5,
-                      msg: `Order Canceled`, 
+                      msg: `Order Canceled`,
                     });
                   }} ml={3}>
                     Cancel this order
