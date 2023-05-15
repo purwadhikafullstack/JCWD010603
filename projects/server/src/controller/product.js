@@ -501,6 +501,74 @@ const productController = {
       });
     }
   },
+  getProductFilterBranch : async (req,res) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const search = parseInt(req.query.search) || "";
+    const offset = limit * (page - 1);
+    const sortBy = req.query.sortBy || "createdAt";
+    const order = req.query.order || "DESC";
+    const id = req.params.id;
+    const t = await sequelize.transaction();
+
+    try {
+      const totalRows = await Product.count(
+        {
+          where: {
+            [Op.and]: [
+              {
+                BranchId: id,
+              },
+            ],
+          },
+        },
+        { transaction: t }
+      );
+      if (totalRows == 0) {
+        throw new Error("Fetching data failed");
+      }
+
+      const totalPage = Math.ceil(totalRows / limit);
+      const result = await Product.findAll(
+        {
+          where: {
+            [Op.and]: [
+              {
+                BranchId: id,
+              },
+            ],
+          },
+          include: [
+            {
+              model: Category,
+              attributes: ["name"],
+            },
+          ],
+          offset: offset,
+          limit: limit,
+          order: [[sortBy, order]],
+        },
+        { transaction: t }
+      );
+
+      if (!result) {
+        throw new Error("Fetching all product branch failed");
+      }
+      
+      await t.commit();
+      res.status(201).json({
+        result: result,
+        page: page,
+        limit: limit,
+        totalRows: totalRows,
+        totalPage: totalPage,
+        order: order,
+      });
+    } catch (err) {
+      await t.rollback();
+      return res.status(401).json({ message: err.message });
+    }
+  }
 };
 
 module.exports = productController;

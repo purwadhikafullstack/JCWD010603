@@ -24,5 +24,6 @@ router.get("/finduser", productController.getProductByNameByBranch);
 router.get(
   "/productsuggestion/:BranchId",
   productController.getProductSuggestion
-);
+  );
+  router.get("/allProductBranch/:id", productController.getProductFilterBranch);
 module.exports = router;

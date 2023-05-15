@@ -51,16 +51,26 @@ import { BsPlusCircleFill } from "react-icons/bs";
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import ReactPaginate from "react-paginate";
+import "bulma/css/bulma.css";
 
 export default function ProductPage(props) {
+
+  const page = props.page;
+  const pages = props.pages;
+  const limit = props.limit;
+  const rows= props.rows;
   const data = props.data;
   const datacat = props.datacat;
   const fetchData = props.fetchData;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const firstField = React.useRef();
+  const [selected, setSelected] = useState(0)
   const [search, setSearch] = useState("");
   const [product, setProduct] = useState([]);
-  const [page, setPage] = useState(1);
+  const changePage = ({ selected }) => {
+    props.select(parseInt(selected) + 1);
+  };
 
   const {
     isOpen: isOpenModal,
@@ -78,16 +88,6 @@ export default function ProductPage(props) {
     onClose: onCloseDelModal,
   } = useDisclosure();
   const initialRef = React.useRef(null);
-
-  const selectPageHandle = (selectPage) => {
-    if (
-      selectPage >= 1 &&
-      selectPage <= Math.ceil(data.length / 6) &&
-      selectPage !== page
-    ) {
-      setPage(selectPage);
-    }
-  };
   const CheckCategories = (e, param) => {
     let newCat;
     if (e.target.checked) {
@@ -224,11 +224,8 @@ export default function ProductPage(props) {
     const result = response.data.result;
     setCat(result);
   };
-  useEffect(() => {
-    fetchCategory();
-    setUserData(JSON.parse(localStorage.getItem("data")));
-  }, []);
-
+  
+  
   const submitData = () => {
     formik.setFieldValue("BranchId", userData?.BranchId ?? 0);
     formik.handleSubmit();
@@ -397,6 +394,11 @@ export default function ProductPage(props) {
       }
     },
   });
+  
+  useEffect(() => {
+    fetchCategory();
+    setUserData(JSON.parse(localStorage.getItem("data")));
+  }, []);
   return (
     <>
       <Flex
@@ -629,7 +631,11 @@ export default function ProductPage(props) {
           overflowY={"auto"}
           h="full"
         >
-          {data.slice(page * 6 - 6, page * 6)?.map((product, index) => {
+
+        
+          {data === null || undefined ?
+
+            data?.map((product, index) => {
             return (
               <>
                 <Center
@@ -729,76 +735,53 @@ export default function ProductPage(props) {
                 </Center>
               </>
             );
-          })}
+          })
+          :
+          <Flex
+                direction="column"
+                h="100px"
+                align="center"
+                justify="center"
+                w="100%"
+              >
+                <Text
+                  textAlign="center"
+                  fontSize={["xl", "3xl"]}
+                  fontWeight="semibold"
+                >
+                  Your product list is empty
+                </Text>
+                </Flex>
+          }
         </Flex>
-        <Center gap={10}>
-          {/* <Center minW="60px" h={"60px"}>
-            <IconButton
-              aria-label="right-arrow"
-              colorScheme="grey"
-              borderRadius="full"
-              borderStyle={"none"}
-              variant="outline"
-              zIndex={2}
-              onClick={() => {
-                if (props.page - 6 < 0) {
-                  props.setPage(0);
-                } else {
-                  props.setPage(props.page - 6);
-                }
 
-                props.fetchData(props.page - 6);
-              }}
-            >
-              <BiLeftArrowAlt />
-            </IconButton>
-          </Center>
-         
-          <Center minW="60px" h={"60px"}>
-            <IconButton
-              aria-label="right-arrow"
-              colorScheme="gray"
-              borderRadius="full"
-              borderStyle={"none"}
-              variant="outline"
-              zIndex={2}
-              onClick={() => {
-                props.setPage(props.page + 6);
-                props.fetchData(props.page + 6);
-              }}
-            >
-              <BiRightArrowAlt />
-            </IconButton>
-          </Center> */}
-          {data.length > 0 && (
-            <Flex gap={5}>
-              <Button onClick={() => selectPageHandle(page - 1)}>
-                <BiLeftArrowAlt />
-              </Button>
-              <Flex gap={5}>
-                {[...Array(Math.ceil(data.length / 6))].map((n, i) => {
-                  return (
-                    <>
-                      <Box
-                        className={`num ${page === i + 1 ? `numActive` : ""}`}
-                        onClick={() => selectPageHandle(i + 1)}
-                        // bgColor="#2C3639"
-                      >
-                        {i + 1}
-                      </Box>
-                    </>
-                  );
-                })}
-              </Flex>
-              <Button onClick={() => selectPageHandle(page + 1)}>
-                {" "}
-                <BiRightArrowAlt />
-              </Button>
-            </Flex>
-          )}
-        </Center>
+        {data === null || undefined ?
+
+        <Flex w="100%" h="50px" m="0 auto" justify={"center"} align="center">
+          <nav
+            role={"navigation"}
+            aria-label={"pagination"}
+            className="pagination is-small is-centered"
+          >
+            <ReactPaginate
+            pageRangeDisplayed={1}
+            marginPagesDisplayed={2}
+              previousLabel={"< Prev"}
+              nextLabel={"Next >"}
+              pageCount={pages}
+              onPageChange={changePage}
+              containerClassName={"pagination-list"}
+              pageLinkClassName={"pagination-link"}
+              previousLinkClassName={"pagination-previous"}
+              nextLinkClassName={"pagination-next"}
+              activeLinkClassName={"pagination-link is-current"}
+              disableLinkClassName={"pagination-link is-disabled"}
+            />
+          </nav>
+        </Flex>
+      : null
+        }
       </Flex>
-
       <Modal
         initialFocusRef={initialRef}
         isOpen={isOpenEditModal}
