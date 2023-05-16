@@ -1,5 +1,5 @@
 import SidebarAdmin from "../components/sidebar_admin";
-import { Flex, Center, Spinner, Box, Select, option } from "@chakra-ui/react";
+import { Flex, Center, Spinner, Box, Select, option, useMediaQuery } from "@chakra-ui/react";
 import Chart from "../components/chart";
 import { axiosInstance } from "../config/config";
 import { useEffect, useState } from "react";
@@ -128,43 +128,64 @@ export default function Dashboard() {
     // fetchDataTransactionHeader();
   }, []);
   console.log(dataBranch);
+
+  const webkit = {
+    '::-webkit-scrollbar': {
+      height: '0.3em',
+      width: '0.3em',
+      backgroundColor: 'none',
+      borderRadius: '10px'
+    },
+    '::-webkit-scrollbar-thumb': {
+      backgroundColor: 'gray.200',
+      borderRadius: '10px'
+    },
+    '::-webkit-scrollbar-thumb:hover': {
+      backgroundColor: '#555555',
+      borderRadius: '10px'
+    },
+  };
+  const [isSmallerThan1500] = useMediaQuery("(max-width: 1500px)");
+  const [isSmallerThan650] = useMediaQuery("(max-width: 650px)");
   return (
     <>
       {isLoading ? (
-        <Center w={"100vw"} h="100vh" alignContent={"center"}>
+        <Center w={"100vw"} h='100vh' alignContent={"center"}>
           <Spinner size={"xl"} thickness="10px" color="blue.500" />
         </Center>
       ) : (
         <>
-          <Flex>
+          <Flex w='100%' h='100vh' justify='space-between'>
             <SidebarAdmin />
-            <Flex>
-              <Center flexDir="column" py={10} marginLeft={"80px"}>
-                <Flex fontSize={"30px"} fontWeight="bold">
-                  Dashboard
-                </Flex>
-                <Flex w="400px" py={3}>
-                  <Select
-                    onChange={(e) => {
-                      setIdBranch(e.target.value);
-                    }}
-                  >
-                    {dataBranch?.map((branch) => {
-                      return <option value={branch.id}>{branch.name}</option>;
-                    })}
-                  </Select>
+            <Flex w={isSmallerThan1500 ? '90%' : '80%'} h='100%' >
+              <Center flexDir="column" w='100%'  sx={webkit} overflow='auto'>
+                <Flex w='60%' direction='column' justify='center' >
+                  <Flex fontSize={['sm', 'md', 'lg']} fontWeight="bold" justify='center'>
+                    Dashboard
+                  </Flex>
+                  <Flex w={['100%', '80%', '60%', '40%']} py={3} m='0 auto'>
+                    <Select
+                      onChange={(e) => {
+                        setIdBranch(e.target.value);
+                      }}
+                    >
+                      {dataBranch?.map((branch) => {
+                        return <option value={branch.id}>{branch.name}</option>;
+                      })}
+                    </Select>
+                  </Flex>
                 </Flex>
                 <Flex
-                  w="1200px"
+                  w="90%"
                   gap={5}
                   paddingTop="20px"
                   paddingBottom={"20px"}
                   justifyContent="start"
                   flexDir={"row"}
                   flexWrap="wrap"
-                  overflowX={"auto"}
+                  // overflowX={"auto"}
                   overflowY={"auto"}
-                  h="full"
+                  h={isSmallerThan650 ? '50vh' : '60vh'}
                   py={10}
                 >
                   <Center
@@ -245,7 +266,9 @@ export default function Dashboard() {
                     <Flex fontSize={"40px"}>{dataStock}</Flex>
                   </Center>
                 </Flex>
-                <Chart data={datachartline} />
+                <Flex m='0 auto'>
+                  <Chart data={datachartline} />
+                </Flex>
               </Center>
             </Flex>
           </Flex>
