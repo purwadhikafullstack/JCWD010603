@@ -765,7 +765,7 @@ export default function ProductPage(props) {
         </Flex>
 
         {data === null || undefined ?
-
+<>
         <Center gap={10}>
           {data.length > 0 && (
             <Flex gap={5}>
@@ -794,7 +794,7 @@ export default function ProductPage(props) {
             </Flex>
           )}
         </Center>
-      </Flex>
+      
 
         <Flex w="100%" h="50px" m="0 auto" justify={"center"} align="center">
           <nav
@@ -818,6 +818,7 @@ export default function ProductPage(props) {
             />
           </nav>
         </Flex>
+        </>
       : null
         }
       </Flex>
