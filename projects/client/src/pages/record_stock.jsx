@@ -28,7 +28,7 @@ import {
   FormHelperText,
   Grid,
   Textarea,
-  border,
+  Box,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import SidebarAdmin from "../components/sidebar_admin";
@@ -38,7 +38,9 @@ import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
-  
+import ReactPaginate from "react-paginate";
+import "bulma/css/bulma.css";  
+
 export default function Record() {
   let navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -49,10 +51,18 @@ export default function Record() {
   } = useDisclosure();
   const [recordStock, setRecordStock] = useState([]);
   const [productData, setProductData] = useState([]);
-
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
+  const [pages, setPages] = useState(10);
+  const [rows, setRows] = useState(0);
+  const [order, setOrder] = useState("DESC");
   const [msg, setMsg] = useState("");
   const [desc, setDesc] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  
+  const changePage = ({ selected }) => {
+    setPage(parseInt(selected) + 1);
+  };
 
 
   const NotifyError = useToast({
@@ -104,7 +114,7 @@ export default function Record() {
   };
 
   async function fetchRecord(id) {
-    await axiosInstance.get(`/api/stock/fetchRecordById/${id}`).then((res) => {
+    await axiosInstance.get(`/api/stock/fetchRecordById/${id}?page=${page}&limit=${limit}&order=${order}`).then((res) => {
       setRecordStock([...res.data.result]);
     });
   }
@@ -306,6 +316,30 @@ export default function Record() {
                       })}
                     </Tbody>
                   </Table>
+                  <>
+                  <Box marginTop={"22px"}>
+                    <nav
+                      role={"navigation"}
+                      aria-label={"pagination"}
+                      className="pagination is-small is-centered"
+                    >
+                      <ReactPaginate
+                      pageRangeDisplayed={1}
+            marginPagesDisplayed={2}
+                        previousLabel={"< Prev"}
+                        nextLabel={"Next >"}
+                        pageCount={pages}
+                        onPageChange={changePage}
+                        containerClassName={"pagination-list"}
+                        pageLinkClassName={"pagination-link"}
+                        previousLinkClassName={"pagination-previous"}
+                        nextLinkClassName={"pagination-next"}
+                        activeLinkClassName={"pagination-link is-current"}
+                        disableLinkClassName={"pagination-link is-disabled"}
+                      />
+                    </nav>
+                  </Box>
+                  </>
                 </Flex>
                 <Button
                   alignSelf="end"

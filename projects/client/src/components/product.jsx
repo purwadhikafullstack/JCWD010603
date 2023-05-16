@@ -166,16 +166,29 @@ export default function ProductPage(props) {
     },
   ]);
 
-  const deleteSubmit = async (id) => {
+  const deleteSubmit = (id) => {
     try {
-      await axiosInstance.delete(
+      console.log(data.length);
+      data.length <= 1 ? 
+      axiosInstance.delete(
         `/api/product/delete/${id}?BranchId=${userData.BranchId}`
-      );
-      setTimeout(() => {
-        NotifySuccess();
-        fetchData();
-        onCloseDelModal();
-      }, 300);
+      ).then(()=> {
+        setTimeout(() => {
+          NotifySuccess();
+          onCloseDelModal();
+          window.location.reload(true);
+        }, 300);
+      })
+      :
+      axiosInstance.delete(
+        `/api/product/delete/${id}?BranchId=${userData.BranchId}`
+      ).then(()=> {
+        setTimeout(() => {
+          NotifySuccess();
+          fetchData();
+          onCloseDelModal();
+        }, 300);
+      })
     } catch (err) {
       setMsg(err.response.data.message);
       setTimeout(() => {
@@ -293,15 +306,16 @@ export default function ProductPage(props) {
         formData.append("CategoryId", category);
         formData.append("BranchId", BranchId);
 
-        await axiosInstance.post(
+        axiosInstance.post(
           `/api/product/create?status=${status}`,
           formData
-        );
-        setTimeout(() => {
-          NotifySuccess();
-          fetchData();
-          onCloseModal();
-        }, 300);
+        ).then(()=> {
+          setTimeout(() => {
+            NotifySuccess();
+            fetchData();
+            onCloseModal();
+          }, 300);
+        })
       } catch (err) {
         console.log(err);
         setMsg(err.response.data.message);
@@ -374,15 +388,16 @@ export default function ProductPage(props) {
 
       // console.log(formData);
       try {
-        await axiosInstance.patch(
+         axiosInstance.patch(
           `/api/product/edit/${id}?status=${status}`,
           formData
-        );
-        setTimeout(() => {
-          NotifySuccess();
-          fetchData();
-          onCloseEditModal();
-        }, 300);
+        ).then(()=> {
+          setTimeout(() => {
+            NotifySuccess();
+            fetchData();
+            onCloseEditModal();
+          }, 300);
+        })
       } catch (err) {
         console.log(err);
         setMsg(err.response.data.message);
@@ -396,6 +411,7 @@ export default function ProductPage(props) {
   });
   
   useEffect(() => {
+    fetchData();
     fetchCategory();
     setUserData(JSON.parse(localStorage.getItem("data")));
   }, []);
@@ -453,18 +469,9 @@ export default function ProductPage(props) {
                 <Icon as={AiOutlineSearch} justifyContent="center"></Icon>
               </Center>{" "}
             </Flex>
-
-            <Button
-              leftIcon={<TbFilter />}
-              colorScheme="teal"
-              onClick={() => {
-                props.setCat([]);
-              }}
-            >
-              {" "}
-              <Flex onClick={onOpen}>Filter </Flex>
+            <Button leftIcon={<TbFilter />} colorScheme="teal" onClick={onOpen}>
+              Filter
             </Button>
-
             <Drawer
               isOpen={isOpen}
               placement="right"
@@ -535,7 +542,7 @@ export default function ProductPage(props) {
                                   <Checkbox
                                     colorScheme="cyan"
                                     onChange={(e) => {
-                                      CheckCategories(e, `${product?.id}`);
+                                      CheckCategories(e, `${product?.name}`);
                                     }}
                                   >
                                     {product?.name}
@@ -642,8 +649,7 @@ export default function ProductPage(props) {
         >
 
         
-          {data === null || undefined ?
-
+          {!(data == null || undefined) ?
             data?.map((product, index) => {
             return (
               <>
@@ -764,37 +770,7 @@ export default function ProductPage(props) {
           }
         </Flex>
 
-        {data === null || undefined ?
-<>
-        <Center gap={10}>
-          {data.length > 0 && (
-            <Flex gap={5}>
-              <Button onClick={() => selectPageHandle(page - 1)}>
-                <BiLeftArrowAlt />
-              </Button>
-              <Flex gap={5}>
-                {[...Array(Math.ceil(data.length / 6))].map((n, i) => {
-                  return (
-                    <>
-                      <Box
-                        className={`num ${page === i + 1 ? `numActive` : ""}`}
-                        onClick={() => selectPageHandle(i + 1)}
-                        // bgColor="#2C3639"
-                      >
-                        {i + 1}
-                      </Box>
-                    </>
-                  );
-                })}
-              </Flex>
-              <Button onClick={() => selectPageHandle(page + 1)}>
-                {" "}
-                <BiRightArrowAlt />
-              </Button>
-            </Flex>
-          )}
-        </Center>
-      
+        {!(data == null || undefined) ?
 
         <Flex w="100%" h="50px" m="0 auto" justify={"center"} align="center">
           <nav
@@ -818,7 +794,6 @@ export default function ProductPage(props) {
             />
           </nav>
         </Flex>
-        </>
       : null
         }
       </Flex>
