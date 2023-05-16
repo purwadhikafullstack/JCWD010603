@@ -88,6 +88,8 @@ export default function SidebarAdmin() {
               Dashboard
             </Text>
           </Link>
+
+          {superAdmin === 0 ?
           <Link
             to="/list-product"
             as={ReachLink}
@@ -95,24 +97,51 @@ export default function SidebarAdmin() {
             display="flex"
             alignItems="center"
             className="sidebar-link"
+            onClick={() => {
+              if (!userData || userData.isSuperAdmin) {
+                toast({
+                  title: "Unauthorized",
+                  description: "You are not authorized to access this page.",
+                  status: "warning",
+                  duration: 3000,
+                  isClosable: true,
+                });
+              }
+            }}
           >
             <FaBoxes />
             <Text sx={spacing} className="sidebar-text">
               Products
             </Text>
           </Link>
+          : null
+          }
+          {
+            superAdmin === 1 ? 
           <Link
             sx={linkStyles}
             display="flex"
             alignItems="center"
             className="sidebar-link"
+            onClick={() => {
+              if (!userData || !userData.isSuperAdmin) {
+                toast({
+                  title: "Unauthorized",
+                  description: "You are not authorized to access this page.",
+                  status: "warning",
+                  duration: 3000,
+                  isClosable: true,
+                });
+              }
+            }}
           >
             <FaFolder />
             <Text sx={spacing} className="sidebar-text">
               Categories
             </Text>
           </Link>
-
+          : null
+          }
 
           {
             superAdmin === 0 ? 

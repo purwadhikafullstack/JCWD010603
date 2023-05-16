@@ -44,9 +44,6 @@ import "bulma/css/bulma.css";
 export default function Record() {
   const initialFocusRef = React.useRef();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [recordStock, setRecordStock] = useState([]);
-  const [productData, setProductData] = useState([]);
-
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(6);
   const [pages, setPages] = useState(10);

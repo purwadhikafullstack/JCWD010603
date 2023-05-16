@@ -28,32 +28,75 @@ const stockController = {
     },
     fetchRecordById : async (req,res) => {
         const {id} = req.params
-
-    try {
-        const result = await Record_stock.findAll({
-            where : {
-                BranchId : id
-            },
-            include : [{
-                model : product,
-                paranoid : false,
-                attributes : ['name'],
-                where : {
-                    name : {
-                        [Op.ne] : 'undefined' || null
-                    },
-                }  
-            }]
-        })
-
-        if(!result) {
-            throw new Error('Failed fetching list of type stock')
-        }
-        
-        res.status(201).json({result : result})
-    } catch (err) {
-        return res.status(401).json({message : err.message})
+        const page = parseInt(req.query.page) || 1;
+const limit = parseInt(req.query.limit) || 5;
+const offset = limit * (page - 1);
+const sortBy = req.query.sortBy || "createdAt";
+const order = req.query.order || "DESC";
+const t = await sequelize.transaction();
+try {
+    const totalRows = await Record_stock.count(
+      {
+          where : {
+              BranchId : id
+          },
+          include : [{
+              model : product,
+              paranoid : false,
+              attributes : ['name'],
+              where : {
+                  name : {
+                      [Op.ne] : 'undefined' || null
+                  },
+              }  
+          }]
+      },
+      { transaction: t }
+    );
+    if (totalRows == 0) {
+      throw new Error("Fetching data failed");
     }
+  
+    const totalPage = Math.ceil(totalRows / limit);
+    const result = await Record_stock.findAll(
+      {
+          where : {
+              BranchId : id
+          },
+          include : [{
+              model : product,
+              paranoid : false,
+              attributes : ['name'],
+              where : {
+                  name : {
+                      [Op.ne] : 'undefined' || null
+                  },
+              }  
+          }],
+        offset: offset,
+        limit: limit,
+        order: [[sortBy, order]],
+      },
+      { transaction: t }
+    );
+  
+    if (!result) {
+      throw new Error("Fetching all transaction failed");
+    }
+    
+    await t.commit();
+    res.status(201).json({
+      result: result,
+      page: page,
+      limit: limit,
+      totalRows: totalRows,
+      totalPage: totalPage,
+      order: order,
+    });
+  } catch (err) {
+    await t.rollback();
+    return res.status(401).json({ message: err.message });
+  }
 },
 repairStock : async (req,res) => {
     const {id} = req.params
@@ -95,3 +138,5 @@ repairStock : async (req,res) => {
     }
 }
 module.exports = stockController
+
+
