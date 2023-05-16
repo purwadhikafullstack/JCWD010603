@@ -25,13 +25,12 @@ router.patch(
 // router.get("/avatar/:id", userController.renderAvatar);
 // router.patch("/editpassword", verifyToken, userController.editPassword);
 router.get("/verify/:token", userController.verify);
-router.get("/keeplogin", userController.keeplogin);
 router.post("/userlogin", userController.login);
 router.post("/request-reset", userController.resetRequest);
 router.post("/reset-password/:token", userController.resetPassword);
 router.get("/update-user", userController.getUserDetail);
 router.get("/:UserId", userController.getUserbyUserId);
-router.patch("/password/:id", userController.changePassword);
+router.patch("/password/:id", verifyToken, userController.changePassword);
 // router.get("/countuser/:id", userController.getCountUserByBranch);
 router.patch("/editprofile/:id", userController.editProfile);
 module.exports = router;

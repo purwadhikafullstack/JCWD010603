@@ -20,7 +20,7 @@ const userController = {
   register: async (req, res) => {
     const data = req.body;
     console.log(req.body);
-    
+
     const t = await sequelize.transaction();
     try {
       // check password
@@ -54,7 +54,7 @@ const userController = {
       if (!userDetail) {
         throw new Error("Create user detail failed");
       }
- 
+
       const dataAddress = {
         UserId: user.dataValues.id,
         address: data.address,
@@ -352,23 +352,6 @@ const userController = {
     } catch (err) {
       await t.rollback();
       return res.status(401).json({ message: err.message });
-    }
-  },
-
-  keeplogin: async (req, res) => {
-    try {
-      const token = req.headers.authorization;
-
-      const oldUser = await jwt.verify(token, process.env.secret_key);
-      const newUSer = await User.findByPk(oldUser.id);
-
-      delete newUSer.dataValues.password;
-
-      res.status(200).json({
-        result: newUSer,
-      });
-    } catch (err) {
-      return res.status(400).send(err);
     }
   },
 

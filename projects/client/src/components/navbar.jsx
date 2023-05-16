@@ -99,7 +99,7 @@ export default function Navbar(props) {
 
                   <PopoverHeader bgColor={"#A27B5C"} color="white">
                     {" "}
-                    SELAMAT DATANG {userSelector?.username}!
+                    WELCOME {userSelector?.username}!
                   </PopoverHeader>
                   <PopoverBody>
                     <List fontSize={"14px"} color="#7D7D7D" gap={5}>

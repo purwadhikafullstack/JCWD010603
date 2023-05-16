@@ -96,7 +96,7 @@ export default function Login() {
 
           <Center flexDir="column" justifyContent={"center"} gap={10}>
             <Flex fontSize={"2xl"} flexDir="column" color="#DCD7C9" py={5}>
-              SELAMAT DATANG DI AKUN
+              WELCOME IN THE ACCOUNT
             </Flex>
             <Image
               fontSize={"26px"}
