@@ -474,7 +474,7 @@ const transactionController = {
       );
 
       if (!result) {
-        throw new Error("Fetching all transaction failed");
+        throw new Error("Fetching all record stock branch failed");
       }
       
       await t.commit();

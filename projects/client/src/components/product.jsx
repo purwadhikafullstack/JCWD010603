@@ -166,16 +166,28 @@ export default function ProductPage(props) {
     },
   ]);
 
-  const deleteSubmit = async (id) => {
+  const deleteSubmit = (id) => {
     try {
-      await axiosInstance.delete(
+      data.length <= 1 ? 
+      axiosInstance.delete(
         `/api/product/delete/${id}?BranchId=${userData.BranchId}`
-      );
-      setTimeout(() => {
-        NotifySuccess();
-        fetchData();
-        onCloseDelModal();
-      }, 300);
+      ).then(()=> {
+        setTimeout(() => {
+          NotifySuccess();
+          onCloseDelModal();
+          window.location.reload(true);
+        }, 300);
+      })
+      :
+      axiosInstance.delete(
+        `/api/product/delete/${id}?BranchId=${userData.BranchId}`
+      ).then(()=> {
+        setTimeout(() => {
+          NotifySuccess();
+          fetchData();
+          onCloseDelModal();
+        }, 300);
+      })
     } catch (err) {
       setMsg(err.response.data.message);
       setTimeout(() => {
@@ -293,15 +305,16 @@ export default function ProductPage(props) {
         formData.append("CategoryId", category);
         formData.append("BranchId", BranchId);
 
-        await axiosInstance.post(
+        axiosInstance.post(
           `/api/product/create?status=${status}`,
           formData
-        );
-        setTimeout(() => {
-          NotifySuccess();
-          fetchData();
-          onCloseModal();
-        }, 300);
+        ).then(()=> {
+          setTimeout(() => {
+            NotifySuccess();
+            fetchData();
+            onCloseModal();
+          }, 300);
+        })
       } catch (err) {
         console.log(err);
         setMsg(err.response.data.message);
@@ -374,15 +387,16 @@ export default function ProductPage(props) {
 
       // console.log(formData);
       try {
-        await axiosInstance.patch(
+         axiosInstance.patch(
           `/api/product/edit/${id}?status=${status}`,
           formData
-        );
-        setTimeout(() => {
-          NotifySuccess();
-          fetchData();
-          onCloseEditModal();
-        }, 300);
+        ).then(()=> {
+          setTimeout(() => {
+            NotifySuccess();
+            fetchData();
+            onCloseEditModal();
+          }, 300);
+        })
       } catch (err) {
         console.log(err);
         setMsg(err.response.data.message);
@@ -396,6 +410,7 @@ export default function ProductPage(props) {
   });
   
   useEffect(() => {
+    fetchData();
     fetchCategory();
     setUserData(JSON.parse(localStorage.getItem("data")));
   }, []);
@@ -633,8 +648,7 @@ export default function ProductPage(props) {
         >
 
         
-          {data === null || undefined ?
-
+          {!(data == null || undefined) ?
             data?.map((product, index) => {
             return (
               <>
@@ -755,7 +769,7 @@ export default function ProductPage(props) {
           }
         </Flex>
 
-        {data === null || undefined ?
+        {!(data == null || undefined) ?
 
         <Flex w="100%" h="50px" m="0 auto" justify={"center"} align="center">
           <nav

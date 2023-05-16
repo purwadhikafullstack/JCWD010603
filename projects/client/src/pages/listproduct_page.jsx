@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import { axiosInstance } from "../config/config";
 import { Flex, Center, Spinner } from "@chakra-ui/react";
 import Products from "../components/product";
+import { useNavigate } from "react-router-dom";
 
 export default function PageProducts() {
 
+  let navigate = useNavigate()
   const [data, setData] = useState();
   const [datacat, setDataCat] = useState();
   const [isLoading, setIsLoading] = useState(true);
@@ -65,6 +67,9 @@ export default function PageProducts() {
   }
 
   useEffect(() => {
+    JSON.parse(localStorage.getItem("data")).isSuperAdmin ?
+    navigate('/dashboard')
+    :
     fetchData();
     fetchDataCat();
     setTimeout(() => {
