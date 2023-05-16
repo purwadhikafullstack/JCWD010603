@@ -6,6 +6,14 @@ module.exports = {
     host: process.env.host,
     dialect: "mysql",
     timezone: '+07:00'
+  },
+  production: {
+    username: process.env.user,
+    password: process.env.pass,
+    database: process.env.database,
+    host: process.env.host,
+    dialect: "mysql",
+    timezone: '+07:00'
   }
 
   // test= {
