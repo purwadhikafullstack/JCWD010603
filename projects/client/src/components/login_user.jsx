@@ -152,7 +152,7 @@ export default function Login() {
                   <Link
                     to="/reset-password"
                     as={ReachLink}
-                    href={ResetPassword}
+                    onClick={ResetPassword}
                     color={"white"}
                   >
                     Forgot Password?

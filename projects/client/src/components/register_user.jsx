@@ -77,7 +77,7 @@ export default function Register() {
   const fetchProvince = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8000/api/api_rajaongkir/province"
+        "/api/api_rajaongkir/province"
       );
       const result = response.data;
 
@@ -110,7 +110,7 @@ export default function Register() {
     try {
       console.log(idProv);
       const response = await axios.get(
-        `http://localhost:8000/api/api_rajaongkir/city/${idProv}`
+        `/api/api_rajaongkir/city/${idProv}`
       );
       const result = response.data;
       setCity(result);
@@ -121,7 +121,6 @@ export default function Register() {
   useEffect(() => {
     fetchCity();
   }, [idProv]);
-
 
   const formik = useFormik({
     initialValues: {
@@ -386,6 +385,7 @@ export default function Register() {
               <Select
                 placeholder="Select"
                 name="province"
+                bgColor="white"
                 textAlign={"center"}
                 onChange={(e) => {
                   formik.setFieldValue("province", e.target.value);
@@ -416,6 +416,7 @@ export default function Register() {
                 <Select
                   placeholder="Select "
                   name="city"
+                  bgColor="white"
                   textAlign={"center"}
                   onChange={(e) => formik.setFieldValue("city", e.target.value)}
                 >

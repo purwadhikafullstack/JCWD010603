@@ -36,7 +36,7 @@ export default function NavbarHome(props) {
         >
           <Flex px={3} gap={5}>
             <Flex alignItems={"center"}>
-              <Link href="/">
+              <Link to="/" as={ReachLink}>
                 <Image
                   fontSize={"26px"}
                   color="#F68522"
@@ -49,7 +49,7 @@ export default function NavbarHome(props) {
               <Flex px={"70px"} alignItems="center"></Flex>
 
               <Flex px={3}>
-                <Link href="/cart">
+                <Link to="/cart" as={ReachLink}>
                   <Icon
                     boxSize={"7"}
                     as={SlBasket}

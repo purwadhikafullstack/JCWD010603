@@ -50,22 +50,18 @@ export default function PageProducts() {
 
     url += `name=${search}&branch=${idBranch}`;
 
-    console.log(url);
-
     await axiosInstance.get("/api/product/finduser?" + url).then((res) => {
       setbranchProduct(res.data.result);
     });
   };
 
   const fetchFilPro = async () => {
-    let url = "";
+    let url = "filter[category]=";
     categories1.map((val, idx) => {
-      idx ? (url += `&${val}=${val}`) : (url += `${val}=${val}`);
+      idx ? (url += `,${val}`) : (url += `${val}`);
     });
 
-    url += `&order=${sort}&orderby=${sortby}&BranchId=${idBranch}`;
-
-    console.log(url);
+    url += `&order=${sort}&sort=${sortby}&BranchId=${idBranch}`;
 
     await axiosInstance.get("/api/product/filter-user?" + url).then((res) => {
       setbranchProduct(res.data.result);
@@ -83,9 +79,7 @@ export default function PageProducts() {
       setIsLoading(false);
     }, 1000);
   }, []);
-  useEffect(() => {
-    console.log(categories1);
-  }, [categories1]);
+  useEffect(() => {}, [categories1]);
   return (
     <>
       {isLoading ? (

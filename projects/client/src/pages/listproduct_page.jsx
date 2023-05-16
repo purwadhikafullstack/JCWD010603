@@ -43,8 +43,7 @@ export default function PageProducts() {
   //   await axiosInstance.get("/api/product/find?" + url).then((res) => {
   //     setData(res.data.result);
   //   });
-  // };
-
+  
   // const fetchFilPro = async (callback) => {
   //   let url = "";
   //   categories1.map((val, idx) => {
@@ -65,6 +64,18 @@ export default function PageProducts() {
     // console.log(e);
     setPage(e)
   }
+const fetchFilPro = async () => {
+    let url = "filter[category]=";
+    categories1.map((val, idx) => {
+      idx ? (url += `,${val}`) : (url += `${val}`);
+    });
+
+    url += `&order=${sort}&sort=${sortby}`;
+
+    await axiosInstance.get("/api/product/filter?" + url).then((res) => {
+      setData(res.data.result);
+    });
+  };
 
   useEffect(() => {
     JSON.parse(localStorage.getItem("data")).isSuperAdmin ?
