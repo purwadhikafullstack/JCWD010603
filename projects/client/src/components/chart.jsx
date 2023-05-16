@@ -34,6 +34,7 @@ import {
   AccordionItem,
   AccordionIcon,
   AccordionPanel,
+  useMediaQuery
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
@@ -354,13 +355,16 @@ export default function ChartComponent(props) {
     },
     color: ["#7551FF", "#39B8FF"],
   };
+  const [isSmallerThan1500] = useMediaQuery("(max-width: 1500px)");
+  const [isSmallerThan650] = useMediaQuery("(max-width: 650px)");
 
   return (
     <>
-      <Flex gap={5}>
+      <Flex gap={5} direction={isSmallerThan1500 ? 'column' : 'row'} h='100%'>
         <Flex
           w="full"
-          maxH="700px"
+          // maxH="700px"
+          h={isSmallerThan1500? '50%' : '100%'}
           maxW="1500px"
           mt="auto"
           flexDir={"column"}
@@ -370,17 +374,19 @@ export default function ChartComponent(props) {
             REPORT TRANSACTION DAY BY DAY
           </Center>
           <LineChart
-            w="500px"
-            h="300px"
+            // w="500px"
+            w={isSmallerThan650? '100%' : '500px'}
+            h={isSmallerThan1500? '50%' : '300px'}
             chartData={chartData}
             chartOptions={lineChartOptionsTotalSpent}
           />
         </Flex>
         <Flex
           w="full"
-          maxH="500px"
+          // maxH="500px"
           maxW="1000px"
           mt="auto"
+          h={isSmallerThan1500? '50%' : '100%'}
           flexDir={"column"}
           gap={3}
           px={15}
@@ -391,7 +397,7 @@ export default function ChartComponent(props) {
           </Center>
           <BarChart
             w="500px"
-            h="300px"
+            h={isSmallerThan1500? '50%' : '100%'}
             chartData={barChartDataConsumption}
             chartOptions={barChartOptionsConsumption}
           />
