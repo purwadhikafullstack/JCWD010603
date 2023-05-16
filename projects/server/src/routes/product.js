@@ -26,7 +26,6 @@ router.get(
   productController.getProductSuggestion
   );
   router.get("/allProductBranch/:id", productController.getProductFilterBranch);
-);
 router.get("/filter-user", productController.getFilterProductByNameByBranch);
 router.get("/filter", productController.getFilterProductByNameByAllBranch);
 module.exports = router;
