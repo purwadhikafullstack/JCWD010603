@@ -349,7 +349,7 @@ const transactionController = {
                 BranchId: { [Op.like]: `%${search}%` },
               },
               {
-                  TransactionStatusId : {[Op.like]: `%${search}%`}
+                TransactionStatusId: { [Op.like]: `%${search}%` }
               }
             ],
           },
@@ -476,7 +476,7 @@ const transactionController = {
       if (!result) {
         throw new Error("Fetching all record stock branch failed");
       }
-      
+
       await t.commit();
       res.status(201).json({
         result: result,
@@ -531,6 +531,7 @@ const transactionController = {
           {
             model: Product,
             attributes: ["name", "imgProduct", "price"],
+            paranoid: false,
             include: [
               {
                 model: Branch,
@@ -593,6 +594,7 @@ const transactionController = {
           {
             model: Product,
             attributes: ["name", "imgProduct", "price"],
+            paranoid: false,
             include: [
               {
                 model: Branch,
@@ -828,8 +830,8 @@ const transactionController = {
         include: {
           model: Product,
         },
-      },{ transaction: t });
-      
+      }, { transaction: t });
+
 
       await Promise.all(
         transactionItems.map(async (item) => {
@@ -838,9 +840,9 @@ const transactionController = {
 
           await Product.update(
             { stock: product.stock + qtyToAdd },
-            { where: { id: product.id }}
+            { where: { id: product.id } }
           );
-        },{ transaction: t })
+        }, { transaction: t })
       );
 
       const updatedTransactionHeader = await Transaction_header.update(
@@ -851,7 +853,7 @@ const transactionController = {
           where: {
             id: transactionHeaderId,
           }
-        },{ transaction: t }
+        }, { transaction: t }
       );
 
       await t.commit();
