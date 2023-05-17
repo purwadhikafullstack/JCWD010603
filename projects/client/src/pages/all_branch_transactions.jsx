@@ -199,6 +199,12 @@ export default function Record() {
     },
   };
 
+
+  const checkPaymentProof = (e) => {
+    setIdTrans(e);
+    onOpenCheck()
+  } 
+
   const changePage = ({ selected }) => {
     setPage(parseInt(selected) + 1);
   };
@@ -629,6 +635,11 @@ export default function Record() {
                                         <Grid rowGap={"10px"}>
                                           <Box>Email</Box>
                                           <Box>{val.User?.email}</Box>
+                                        </Grid>
+                                        <Grid rowGap={"10px"}>
+
+                                          {val.imgUpload ? (<Button colorScheme={"yellow"} onClick={()=> {checkPaymentProof({noTrans: val.noTrans, img : val.imgUpload})}}>Payment proof</Button>) : (<Button color={"black"} >Payment proof not found</Button>) }
+                                          
                                         </Grid>
                                       </Grid>
                                       {superAdmin ? null : (

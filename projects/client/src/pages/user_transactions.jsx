@@ -30,10 +30,13 @@ import NavBar from "../components/navbarhome"; //not loggedin
 import Navbar from "../components/navbar"; //loggedin
 import { axiosInstance } from "../config/config";
 import { Link as ReachLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import "bulma/css/bulma.css";
 
 export default function UserTrans() {
+
+  let navigate = useNavigate();
   const cancelRef = React.useRef();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen : isOpen1, onOpen : onOpen1, onClose : onClose1 } = useDisclosure();
@@ -49,6 +52,9 @@ export default function UserTrans() {
   const toast = useToast();
 
   const [idTrans, setIdTrans] = useState({});
+
+  const user = JSON.parse(localStorage.getItem("userID"))
+  ? JSON.parse(localStorage.getItem("userID")) : null;
 
   // STYLE
   const requestButtonStyle = {
@@ -229,6 +235,10 @@ export default function UserTrans() {
   }
 
   useEffect(() => {
+    !user?
+    navigate('/userlogin')
+    :
+
     fetchTransactions();
   }, [page]);
 
