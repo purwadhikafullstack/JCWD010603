@@ -19,8 +19,8 @@ const app = express();
 // );
 app.use(cors());
 const options = {
-  // origin: "https://jcwd010603.purwadhikabootcamp.com",
-  origin: "http://localhost:3000",
+  origin: "https://jcwd010603.purwadhikabootcamp.com",
+  // origin: "http://localhost:3000",
 };
 app.use(cors(options));
 
