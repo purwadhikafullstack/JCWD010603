@@ -123,6 +123,8 @@ export default function SidebarAdmin() {
             display="flex"
             alignItems="center"
             className="sidebar-link"
+            to="/admin_category"
+            as={ReachLink}
             onClick={() => {
               if (!userData || !userData.isSuperAdmin) {
                 toast({
@@ -147,7 +149,8 @@ export default function SidebarAdmin() {
             superAdmin === 0 ? 
             <Link
             sx={linkStyles}
-            href="/record-stock"
+            to="/record-stock"
+            as={ReachLink}
             display="flex"
             alignItems="center"
             className="sidebar-link"

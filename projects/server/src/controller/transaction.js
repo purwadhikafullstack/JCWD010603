@@ -356,7 +356,7 @@ const transactionController = {
           include: [
             {
               model: Transaction_status,
-              attributes: ["name"],
+              attributes: ["name", "id"],
             },
             {
               model: Branch,
@@ -455,7 +455,7 @@ const transactionController = {
           include: [
             {
               model: Transaction_status,
-              attributes: ["name"],
+              attributes: ["name", "id"],
             },
             {
               model: Branch,

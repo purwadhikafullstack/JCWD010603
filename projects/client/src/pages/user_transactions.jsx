@@ -29,7 +29,6 @@ import React from "react";
 import NavBar from "../components/navbarhome"; //not loggedin
 import Navbar from "../components/navbar"; //loggedin
 import { axiosInstance } from "../config/config";
-import { BiTrash, BiEdit, BiChevronRight, BiChevronLeft } from "react-icons/bi";
 import { Link as ReachLink } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import "bulma/css/bulma.css";
@@ -47,7 +46,6 @@ export default function UserTrans() {
   const [order, setOrder] = useState("DESC");
 
   const [cancelDialog, setCancelDialog] = useState(false);
-  const [editDialog, setEditDialog] = useState(false);
   const toast = useToast();
 
   const [idTrans, setIdTrans] = useState({});
@@ -411,7 +409,6 @@ export default function UserTrans() {
                           bg="#F45050"
                           cursor="pointer"
                           mr={3}
-                          // onClick={() => cancelStatus({id: val.id, noTrans: val.noTrans})}
                           sx={canceledButtonStyle}
                         >
                           {val.Transaction_status?.name}
@@ -419,16 +416,6 @@ export default function UserTrans() {
                       )
 
                       }
-                      {/* <Flex mr={4} py={2}>
-                          <IconButton
-                            size="xs"
-                            as={BiEdit}
-                            color="gray.400"
-                            bg="none"
-                            cursor="pointer" onClick={() => editCart(val.id)}
-                            sx={editButtonStyle}
-                          />
-                        </Flex> */}
                     </Flex>
                   </>
                 );
@@ -436,6 +423,8 @@ export default function UserTrans() {
             </>
           )}
         </Flex>
+        {!userTrans.length === 0 ? (
+          <>
         <Flex w="100%" h="50px" m="0 auto" justify={"center"} align="center">
           <nav
             role={"navigation"}
@@ -459,8 +448,10 @@ export default function UserTrans() {
           </nav>
         </Flex>
         <Box w="85%" m="0 auto" textAlign={"right"}>
-          Total Data: {rows} | Page: {rows ? page : 0} of {pages}
+          Total Transaction: {rows} | Page: {rows ? page : 0} of {pages}
         </Box>
+        </>
+        ) : null }
         <Button
           w="85%"
           h="40px"
