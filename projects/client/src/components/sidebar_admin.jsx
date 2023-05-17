@@ -125,6 +125,8 @@ export default function SidebarAdmin() {
             display="flex"
             alignItems="center"
             className="sidebar-link"
+            to="/admin_category"
+            as={ReachLink}
             onClick={() => {
               if (!userData || !userData.isSuperAdmin) {
                 toast({

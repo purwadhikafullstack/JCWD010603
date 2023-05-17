@@ -32,18 +32,36 @@ import {
   TableContainer,
   TableCaption,
   GridItem,
+  AlertDialog,
+  AlertDialogOverlay,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogBody,
+  AlertDialogFooter,
+  Text,
+  Link,
+  Image,
+  useToast
+
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import SidebarAdmin from "../components/sidebar_admin";
 import { axiosInstance } from "../config/config";
 import { RiFileUserLine } from "react-icons/ri";
+import { MdOutlineImageSearch } from "react-icons/md";
 import React from "react";
 import ReactPaginate from "react-paginate";
 import "bulma/css/bulma.css";
+import { Link as ReachLink } from "react-router-dom";
 
 export default function Record() {
   const initialFocusRef = React.useRef();
+  const cancelRef = React.useRef();
+  const [cancelDialog, setCancelDialog] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen : isOpenCheck, onOpen : onOpenCheck, onClose : onCloseCheck } = useDisclosure();
+  const { isOpen : isOpen1, onOpen : onOpen1, onClose : onClose1 } = useDisclosure();
+  const { isOpen : isOpen2, onOpen : onOpen2, onClose : onClose2 } = useDisclosure();
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(6);
   const [pages, setPages] = useState(10);
@@ -54,7 +72,10 @@ export default function Record() {
   const [order, setOrder] = useState("DESC");
   const [detailTrans, setDetailTrans] = useState({});
   const [transactionStatus, setTransactionStatus] = useState([]);
+  const [idTrans, setIdTrans] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [imgPayment, setImgPayment] = useState("")
+  const toast = useToast();
 
   const superAdmin = JSON.parse(localStorage.getItem("data"))
     ? JSON.parse(localStorage.getItem("data")).isSuperAdmin
@@ -77,6 +98,112 @@ export default function Record() {
       borderRadius: "10px",
     },
   };
+
+  const requestButtonStyle = {
+    _hover: {
+      bg: "none",
+      border: "2px solid #FFB84C",
+      color: "#FFB84C",
+      transform: "scale(1.10)",
+ },
+    _active: {
+      size: "sm",
+    },
+  };
+  const confirmButtonStyle = {
+    _hover: {
+      bg: "none",
+      border: "2px solid #0E8388",
+      color: "#0E8388",
+      transform: "scale(1.10)",
+ },
+    _active: {
+      size: "sm",
+    },
+  };
+  const deliveredButtonStyle = {
+    _hover: {
+      bg: "none",
+      border: "2px solid #3E54AC",
+      color: "#3E54AC",
+      transform: "scale(1.10)",
+ },
+    _active: {
+      size: "sm",
+    },
+  };
+  const arrivedButtonStyle = {
+    _hover: {
+      bg: "none",
+      border: "2px solid #6D5D6E",
+      color: "#6D5D6E",
+      transform: "scale(1.10)",
+ },
+    _active: {
+      size: "sm",
+    },
+  };
+  const canceledButtonStyle = {
+    _hover: {
+      bg: "none",
+      border: "2px solid #F45050",
+      color: "#F45050",
+      transform: "scale(1.10)",
+ },
+    _active: {
+      size: "sm",
+    },
+  };
+  const uploadButtonStyle = {
+    _hover: {
+      bg: "#F7D060",
+      // border: "2px solid #9e3939",
+      color: "#F1F6F9",
+      transform: "scale(1.05)",
+    },
+    _active: {
+      size: "sm",
+    },
+  };
+  const checkButtonModalStyle = {
+    _hover: {
+      bg: "#1F8A70",
+      // border: "2px solid #9e3939",
+      color: "#F1F6F9",
+      transform: "scale(1.05)",
+    },
+    _active: {
+      size: "sm",
+    },
+  };
+  const cancelButtonModalStyle = {
+    _hover: {
+      bg: "#F45050",
+      // border: "2px solid #9e3939",
+      color: "#F1F6F9",
+      transform: "scale(1.05)",
+    },
+    _active: {
+      size: "sm",
+    },
+  };
+  const completeButtonModalStyle = {
+    _hover: {
+      bg: "#1F8A70",
+      // border: "2px solid #9e3939",
+      color: "#F1F6F9",
+      transform: "scale(1.05)",
+    },
+    _active: {
+      size: "sm",
+    },
+  };
+
+
+  const checkPaymentProof = (e) => {
+    setIdTrans(e);
+    onOpenCheck()
+  } 
 
   const changePage = ({ selected }) => {
     setPage(parseInt(selected) + 1);
@@ -191,6 +318,62 @@ export default function Record() {
     }
   }
 
+  const statusTrans = async (e) => {
+    console.log(e);
+    console.log(idTrans);
+    try {
+      await axiosInstance.patch(
+        `/api/transaction/userTransactionStatus/${e.id}?status=${e.status}`
+        );
+        onClose1()
+        onClose2()
+        handleCloseCancelDialog()
+        superAdmin ? fetchAllTrans() : fetchAllTransByBranch();
+      toast({
+        title: "Status",
+        description: `${e.msg} success`,
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (err) {
+      toast({
+        title: "Status",
+        description: err.response.data.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
+
+  const checkPayment = (e) => {
+    setIdTrans(e);
+    onOpen1();
+  };
+
+  const deliveredStatus = (e) => {
+    setIdTrans(e);
+    onOpen2();
+  }
+  
+  const paymentProof = (e) => {
+    setImgPayment(e)
+
+    console.log(imgPayment);
+  }
+
+
+  function handleCloseCancelDialog() {
+    setCancelDialog(false);
+  }
+
+  const alertCancel = (e) => {
+    setCancelDialog(true);
+    if(e == 1) onClose1()
+    if(e == 2) onClose2()
+  }
+
   useEffect(() => {
     superAdmin ? fetchBranch() : fetchStatus();
   }, []);
@@ -290,10 +473,79 @@ export default function Record() {
                             placeItems={"center"}
                           >
                             <Td textAlign={"center"} border={0}>
-                              {val.noTrans}
+                            {val.noTrans}
                             </Td>
                             <Td textAlign={"center"} border={0}>
-                              {val.Transaction_status?.name ?? "error"}
+                            {val.Transaction_status.id === 1 ? (
+                        <Button
+                          size="xs"
+                          // as={BiTrash}
+                          color="white"
+                          bg="#FFB84C"
+                          cursor="pointer"
+                          mr={3}
+                          onClick={() =>
+                            checkPayment({ id: val.id, noTrans: val.noTrans, img: val.imgUpload })
+                          }
+                          sx={requestButtonStyle}
+                        >
+                          {val.Transaction_status?.name}
+                        </Button>
+                      ) :  val.Transaction_status.id === 2 ? (
+                        <Button
+                          size="xs"
+                          // as={BiTrash}
+                          color="white"
+                          bg="#0E8388"
+                          cursor="pointer"
+                          mr={3}
+                          onClick={() => deliveredStatus({id: val.id, noTrans: val.noTrans})}
+                          sx={confirmButtonStyle}
+                        >
+                          {val.Transaction_status?.name}
+                        </Button>
+                      ) :  val.Transaction_status.id === 3 ? (
+                        <Button
+                          size="xs"
+                          // as={BiTrash}
+                          color="white"
+                          bg="#3E54AC"
+                          cursor="pointer"
+                          mr={3}
+                          // onClick={() => changeStatus({id: val.id, noTrans: val.noTrans})}
+                          sx={deliveredButtonStyle}
+                        >
+                          {val.Transaction_status?.name}
+                        </Button>
+                      ) :  val.Transaction_status.id === 4 ? (
+                        <Button
+                          size="xs"
+                          // as={BiTrash}
+                          color="white"
+                          bg="#6D5D6E"
+                          cursor="pointer"
+                          mr={3}
+                          sx={arrivedButtonStyle}
+                        >
+                          {val.Transaction_status?.name}
+                        </Button>
+                      ):
+                      (
+                        <Button
+                          size="xs"
+                          // as={BiTrash}
+                          color="white"
+                          bg="#F45050"
+                          cursor="pointer"
+                          mr={3}
+                          // onClick={() => cancelStatus({id: val.id, noTrans: val.noTrans})}
+                          sx={canceledButtonStyle}
+                        >
+                          {val.Transaction_status?.name}
+                        </Button>
+                      )
+
+                      }
                             </Td>
                             <Td textAlign={"center"} border={0}>
                               <Flex gap={"10px"}>
@@ -384,29 +636,12 @@ export default function Record() {
                                           <Box>Email</Box>
                                           <Box>{val.User?.email}</Box>
                                         </Grid>
+                                        <Grid rowGap={"10px"}>
+
+                                          {val.imgUpload ? (<Button colorScheme={"yellow"} onClick={()=> {checkPaymentProof({noTrans: val.noTrans, img : val.imgUpload})}}>Payment proof</Button>) : (<Button color={"black"} >Payment proof not found</Button>) }
+                                          
+                                        </Grid>
                                       </Grid>
-                                      {superAdmin ? null : (
-                                        <Flex
-                                          w="100%"
-                                          justify="space-between"
-                                          mt="4"
-                                        >
-                                          <Button
-                                            variant="outline"
-                                            colorScheme="yellow"
-                                            onClick={() => cancelOrder(val.id)}
-                                          >
-                                            <b>Cancel</b>
-                                          </Button>
-                                          <Button
-                                            colorScheme="teal"
-                                            variant="solid"
-                                            onClick={() => sendOrder(val.id)}
-                                          >
-                                            Send
-                                          </Button>
-                                        </Flex>
-                                      )}
                                     </PopoverBody>
                                   </PopoverContent>
                                 </Popover>
@@ -423,7 +658,7 @@ export default function Record() {
                       allBranchTrans ?
                     <>
                   <Box w={"100%"} textAlign={"right"}>
-                    Total Data: {rows} | Page: {rows ? page : 0} of {pages}
+                    Total Transaction: {rows} | Page: {rows ? page : 0} of {pages}
                   </Box>
                   <Box marginTop={"19px"}>
                     <nav
@@ -455,9 +690,6 @@ export default function Record() {
 
                 {
                   allBranchTrans ?
-                
-
-
                 <Flex flexDirection={"row-reverse"} gap={"10px"}>
                   {superAdmin ? (
                     <Select
@@ -553,6 +785,142 @@ export default function Record() {
           </ModalFooter>
         </ModalContent>
       </Modal>
+      <Modal margin onClose={onClose1} isOpen={isOpen1} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader fontSize={"2xl"} fontWeight={"bold"}>
+            Transaction Status
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody paddingBottom={9}>
+            <Center display={"Grid"} textAlign={"center"} rowGap={"35px"}>
+            {!idTrans.img?
+              <Text fontSize={"lg"} fontWeight={"semibold"}>
+                User still not upload payment proof
+              </Text>
+              :
+              <IconButton
+              icon={<RiFileUserLine size={"22px"} />}
+              sx={checkButtonModalStyle}
+              onClick={()=> {onOpenCheck()}}
+              />
+            }
+              <Flex justify={"center"} columnGap={"35px"}>
+                <Button sx={uploadButtonStyle} onClick={() => {
+                    statusTrans({
+                      id: idTrans.id,
+                      status: 2,
+                      msg: `Order Confirm`,
+                    });
+                    onClose()}}>
+                    Confirm Order
+                </Button>
+                <Button
+                  onClick={()=> {alertCancel(1)}}
+                  sx={cancelButtonModalStyle}
+                >
+                  Cancel Order
+                </Button>
+              </Flex>
+            </Center>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+      <Modal margin onClose={onClose2} isOpen={isOpen2} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader fontSize={"2xl"} fontWeight={"bold"}>
+            Transaction Status
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody paddingBottom={9}>
+            <Center display={"Grid"} textAlign={"center"} rowGap={"35px"}>
+              <Text fontSize={"lg"} fontWeight={"semibold"}>
+                Order has been delivered?
+              </Text>
+              <Flex justify={"center"} columnGap={"35px"}>
+                <Button sx={uploadButtonStyle} onClick={() => {
+                    statusTrans({
+                      id: idTrans.id,
+                      status: 3,
+                      msg: `Order Delivered`,
+                    });
+                    onClose()}}>
+                    Order Delivered
+                </Button>
+                <Button
+                  onClick={()=> {alertCancel(2)}}
+                  sx={cancelButtonModalStyle}
+                >
+                  Cancel Order
+                </Button>
+              </Flex>
+            </Center>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+      <Modal margin onClose={onCloseCheck} isOpen={isOpenCheck} size={"full"} isCentered>
+        <ModalOverlay  bg='blackAlpha.500'
+      backdropFilter='blur(10px) hue-rotate(90deg)' >
+       
+          <ModalHeader fontSize={"2xl"} color={'white'} fontWeight={"bold"}>
+            Payment Proof [{idTrans?.noTrans}]
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+          <Center h={"500px"}>
+            {idTrans.img?
+              <Image
+                          src={idTrans?.img}
+                          alt={idTrans?.noTrans}
+                          objectFit="cover"
+                          w="auto"
+                          h="100%"
+                        />
+                        : null
+            }
+            </Center>
+          </ModalBody>
+        </ModalOverlay>
+      </Modal>
+      <AlertDialog
+            motionPreset="slideInBottom"
+            isOpen={cancelDialog}
+            leastDestructiveRef={cancelRef}
+            onClose={handleCloseCancelDialog}
+            isCentered
+          >
+            <AlertDialogOverlay>
+              <AlertDialogContent>
+                <AlertDialogHeader
+                  fontSize="lg"
+                  fontWeight="bold"
+                  textAlign="center"
+                >
+                  Transaction Cancel
+                </AlertDialogHeader>
+
+                <AlertDialogBody textAlign="center">
+                  Are you sure you want cancel this order?
+                </AlertDialogBody>
+
+                <AlertDialogFooter>
+                  <Button ref={cancelRef} onClick={handleCloseCancelDialog}>
+                    Back
+                  </Button>
+                  <Button colorScheme="red" onClick={() => {
+                    statusTrans({
+                      id: idTrans.id,
+                      status: 5,
+                      msg: `Order Canceled`,
+                    });
+                  }} ml={3}>
+                    Cancel this order
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialogOverlay>
+          </AlertDialog>
     </>
     )}
     </>

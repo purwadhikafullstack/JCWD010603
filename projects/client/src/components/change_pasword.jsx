@@ -76,11 +76,14 @@ export default function ChangePassword({ id }) {
         {
           oldPassword,
           newPassword,
+        },
+        {
+          headers: {
+            Authorization: "Bearer" + " " + localStorage.getItem("token"),
+          },
         }
       );
       navigate("/userpage");
-      console.log("user edited");
-      console.log(response.data);
     } catch (error) {
       console.log(error);
       setErrorMessage("Failed to change password");

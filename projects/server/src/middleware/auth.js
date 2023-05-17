@@ -5,34 +5,25 @@ const verifyToken = (req, res, next) => {
   let token = req.headers.authorization;
 
   if (!token) {
-    res.status(401).json({
-      message: "access denied",
-    });
+    return res.status(401).send("access denied / unauthorized request");
   }
 
   try {
-    // token = token.split(" ")[1];
+    token = token.split(" ")[1];
 
-    // if (token === null || !token) {
-    //   res.status(401).json({
-    //     message: "access denied",
-    //   });
-    // }
-
-    //jwt data, token , secret , option => expiresIn
-    // create jwt => secret, data => token
-    //verify token, secret => data
+    if (token === "null" || !token) {
+      return res.status(401).send("unauthorized request 1");
+    }
 
     let verifiedUser = jwt.verify(token, secret);
+    if (!verifiedUser) {
+      return res.status(401).send("unauthorized request 2");
+    }
     req.user = verifiedUser.dataValues;
-
-    console.log(req.user);
 
     next();
   } catch (err) {
-    res.status(401).json({
-      message: err,
-    });
+    res.status(400).send("invalid token");
   }
 };
 

@@ -53,17 +53,14 @@ export default function Record() {
   const [productData, setProductData] = useState([]);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
-  const [pages, setPages] = useState(10);
+  const [pages, setPages] = useState(10); 
   const [rows, setRows] = useState(0);
   const [order, setOrder] = useState("DESC");
   const [msg, setMsg] = useState("");
   const [desc, setDesc] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   
-  const changePage = ({ selected }) => {
-    setPage(parseInt(selected) + 1);
-  };
-
+ 
 
   const NotifyError = useToast({
     title: "Failed",
@@ -113,9 +110,12 @@ export default function Record() {
     });
   };
 
-  async function fetchRecord(id) {
-    await axiosInstance.get(`/api/stock/fetchRecordById/${id}?page=${page}&limit=${limit}&order=${order}`).then((res) => {
-      setRecordStock([...res.data.result]);
+  const fetchRecord = (id) => {
+      axiosInstance.get(`/api/stock/fetchRecordById/${id}?page=${page}&limit=${limit}&order=${order}`).then((res) => {
+      setRecordStock(res.data.result);
+      setPage(res.data.page);
+      setPages(res.data.totalPage);
+      setRows(res.data.totalRows);
     });
   }
 
@@ -156,17 +156,22 @@ export default function Record() {
       }
     },
   });
+  const changePage = ({ selected }) => {
+    setPage(parseInt(selected) + 1);
+    console.log(page);
+  };
 
   useEffect(() => {
     JSON.parse(localStorage.getItem("data")).isSuperAdmin ?
     navigate('/dashboard')
     :
-    fetchRecord(JSON.parse(localStorage.getItem("data")).BranchId);
     editStock(JSON.parse(localStorage.getItem("data")).BranchId);
     setIsLoading(false)
   }, []);
  
-
+  useEffect(()=> {
+    fetchRecord(JSON.parse(localStorage.getItem("data")).BranchId);
+  }, [page, order])
 
   return (
     <>
@@ -211,19 +216,17 @@ export default function Record() {
                 >
                   <Table
                     fontSize={["md", "lg", "xl"]}
-                    w="700px"
+                    w="900px"
                     margin={0}
+                    marginTop={"15px"}
                     padding={0}
                   >
                     <Thead borderBottom={"2px solid #2C3639"}>
                       <Tr>
                         <Grid
-                          templateColumns={"1fr 3fr 2fr 2fr 2fr"}
+                          templateColumns={" 3fr 2fr 2fr 2fr 1fr"}
                           placeItems={"center"}
                         >
-                          <Td textAlign={"center"} border={0}>
-                            No
-                          </Td>
                           <Td textAlign={"center"} border={0}>
                             Product Name
                           </Td>
@@ -232,6 +235,9 @@ export default function Record() {
                           </Td>
                           <Td textAlign={"center"} border={0}>
                             Stock After
+                          </Td>
+                          <Td textAlign={"center"} border={0}>
+                            Date
                           </Td>
                           <Td textAlign={"center"} border={0}>
                             Description
@@ -249,7 +255,7 @@ export default function Record() {
                           >
                           <Flex
                           flexDir={"column"}
-                          w="700px"
+                          w="900px"
                           h="440px"
                               justify={"center"}
                               textAlign={"center"} fontSize={["xl", "3xl"]}
@@ -271,12 +277,9 @@ export default function Record() {
                             }}
                           >
                             <Grid
-                              templateColumns={"1fr 3fr 2fr 2fr 2fr"}
+                              templateColumns={"3fr 2fr 2fr 2fr 1fr"}
                               placeItems={"center"}
                             >
-                              <Td textAlign={"center"} border={0}>
-                                {idx + 1 + "."}
-                              </Td>
                               <Td textAlign={"center"} border={0}>
                                 {val.Product?.name ?? "error"}
                               </Td>
@@ -285,6 +288,9 @@ export default function Record() {
                               </Td>
                               <Td textAlign={"center"} border={0}>
                                 {val.stockAfter}
+                              </Td>
+                              <Td textAlign={"center"} border={0}>
+                                {val.createdAt.split('T')[0]}
                               </Td>
                               <Td textAlign={"center"} border={0}>
                                 <Flex w="100px" justify="space-around">
@@ -316,7 +322,7 @@ export default function Record() {
                       })}
                     </Tbody>
                   </Table>
-                  <>
+                  {recordStock ?
                   <Box marginTop={"22px"}>
                     <nav
                       role={"navigation"}
@@ -339,8 +345,10 @@ export default function Record() {
                       />
                     </nav>
                   </Box>
-                  </>
+                  : null
+                  }
                 </Flex>
+                <Flex flexDirection={"row-reverse"} gap={"10px"}>
                 <Button
                   alignSelf="end"
                   onClick={onOpen}
@@ -355,6 +363,18 @@ export default function Record() {
                 >
                   Stock Record Edit
                 </Button>
+                <Select
+                  color="#2C3639"
+                    focusBorderColor="#2C3639"
+                    w={"200px"}
+                    className="is-hovered"
+                    name="idSort"
+                    placeholder="Latest Transactions"
+                    onClick={(e) => setOrder(e.target.value)}
+                  >
+                    <option value="ASC">Earliest Transactions</option>
+                  </Select>
+                </Flex>
                 <Modal isOpen={isOpen} onClose={onClose}>
                   <ModalOverlay />
                   <ModalContent>
