@@ -76,9 +76,7 @@ export default function Register() {
   // province
   const fetchProvince = async () => {
     try {
-      const response = await axios.get(
-        "/api/api_rajaongkir/province"
-      );
+      const response = await axios.get("/api/api_rajaongkir/province");
       const result = response.data;
 
       setProvince(result);
@@ -109,9 +107,7 @@ export default function Register() {
   const fetchCity = async () => {
     try {
       console.log(idProv);
-      const response = await axios.get(
-        `/api/api_rajaongkir/city/${idProv}`
-      );
+      const response = await axios.get(`/api/api_rajaongkir/city/${idProv}`);
       const result = response.data;
       setCity(result);
     } catch (err) {
@@ -137,6 +133,8 @@ export default function Register() {
       phoneNumber: "",
       password: "",
       passwordConfirm: "",
+      idCity: 0,
+      idProv: 0,
     },
     validationSchema: Yup.object().shape({
       email: Yup.string()
@@ -388,7 +386,11 @@ export default function Register() {
                 bgColor="white"
                 textAlign={"center"}
                 onChange={(e) => {
+                  const selectedProvince = province.find(
+                    (val) => val.province === e.target.value
+                  );
                   formik.setFieldValue("province", e.target.value);
+                  formik.setFieldValue("idProv", selectedProvince.province_id);
                   handleId(e.target.value);
                 }}
               >
@@ -418,7 +420,13 @@ export default function Register() {
                   name="city"
                   bgColor="white"
                   textAlign={"center"}
-                  onChange={(e) => formik.setFieldValue("city", e.target.value)}
+                  onChange={(e) => {
+                    const selectedCity = city.find(
+                      (val) => val.city_name === e.target.value
+                    );
+                    formik.setFieldValue("city", e.target.value);
+                    formik.setFieldValue("idCity", selectedCity.city_id);
+                  }}
                 >
                   {city.map((c) => {
                     return (
