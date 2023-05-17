@@ -42,7 +42,6 @@ import {
   ModalContent,
 } from "@chakra-ui/react";
 import { FaFolder } from "react-icons/fa";
-import { BiLeftArrowAlt, BiRightArrowAlt } from "react-icons/bi";
 import { AiOutlineSearch } from "react-icons/ai";
 import { MdOutlineDelete, MdBorderColor } from "react-icons/md";
 import { Link } from "react-router-dom";
@@ -55,17 +54,16 @@ import ReactPaginate from "react-paginate";
 import "bulma/css/bulma.css";
 
 export default function ProductPage(props) {
-
   const page = props.page;
   const pages = props.pages;
   const limit = props.limit;
-  const rows= props.rows;
+  const rows = props.rows;
   const data = props.data;
   const datacat = props.datacat;
   const fetchData = props.fetchData;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const firstField = React.useRef();
-  const [selected, setSelected] = useState(0)
+  const [selected, setSelected] = useState(0);
   const [search, setSearch] = useState("");
   const [product, setProduct] = useState([]);
   const changePage = ({ selected }) => {
@@ -169,26 +167,25 @@ export default function ProductPage(props) {
   const deleteSubmit = (id) => {
     try {
       console.log(data.length);
-      data.length <= 1 ? 
-      axiosInstance.delete(
-        `/api/product/delete/${id}?BranchId=${userData.BranchId}`
-      ).then(()=> {
-        setTimeout(() => {
-          NotifySuccess();
-          onCloseDelModal();
-          window.location.reload(true);
-        }, 300);
-      })
-      :
-      axiosInstance.delete(
-        `/api/product/delete/${id}?BranchId=${userData.BranchId}`
-      ).then(()=> {
-        setTimeout(() => {
-          NotifySuccess();
-          fetchData();
-          onCloseDelModal();
-        }, 300);
-      })
+      data.length <= 1
+        ? axiosInstance
+            .delete(`/api/product/delete/${id}?BranchId=${userData.BranchId}`)
+            .then(() => {
+              setTimeout(() => {
+                NotifySuccess();
+                onCloseDelModal();
+                window.location.reload(true);
+              }, 300);
+            })
+        : axiosInstance
+            .delete(`/api/product/delete/${id}?BranchId=${userData.BranchId}`)
+            .then(() => {
+              setTimeout(() => {
+                NotifySuccess();
+                fetchData();
+                onCloseDelModal();
+              }, 300);
+            });
     } catch (err) {
       setMsg(err.response.data.message);
       setTimeout(() => {
@@ -237,8 +234,7 @@ export default function ProductPage(props) {
     const result = response.data.result;
     setCat(result);
   };
-  
-  
+
   const submitData = () => {
     formik.setFieldValue("BranchId", userData?.BranchId ?? 0);
     formik.handleSubmit();
@@ -306,16 +302,15 @@ export default function ProductPage(props) {
         formData.append("CategoryId", category);
         formData.append("BranchId", BranchId);
 
-        axiosInstance.post(
-          `/api/product/create?status=${status}`,
-          formData
-        ).then(()=> {
-          setTimeout(() => {
-            NotifySuccess();
-            fetchData();
-            onCloseModal();
-          }, 300);
-        })
+        axiosInstance
+          .post(`/api/product/create?status=${status}`, formData)
+          .then(() => {
+            setTimeout(() => {
+              NotifySuccess();
+              fetchData();
+              onCloseModal();
+            }, 300);
+          });
       } catch (err) {
         console.log(err);
         setMsg(err.response.data.message);
@@ -388,16 +383,15 @@ export default function ProductPage(props) {
 
       // console.log(formData);
       try {
-         axiosInstance.patch(
-          `/api/product/edit/${id}?status=${status}`,
-          formData
-        ).then(()=> {
-          setTimeout(() => {
-            NotifySuccess();
-            fetchData();
-            onCloseEditModal();
-          }, 300);
-        })
+        axiosInstance
+          .patch(`/api/product/edit/${id}?status=${status}`, formData)
+          .then(() => {
+            setTimeout(() => {
+              NotifySuccess();
+              fetchData();
+              onCloseEditModal();
+            }, 300);
+          });
       } catch (err) {
         console.log(err);
         setMsg(err.response.data.message);
@@ -409,7 +403,7 @@ export default function ProductPage(props) {
       }
     },
   });
-  
+
   useEffect(() => {
     fetchData();
     fetchCategory();
@@ -469,8 +463,14 @@ export default function ProductPage(props) {
                 <Icon as={AiOutlineSearch} justifyContent="center"></Icon>
               </Center>{" "}
             </Flex>
-            <Button leftIcon={<TbFilter />} colorScheme="teal" onClick={onOpen}>
-              Filter
+            <Button
+              leftIcon={<TbFilter />}
+              colorScheme="teal"
+              onClick={() => {
+                props.setCat([]);
+              }}
+            >
+              <Flex onClick={onOpen}>Filter </Flex>
             </Button>
             <Drawer
               isOpen={isOpen}
@@ -542,7 +542,7 @@ export default function ProductPage(props) {
                                   <Checkbox
                                     colorScheme="cyan"
                                     onChange={(e) => {
-                                      CheckCategories(e, `${product?.name}`);
+                                      CheckCategories(e, `${product?.id}`);
                                     }}
                                   >
                                     {product?.name}
@@ -647,155 +647,150 @@ export default function ProductPage(props) {
           overflowY={"auto"}
           h="full"
         >
-
-        
-          {!(data == null || undefined) ?
+          {!(data == null || undefined) ? (
             data?.map((product, index) => {
-            return (
-              <>
-                <Center
-                  minW={["100px", "150px", "200px", "250px"]}
-                  h={["100px", "150px", "200px", "250px"]}
-                  border="2px solid #E2E8F0"
-                  borderRadius={"5%"}
-                  boxShadow="rgba(0,0,0,0.56) 4px 0px 19px -2px"
-                >
-                  <Flex justifyContent="center">
-                    <Link to={`/`}>
-                      <Box
-                        roundedTop="lg"
-                        w={["50px", "100px", "150px", "190px"]}
-                        h={["50px", "100px", "150px", "190px"]}
-                        px={2}
-                      >
-                        <Image
-                          src={product?.imgProduct}
-                          alt={`Picture of ${product?.name}`}
-                          w="inherit"
-                          h="inherit"
-                          roundedTop={"inherit"}
-                          zIndex="0"
-                        />
-                      </Box>
-                    </Link>
-                  </Flex>
-                  <Flex
-                    mt="1"
-                    justifyContent="space-between"
-                    alignContent="center"
-                    flexDir={"column"}
-                    w="200px"
-                    h="175px"
+              return (
+                <>
+                  <Center
+                    minW={["100px", "150px", "200px", "250px"]}
+                    h={["100px", "150px", "200px", "250px"]}
+                    border="2px solid #E2E8F0"
+                    borderRadius={"5%"}
+                    boxShadow="rgba(0,0,0,0.56) 4px 0px 19px -2px"
                   >
-                    <Flex h="75px" flexDir={"column"}>
-                      <Box
-                        fontSize="14px"
-                        fontWeight="semibold"
-                        as="h4"
-                        lineHeight="tight"
-                      >
-                        {product?.category}
-                      </Box>
-                      <Box
-                        fontSize="16px"
-                        fontWeight={"Bold"}
-                        as="h4"
-                        lineHeight="tight"
-                      >
-                        {product?.name}
-                      </Box>
-
-                      <Box fontSize="14px" as="h4">
-                        <Text>
-                          {" "}
-                          Harga : Rp. {product?.price.toLocaleString()}
-                        </Text>
-                      </Box>
-                      <Stack
-                        w={"inherit"}
-                        borderRadius={"50%"}
-                        marginY={"5px"}
-                        height={"2px"}
-                        bgColor={`rgb(111,111,111,0.1)`}
-                      />
+                    <Flex justifyContent="center">
+                      <Link to={`/`}>
+                        <Box
+                          roundedTop="lg"
+                          w={["50px", "100px", "150px", "190px"]}
+                          h={["50px", "100px", "150px", "190px"]}
+                          px={2}
+                        >
+                          <Image
+                            src={product?.imgProduct}
+                            alt={`Picture of ${product?.name}`}
+                            w="inherit"
+                            h="inherit"
+                            roundedTop={"inherit"}
+                            zIndex="0"
+                          />
+                        </Box>
+                      </Link>
                     </Flex>
-                    <Center marginTop={"3px"} paddingX={"35px"} gap={3}>
-                      <Button
-                        onClick={() => {
-                          editHandlerModal(product?.id);
-                        }}
-                        colorScheme="yellow"
-                        h={"50px"}
-                        w={"50px"}
-                        borderRadius={"100%"}
-                        fontSize={"14px"}
-                      >
-                        <MdBorderColor color="white" size={15} />
-                      </Button>
-                      <Spacer />
-                      <Button
-                        onClick={() => {
-                          deleteHandlerModal(product?.id);
-                        }}
-                        colorScheme="red"
-                        h={"50px"}
-                        w={"50px"}
-                        borderRadius={"100%"}
-                        fontSize={"14px"}
-                      >
-                        <MdOutlineDelete size={18} />
-                      </Button>
-                    </Center>
-                  </Flex>
-                </Center>
-              </>
-            );
-          })
-          :
-          <Flex
-                direction="column"
-                h="100px"
-                align="center"
-                justify="center"
-                w="100%"
+                    <Flex
+                      mt="1"
+                      justifyContent="space-between"
+                      alignContent="center"
+                      flexDir={"column"}
+                      w="200px"
+                      h="175px"
+                    >
+                      <Flex h="75px" flexDir={"column"}>
+                        <Box
+                          fontSize="14px"
+                          fontWeight="semibold"
+                          as="h4"
+                          lineHeight="tight"
+                        >
+                          {product?.category}
+                        </Box>
+                        <Box
+                          fontSize="16px"
+                          fontWeight={"Bold"}
+                          as="h4"
+                          lineHeight="tight"
+                        >
+                          {product?.name}
+                        </Box>
+
+                        <Box fontSize="14px" as="h4">
+                          <Text>
+                            {" "}
+                            Harga : Rp. {product?.price.toLocaleString()}
+                          </Text>
+                        </Box>
+                        <Stack
+                          w={"inherit"}
+                          borderRadius={"50%"}
+                          marginY={"5px"}
+                          height={"2px"}
+                          bgColor={`rgb(111,111,111,0.1)`}
+                        />
+                      </Flex>
+                      <Center marginTop={"3px"} paddingX={"35px"} gap={3}>
+                        <Button
+                          onClick={() => {
+                            editHandlerModal(product?.id);
+                          }}
+                          colorScheme="yellow"
+                          h={"50px"}
+                          w={"50px"}
+                          borderRadius={"100%"}
+                          fontSize={"14px"}
+                        >
+                          <MdBorderColor color="white" size={15} />
+                        </Button>
+                        <Spacer />
+                        <Button
+                          onClick={() => {
+                            deleteHandlerModal(product?.id);
+                          }}
+                          colorScheme="red"
+                          h={"50px"}
+                          w={"50px"}
+                          borderRadius={"100%"}
+                          fontSize={"14px"}
+                        >
+                          <MdOutlineDelete size={18} />
+                        </Button>
+                      </Center>
+                    </Flex>
+                  </Center>
+                </>
+              );
+            })
+          ) : (
+            <Flex
+              direction="column"
+              h="100px"
+              align="center"
+              justify="center"
+              w="100%"
+            >
+              <Text
+                textAlign="center"
+                fontSize={["xl", "3xl"]}
+                fontWeight="semibold"
               >
-                <Text
-                  textAlign="center"
-                  fontSize={["xl", "3xl"]}
-                  fontWeight="semibold"
-                >
-                  Your product list is empty
-                </Text>
-                </Flex>
-          }
+                Your product list is empty
+              </Text>
+            </Flex>
+          )}
         </Flex>
-
-        {!(data == null || undefined) ?
-
-        <Flex w="100%" h="50px" m="0 auto" justify={"center"} align="center">
-          <nav
-            role={"navigation"}
-            aria-label={"pagination"}
-            className="pagination is-small is-centered"
-          >
-            <ReactPaginate
-            pageRangeDisplayed={1}
-            marginPagesDisplayed={2}
-              previousLabel={"< Prev"}
-              nextLabel={"Next >"}
-              pageCount={pages}
-              onPageChange={changePage}
-              containerClassName={"pagination-list"}
-              pageLinkClassName={"pagination-link"}
-              previousLinkClassName={"pagination-previous"}
-              nextLinkClassName={"pagination-next"}
-              activeLinkClassName={"pagination-link is-current"}
-              disableLinkClassName={"pagination-link is-disabled"}
-            />
-          </nav>
-        </Flex>
-      : null
-        }
+        {!(data == null || undefined) ? (
+          <Flex w="100%" h="50px" m="0 auto" justify={"center"} align="center">
+            <nav
+              role={"navigation"}
+              aria-label={"pagination"}
+              className="pagination is-small is-centered"
+            >
+              <ReactPaginate
+                pageRangeDisplayed={1}
+                marginPagesDisplayed={2}
+                previousLabel={"< Prev"}
+                nextLabel={"Next >"}
+                pageCount={pages}
+                onPageChange={changePage}
+                containerClassName={"pagination-list"}
+                pageLinkClassName={"pagination-link"}
+                previousLinkClassName={"pagination-previous"}
+                nextLinkClassName={"pagination-next"}
+                activeLinkClassName={"pagination-link is-current"}
+                disableLinkClassName={"pagination-link is-disabled"}
+              />
+            </nav>
+          </Flex>
+        ) : null}
       </Flex>
       <Modal
         initialFocusRef={initialRef}
