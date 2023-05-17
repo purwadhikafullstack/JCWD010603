@@ -87,8 +87,8 @@ export default function UserTrans() {
   const arrivedButtonStyle = {
     _hover: {
       bg: "none",
-      border: "2px solid #1F8A70",
-      color: "#1F8A70",
+      border: "2px solid #6D5D6E",
+      color: "#6D5D6E",
       transform: "scale(1.10)",
  },
     _active: {
@@ -131,7 +131,7 @@ export default function UserTrans() {
   };
   const completeButtonModalStyle = {
     _hover: {
-      bg: "#1F8A70",
+      bg: "#6D5D6E",
       // border: "2px solid #9e3939",
       color: "#F1F6F9",
       transform: "scale(1.05)",
@@ -393,7 +393,7 @@ export default function UserTrans() {
                           size="xs"
                           // as={BiTrash}
                           color="white"
-                          bg="#1F8A70"
+                          bg="#6D5D6E"
                           cursor="pointer"
                           mr={3}
                           sx={arrivedButtonStyle}
@@ -423,7 +423,7 @@ export default function UserTrans() {
             </>
           )}
         </Flex>
-        {!userTrans.length === 0 ? (
+        {userTrans ? (
           <>
         <Flex w="100%" h="50px" m="0 auto" justify={"center"} align="center">
           <nav
@@ -452,25 +452,6 @@ export default function UserTrans() {
         </Box>
         </>
         ) : null }
-        <Button
-          w="85%"
-          h="40px"
-          m="20px auto 0px"
-          // bg={cartData.length > 0 ? "#2C3639" : "#BEBEBE"}
-          color="white"
-          // sx={cartData.length > 0 ? confirmButtonStyle : {}}
-          // disabled={cartData.length === 0}
-          p="0px"
-          // cursor={cartData.length > 0 ? "pointer" : "context-menu"}
-        >
-          {/* {cartData.length > 0 ? (
-              <Link href="/new-order" w="100%" h="100%" _hover={{ textStyle: 'none' }}>
-                <Center h="100%">Confirm & Buy</Center>
-              </Link>
-            ) : (
-              <Center h="100%">Confirm & Buy</Center>
-            )} */}
-        </Button>
       </Flex>
       <Modal margin onClose={onClose1} isOpen={isOpen1} isCentered>
         <ModalOverlay />
