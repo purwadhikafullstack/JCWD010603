@@ -200,7 +200,7 @@ export default function UserTrans() {
     setTimeout(()=> {
       setDetailTrans(e)
       onOpenDetail()
-    },500)
+    },100)
 
     console.log(detailTrans);
   }
