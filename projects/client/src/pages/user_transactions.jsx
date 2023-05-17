@@ -35,12 +35,19 @@ import ReactPaginate from "react-paginate";
 import "bulma/css/bulma.css";
 
 export default function UserTrans() {
-
   let navigate = useNavigate();
   const cancelRef = React.useRef();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { isOpen : isOpen1, onOpen : onOpen1, onClose : onClose1 } = useDisclosure();
-  const { isOpen : isOpen2, onOpen : onOpen2, onClose : onClose2 } = useDisclosure();
+  const {
+    isOpen: isOpen1,
+    onOpen: onOpen1,
+    onClose: onClose1,
+  } = useDisclosure();
+  const {
+    isOpen: isOpen2,
+    onOpen: onOpen2,
+    onClose: onClose2,
+  } = useDisclosure();
   const [userTrans, setUserTrans] = useState([]);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(3);
@@ -54,7 +61,8 @@ export default function UserTrans() {
   const [idTrans, setIdTrans] = useState({});
 
   const user = JSON.parse(localStorage.getItem("userID"))
-  ? JSON.parse(localStorage.getItem("userID")) : null;
+    ? JSON.parse(localStorage.getItem("userID"))
+    : null;
 
   // STYLE
   const requestButtonStyle = {
@@ -63,7 +71,7 @@ export default function UserTrans() {
       border: "2px solid #FFB84C",
       color: "#FFB84C",
       transform: "scale(1.10)",
- },
+    },
     _active: {
       size: "sm",
     },
@@ -74,7 +82,7 @@ export default function UserTrans() {
       border: "2px solid #0E8388",
       color: "#0E8388",
       transform: "scale(1.10)",
- },
+    },
     _active: {
       size: "sm",
     },
@@ -85,7 +93,7 @@ export default function UserTrans() {
       border: "2px solid #3E54AC",
       color: "#3E54AC",
       transform: "scale(1.10)",
- },
+    },
     _active: {
       size: "sm",
     },
@@ -96,7 +104,7 @@ export default function UserTrans() {
       border: "2px solid #6D5D6E",
       color: "#6D5D6E",
       transform: "scale(1.10)",
- },
+    },
     _active: {
       size: "sm",
     },
@@ -107,7 +115,7 @@ export default function UserTrans() {
       border: "2px solid #F45050",
       color: "#F45050",
       transform: "scale(1.10)",
- },
+    },
     _active: {
       size: "sm",
     },
@@ -178,9 +186,9 @@ export default function UserTrans() {
     try {
       await axiosInstance.patch(
         `/api/transaction/userTransactionStatus/${e.id}?status=${e.status}`
-        );
-        fetchTransactions();
-        handleCloseCancelDialog()
+      );
+      fetchTransactions();
+      handleCloseCancelDialog();
       toast({
         title: "Status",
         description: `${e.msg} success`,
@@ -230,16 +238,12 @@ export default function UserTrans() {
 
   const alertCancel = (e) => {
     setCancelDialog(true);
-    if(e === 1) onClose()
-    if(e === 2) onClose2()
-  }
+    if (e === 1) onClose();
+    if (e === 2) onClose2();
+  };
 
   useEffect(() => {
-    !user?
-    navigate('/userlogin')
-    :
-
-    fetchTransactions();
+    !user ? navigate("/userlogin") : fetchTransactions();
   }, [page]);
 
   return (
@@ -356,7 +360,7 @@ export default function UserTrans() {
                       borderBottom="1px solid rgba(44, 54, 57, 0.1)"
                       align="center"
                     >
-                      {val.Transaction_status.id === 1 &&
+                      {val.Transaction_statusId === 1 &&
                       val.imgUpload === null ? (
                         <Button
                           size="xs"
@@ -372,7 +376,7 @@ export default function UserTrans() {
                         >
                           {val.Transaction_status?.name}
                         </Button>
-                      ) :  val.Transaction_status.id === 2 ? (
+                      ) : val.Transaction_statusId === 2 ? (
                         <Button
                           size="xs"
                           // as={BiTrash}
@@ -380,12 +384,14 @@ export default function UserTrans() {
                           bg="#0E8388"
                           cursor="pointer"
                           mr={3}
-                          onClick={() => cancelStatus2({id: val.id, noTrans: val.noTrans})}
+                          onClick={() =>
+                            cancelStatus2({ id: val.id, noTrans: val.noTrans })
+                          }
                           sx={confirmButtonStyle}
                         >
                           {val.Transaction_status?.name}
                         </Button>
-                      ) :  val.Transaction_status.id === 3 ? (
+                      ) : val.Transaction_statusId === 3 ? (
                         <Button
                           size="xs"
                           // as={BiTrash}
@@ -393,12 +399,14 @@ export default function UserTrans() {
                           bg="#3E54AC"
                           cursor="pointer"
                           mr={3}
-                          onClick={() => changeStatus({id: val.id, noTrans: val.noTrans})}
+                          onClick={() =>
+                            changeStatus({ id: val.id, noTrans: val.noTrans })
+                          }
                           sx={deliveredButtonStyle}
                         >
                           {val.Transaction_status?.name}
                         </Button>
-                      ) :  val.Transaction_status.id === 4 ? (
+                      ) : val.Transaction_statusId === 4 ? (
                         <Button
                           size="xs"
                           // as={BiTrash}
@@ -410,8 +418,7 @@ export default function UserTrans() {
                         >
                           {val.Transaction_status?.name}
                         </Button>
-                      ):
-                      (
+                      ) : (
                         <Button
                           size="xs"
                           // as={BiTrash}
@@ -423,9 +430,7 @@ export default function UserTrans() {
                         >
                           {val.Transaction_status?.name}
                         </Button>
-                      )
-
-                      }
+                      )}
                     </Flex>
                   </>
                 );
@@ -435,33 +440,39 @@ export default function UserTrans() {
         </Flex>
         {userTrans ? (
           <>
-        <Flex w="100%" h="50px" m="0 auto" justify={"center"} align="center">
-          <nav
-            role={"navigation"}
-            aria-label={"pagination"}
-            className="pagination is-small is-centered"
-          >
-            <ReactPaginate
-            pageRangeDisplayed={1}
-            marginPagesDisplayed={2}
-              previousLabel={"< Prev"}
-              nextLabel={"Next >"}
-              pageCount={pages}
-              onPageChange={changePage}
-              containerClassName={"pagination-list"}
-              pageLinkClassName={"pagination-link"}
-              previousLinkClassName={"pagination-previous"}
-              nextLinkClassName={"pagination-next"}
-              activeLinkClassName={"pagination-link is-current"}
-              disableLinkClassName={"pagination-link is-disabled"}
-            />
-          </nav>
-        </Flex>
-        <Box w="85%" m="0 auto" textAlign={"right"}>
-          Total Transaction: {rows} | Page: {rows ? page : 0} of {pages}
-        </Box>
-        </>
-        ) : null }
+            <Flex
+              w="100%"
+              h="50px"
+              m="0 auto"
+              justify={"center"}
+              align="center"
+            >
+              <nav
+                role={"navigation"}
+                aria-label={"pagination"}
+                className="pagination is-small is-centered"
+              >
+                <ReactPaginate
+                  pageRangeDisplayed={1}
+                  marginPagesDisplayed={2}
+                  previousLabel={"< Prev"}
+                  nextLabel={"Next >"}
+                  pageCount={pages}
+                  onPageChange={changePage}
+                  containerClassName={"pagination-list"}
+                  pageLinkClassName={"pagination-link"}
+                  previousLinkClassName={"pagination-previous"}
+                  nextLinkClassName={"pagination-next"}
+                  activeLinkClassName={"pagination-link is-current"}
+                  disableLinkClassName={"pagination-link is-disabled"}
+                />
+              </nav>
+            </Flex>
+            <Box w="85%" m="0 auto" textAlign={"right"}>
+              Total Transaction: {rows} | Page: {rows ? page : 0} of {pages}
+            </Box>
+          </>
+        ) : null}
       </Flex>
       <Modal margin onClose={onClose1} isOpen={isOpen1} isCentered>
         <ModalOverlay />
@@ -485,7 +496,9 @@ export default function UserTrans() {
                   </Link>
                 </Button>
                 <Button
-                  onClick={()=> {alertCancel(1)}}
+                  onClick={() => {
+                    alertCancel(1);
+                  }}
                   sx={cancelButtonModalStyle}
                 >
                   Cancel Order
@@ -505,7 +518,8 @@ export default function UserTrans() {
           <ModalBody paddingBottom={9}>
             <Center display={"Grid"} textAlign={"center"} rowGap={"35px"}>
               <Text fontSize={"lg"} fontWeight={"semibold"}>
-                Your payment has been approve by admin, waiting admin to send your order
+                Your payment has been approve by admin, waiting admin to send
+                your order
               </Text>
               <Flex justify={"center"} columnGap={"35px"}>
                 {/* <Button sx={uploadButtonStyle}>
@@ -517,7 +531,9 @@ export default function UserTrans() {
                   </Link>
                 </Button> */}
                 <Button
-                  onClick={()=> {alertCancel(2)}}
+                  onClick={() => {
+                    alertCancel(2);
+                  }}
                   sx={cancelButtonModalStyle}
                 >
                   Cancel Order
@@ -549,13 +565,13 @@ export default function UserTrans() {
                   </Link>
                 </Button> */}
                 <Button
-                    onClick={() => {
+                  onClick={() => {
                     statusTrans({
                       id: idTrans.id,
                       status: 4,
                       msg: `Order Complete`,
                     });
-                    onClose()
+                    onClose();
                   }}
                   sx={completeButtonModalStyle}
                 >
@@ -567,43 +583,47 @@ export default function UserTrans() {
         </ModalContent>
       </Modal>
       <AlertDialog
-            motionPreset="slideInBottom"
-            isOpen={cancelDialog}
-            leastDestructiveRef={cancelRef}
-            onClose={handleCloseCancelDialog}
-            isCentered
-          >
-            <AlertDialogOverlay>
-              <AlertDialogContent>
-                <AlertDialogHeader
-                  fontSize="lg"
-                  fontWeight="bold"
-                  textAlign="center"
-                >
-                  Transaction Cancel
-                </AlertDialogHeader>
+        motionPreset="slideInBottom"
+        isOpen={cancelDialog}
+        leastDestructiveRef={cancelRef}
+        onClose={handleCloseCancelDialog}
+        isCentered
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader
+              fontSize="lg"
+              fontWeight="bold"
+              textAlign="center"
+            >
+              Transaction Cancel
+            </AlertDialogHeader>
 
-                <AlertDialogBody textAlign="center">
-                  Are you sure you want cancel this order?
-                </AlertDialogBody>
+            <AlertDialogBody textAlign="center">
+              Are you sure you want cancel this order?
+            </AlertDialogBody>
 
-                <AlertDialogFooter>
-                  <Button ref={cancelRef} onClick={handleCloseCancelDialog}>
-                    Back
-                  </Button>
-                  <Button colorScheme="red" onClick={() => {
-                    statusTrans({
-                      id: idTrans.id,
-                      status: 5,
-                      msg: `Order Canceled`,
-                    });
-                  }} ml={3}>
-                    Cancel this order
-                  </Button>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialogOverlay>
-          </AlertDialog>
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={handleCloseCancelDialog}>
+                Back
+              </Button>
+              <Button
+                colorScheme="red"
+                onClick={() => {
+                  statusTrans({
+                    id: idTrans.id,
+                    status: 5,
+                    msg: `Order Canceled`,
+                  });
+                }}
+                ml={3}
+              >
+                Cancel this order
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </Flex>
   );
 }

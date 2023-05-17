@@ -196,6 +196,7 @@ export default function Dashboard() {
                           setBranchName(e.target.textContent);
                         }}
                         value={idBranch}
+                        placeholder="Select"
                       >
                         {dataBranch?.map((branch) => {
                           return (
