@@ -1,4 +1,4 @@
-import { Flex, Image, Center, Link, Text, useToast } from "@chakra-ui/react";
+import { Flex, Image, Center, Link, Text, useToast, Heading, useMediaQuery } from "@chakra-ui/react";
 import Logo from "../asset/logo.png";
 import LogoSM from "../asset/coffee.png";
 import {
@@ -11,7 +11,7 @@ import {
   FaCog,
   FaFolder,
 } from "react-icons/fa";
-import {AiOutlineHistory} from "react-icons/ai";
+import { AiOutlineHistory } from "react-icons/ai";
 import { useDispatch } from "react-redux";
 import user_types from "../redux/auth/types";
 
@@ -23,8 +23,8 @@ export default function SidebarAdmin() {
 
   const toast = useToast();
   const superAdmin = JSON.parse(localStorage.getItem("data"))
-  ? JSON.parse(localStorage.getItem("data")).isSuperAdmin
-  : null;
+    ? JSON.parse(localStorage.getItem("data")).isSuperAdmin
+    : null;
 
   const linkStyles = {
     fontSize: "2xl",
@@ -58,6 +58,7 @@ export default function SidebarAdmin() {
 
   }
   const userData = JSON.parse(localStorage.getItem("data"));
+  const [isSmallerThan1000] = useMediaQuery("(max-width: 1000px)");
 
   return (
     <>
@@ -70,11 +71,17 @@ export default function SidebarAdmin() {
         className="sidebar"
       >
         <Flex direction="column" w="80%" color="white" m="0 auto">
+          <Flex justify='center' align='center' mb={5} color='white' w='100%' h={isSmallerThan1000 ? '30%' : '10%'} display={isSmallerThan1000 ? "none" : "flex"}>
+            <Heading size='md' fontWeight='light' transform={isSmallerThan1000 ? "rotate(-90deg)" : null} whiteSpace="nowrap">
+              Welcome, <b>{JSON.parse(localStorage.getItem("data"))
+                ? JSON.parse(localStorage.getItem("data")).username
+                : null}</b>!
+            </Heading>
+          </Flex>
           <Center w="80%" h="150px" m="0 auto">
             <Image src={Logo} h="auto" className="sidebar-text" />
             <Image src={LogoSM} h="auto" className="small-logo" />
           </Center>
-
           <Link
             sx={linkStyles}
             to="/dashboard"
@@ -90,94 +97,91 @@ export default function SidebarAdmin() {
           </Link>
 
           {superAdmin === 0 ?
-          <Link
-            to="/list-product"
-            as={ReachLink}
-            sx={linkStyles}
-            display="flex"
-            alignItems="center"
-            className="sidebar-link"
-            onClick={() => {
-              if (!userData || userData.isSuperAdmin) {
-                toast({
-                  title: "Unauthorized",
-                  description: "You are not authorized to access this page.",
-                  status: "warning",
-                  duration: 3000,
-                  isClosable: true,
-                });
-              }
-            }}
-          >
-            <FaBoxes />
-            <Text sx={spacing} className="sidebar-text">
-              Products
-            </Text>
-          </Link>
-          : null
-          }
-          {
-            superAdmin === 1 ? 
-          <Link
-            sx={linkStyles}
-            to="/admin_category"
-            as={ReachLink}
-            display="flex"
-            alignItems="center"
-            className="sidebar-link"
-            to="/admin_category"
-            as={ReachLink}
-            onClick={() => {
-              if (!userData || !userData.isSuperAdmin) {
-                toast({
-                  title: "Unauthorized",
-                  description: "You are not authorized to access this page.",
-                  status: "warning",
-                  duration: 3000,
-                  isClosable: true,
-                });
-              }
-            }}
-          >
-            <FaFolder />
-            <Text sx={spacing} className="sidebar-text">
-              Categories
-            </Text>
-          </Link>
-          : null
-          }
-
-          {
-            superAdmin === 0 ? 
             <Link
-            sx={linkStyles}
-            to="/record-stock"
-            as={ReachLink}
-            display="flex"
-            alignItems="center"
-            className="sidebar-link"
-            onClick={() => {
-              if (!userData || userData.isSuperAdmin) {
-                toast({
-                  title: "Unauthorized",
-                  description: "You are not authorized to access this page.",
-                  status: "warning",
-                  duration: 3000,
-                  isClosable: true,
-                });
-              }
-            }}
-          >
-            <AiOutlineHistory />
-            <Text sx={spacing} className="sidebar-text">
-              Record Stock
-            </Text>
-          </Link>
-          :
-          null
+              to="/list-product"
+              as={ReachLink}
+              sx={linkStyles}
+              display="flex"
+              alignItems="center"
+              className="sidebar-link"
+              onClick={() => {
+                if (!userData || userData.isSuperAdmin) {
+                  toast({
+                    title: "Unauthorized",
+                    description: "You are not authorized to access this page.",
+                    status: "warning",
+                    duration: 3000,
+                    isClosable: true,
+                  });
+                }
+              }}
+            >
+              <FaBoxes />
+              <Text sx={spacing} className="sidebar-text">
+                Products
+              </Text>
+            </Link>
+            : null
+          }
+          {
+            superAdmin === 1 ?
+              <Link
+                sx={linkStyles}
+                to="/admin_category"
+                as={ReachLink}
+                display="flex"
+                alignItems="center"
+                onClick={() => {
+                  if (!userData || !userData.isSuperAdmin) {
+                    toast({
+                      title: "Unauthorized",
+                      description: "You are not authorized to access this page.",
+                      status: "warning",
+                      duration: 3000,
+                      isClosable: true,
+                    });
+                  }
+                }}
+              >
+                <FaFolder />
+                <Text sx={spacing} className="sidebar-text">
+                  Categories
+                </Text>
+              </Link>
+              : null
           }
 
-          
+          {
+            superAdmin === 0 ?
+              <Link
+                sx={linkStyles}
+                to="/record-stock"
+                as={ReachLink}
+                display="flex"
+                alignItems="center"
+                className="sidebar-link"
+                onClick={() => {
+                  if (!userData || userData.isSuperAdmin) {
+                    toast({
+                      title: "Unauthorized",
+                      description: "You are not authorized to access this page.",
+                      status: "warning",
+                      duration: 3000,
+                      isClosable: true,
+                    });
+                  }
+                }}
+              >
+                <AiOutlineHistory />
+                <Text sx={spacing} className="sidebar-text">
+                  Record Stock
+                </Text>
+              </Link>
+              :
+              null
+          }
+
+
 
 
           <Link
@@ -221,7 +225,7 @@ export default function SidebarAdmin() {
           </Link>
           <Link
             sx={linkStyles}
-            to="/admin_setting"
+            to={!userData.isSuperAdmin ? null : "/admin_setting"}
             as={ReachLink}
             display="flex"
             alignItems="center"
@@ -245,6 +249,14 @@ export default function SidebarAdmin() {
           </Link>
         </Flex>
 
+        <Flex justify='center' align='center' mb={5} color='white' w='100%' h={isSmallerThan1000 ? '30%' : '10%'} display={isSmallerThan1000 ? "flex" : "none"}>
+          <Heading size='md' fontWeight='light' transform={isSmallerThan1000 ? "rotate(-90deg)" : null} whiteSpace="nowrap">
+            Welcome, <b>{JSON.parse(localStorage.getItem("data"))
+              ? JSON.parse(localStorage.getItem("data")).username
+              : null}</b>!
+          </Heading>
+        </Flex>
+
         <Flex color="white" justify="flex-end" pr="6" mb={6} align="center">
           <Link
             fontSize="xl"
@@ -255,6 +267,7 @@ export default function SidebarAdmin() {
             alignItems="center"
             onClick={logOut}
             className="sidebar-link"
+            _hover={{ color: 'gray.400' }}
           >
             <Text mr={2} className="sidebar-text">
               Logout

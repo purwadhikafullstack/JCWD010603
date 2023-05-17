@@ -104,7 +104,7 @@ export default function ProductReport() {
     };
     fetchData();
   }, [selectedSortOrder, startDate, endDate, selectedOption]);
-
+  // console.log(`product data = ${allProductReportData}`);
   const [isSmallerThan1500] = useMediaQuery("(max-width: 1500px)");
   const [isSmallerThan650] = useMediaQuery("(max-width: 650px)");
   const webkit = {
@@ -246,7 +246,8 @@ export default function ProductReport() {
                   {allProductReportData?.map((val) => {
                     const price = `Rp ${val.Product.price
                       .toFixed(0)
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`;
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+                      }`;
                     const Totalprice = parseFloat(val.totalSales);
                     const totalSales = `Rp ${Totalprice.toFixed(0).replace(
                       /\B(?=(\d{3})+(?!\d))/g,

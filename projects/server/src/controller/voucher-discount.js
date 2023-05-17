@@ -201,10 +201,12 @@ const voucherDiscountController = {
           {
             model: Voucher_type,
             attributes: ["name"],
+            paranoid: false,
           },
           {
             model: Product,
             attributes: ["name"],
+            paranoid: false,
           },
         ],
       });
@@ -261,10 +263,12 @@ const voucherDiscountController = {
           {
             model: Voucher_type,
             attributes: ["name"],
+            paranoid: false,
           },
           {
             model: Product,
             attributes: ["name"],
+            paranoid: false,
           },
         ],
       });

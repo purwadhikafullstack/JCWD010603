@@ -348,8 +348,8 @@ const transactionController = {
                 BranchId: { [Op.like]: `%${search}%` },
               },
               {
-                TransactionStatusId: { [Op.like]: `%${search}%` },
-              },
+                TransactionStatusId: { [Op.like]: `%${search}%` }
+              }
             ],
           },
           include: [
@@ -530,6 +530,7 @@ const transactionController = {
           {
             model: Product,
             attributes: ["name", "imgProduct", "price"],
+            paranoid: false,
             include: [
               {
                 model: Branch,
@@ -592,6 +593,7 @@ const transactionController = {
           {
             model: Product,
             attributes: ["name", "imgProduct", "price"],
+            paranoid: false,
             include: [
               {
                 model: Branch,
