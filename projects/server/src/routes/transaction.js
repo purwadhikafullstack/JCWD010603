@@ -24,6 +24,10 @@ router.get(
   "/gettransactionbynotrans/:noTrans",
   transactionController.getTransactionByNoTransaction
 );
+router.get(
+  "/gettransactionbycategorybybranch/:id",
+  transactionController.getTransactionItembyCategorybyBranch
+);
 router.post("/create-transaction/:id", transactionController.addTranscation);
 router.patch(
   "/uploadfoto/:noTrans",
@@ -34,20 +38,44 @@ router.patch(
   }).single("image"),
   transactionController.uploadFoto
 );
-router.get("/allBranchTransaction", transactionController.getAllTransaction)
-router.get("/transactionStatus", transactionController.getTransactionStatus)
-router.get("/allTransactionByBranch/:id", transactionController.getTransactionByBranch)
-router.get("/getTransactionItem/:id", transactionController.getTransactionItem)
+router.get("/allBranchTransaction", transactionController.getAllTransaction);
+router.get("/transactionStatus", transactionController.getTransactionStatus);
+router.get(
+  "/allTransactionByBranch/:id",
+  transactionController.getTransactionByBranch
+);
+router.get("/getTransactionItem/:id", transactionController.getTransactionItem);
 router.get("/productReport", transactionController.getSuperAdminDataByProduct);
-router.get("/branchProductReport", transactionController.getBranchAdminDataByProduct);
-router.get("/transactionReport", transactionController.getSuperAdminDataByTransaction);
-router.get("/branchTransactionReport", transactionController.getBranchAdminDataByTransaction);
+router.get(
+  "/branchProductReport",
+  transactionController.getBranchAdminDataByProduct
+);
+router.get(
+  "/transactionReport",
+  transactionController.getSuperAdminDataByTransaction
+);
+router.get(
+  "/branchTransactionReport",
+  transactionController.getBranchAdminDataByTransaction
+);
 router.get("/userReport", transactionController.getAllUserTransactionData);
-router.get("/branchUserReport", transactionController.getBranchUserTransactionData);
-router.patch("/admincancelorder/:id", transactionController.adminCancelTransaction);
+router.get(
+  "/branchUserReport",
+  transactionController.getBranchUserTransactionData
+);
+router.patch(
+  "/admincancelorder/:id",
+  transactionController.adminCancelTransaction
+);
 router.patch("/adminsendorder/:id", transactionController.adminSendTransaction);
-router.get("/userTransactionList/:id", transactionController.getUserTransaction);
-router.patch("/userTransactionStatus/:id", transactionController.updateTransactionStatus);
+router.get(
+  "/userTransactionList/:id",
+  transactionController.getUserTransaction
+);
+router.patch(
+  "/userTransactionStatus/:id",
+  transactionController.updateTransactionStatus
+);
 
 module.exports = router;
 module.exports = router;
