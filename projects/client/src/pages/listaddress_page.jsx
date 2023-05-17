@@ -89,7 +89,7 @@ export default function ListAddressPage() {
             flexDir={"column"}
             gap={5}
           >
-            <Link to="/userpage" as={ReachLink}>
+            <Link to="/" as={ReachLink}>
               <Flex textAlign={"left"} color="white">
                 <Icon
                   boxSize={"7"}

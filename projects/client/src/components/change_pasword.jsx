@@ -102,7 +102,7 @@ export default function ChangePassword({ id }) {
           flexDir="column"
           gap={8}
         >
-          <Link to="/userpage" as={ReachLink}>
+          <Link to="/" as={ReachLink}>
             <Flex textAlign={"left"} py={5} color="white">
               <Icon
                 boxSize={"7"}

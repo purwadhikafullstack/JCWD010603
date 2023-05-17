@@ -42,7 +42,7 @@ export default function Navbar(props) {
       <Center flex={1} align={"center"} justifyContent={"center"}>
         <Flex
           zIndex={100}
-          px={2}
+          // px={2}
           h="70px"
           backgroundColor="#2C3639"
           w="430px"
@@ -51,8 +51,8 @@ export default function Navbar(props) {
           display={"flex"}
           pos="sticky"
         >
-          <Flex px={3} gap={5}>
-            <Flex alignItems={"center"}>
+          <Flex w='100%' gap={5}>
+            <Flex w='100%' alignItems={"center"} justify='space-between'>
               <Link to="/" as={ReachLink}>
                 <Image
                   fontSize={"26px"}
@@ -62,9 +62,9 @@ export default function Navbar(props) {
                   w="100px"
                 ></Image>
               </Link>
-              <Flex px={"70px"} alignItems="center"></Flex>
+              {/* <Flex px={"70px"} alignItems="center"></Flex> */}
 
-              <Flex px={3}>
+              <Flex w='85px' justify='space-between'>
                 <Link to="/cart" as={ReachLink}>
                   <Icon
                     boxSize={"7"}
@@ -77,25 +77,25 @@ export default function Navbar(props) {
                     }}
                   ></Icon>
                 </Link>
-              </Flex>
 
-              <Popover trigger={"hover"} placement="bottom-end" gap={10}>
-                <PopoverTrigger>
-                  <Flex flexDir={"rows"} px={2} alignContent={"center"}>
-                    <Icon
-                      boxSize={"7"}
-                      as={AiOutlineMenu}
-                      color="white"
-                      sx={{
-                        _hover: {
-                          cursor: "pointer",
-                        },
-                      }}
-                    ></Icon>
-                  </Flex>
-                </PopoverTrigger>
-                <PopoverContent minW={{ base: "100%", lg: "max-content" }}>
-                  <PopoverArrow backgroundColor={"#A27B5C"} />
+
+                <Popover trigger={"hover"} placement="bottom-end" gap={10}>
+                  <PopoverTrigger>
+                    <Flex flexDir={"rows"} px={2} alignContent={"center"}>
+                      <Icon
+                        boxSize={"7"}
+                        as={AiOutlineMenu}
+                        color="white"
+                        sx={{
+                          _hover: {
+                            cursor: "pointer",
+                          },
+                        }}
+                      ></Icon>
+                    </Flex>
+                  </PopoverTrigger>
+                  <PopoverContent minW={{ base: "100%", lg: "max-content" }}>
+                    <PopoverArrow backgroundColor={"#A27B5C"} />
 
                   <PopoverHeader bgColor={"#A27B5C"} color="white">
                     {" "}

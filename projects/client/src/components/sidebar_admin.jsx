@@ -120,6 +120,8 @@ export default function SidebarAdmin() {
             superAdmin === 1 ? 
           <Link
             sx={linkStyles}
+            to="/admin_category"
+            as={ReachLink}
             display="flex"
             alignItems="center"
             className="sidebar-link"
