@@ -62,7 +62,9 @@ const userController = {
         city: data.city,
         district: data.district,
         postalCode: data.postalCode,
-        isActive: true,
+        idCity: data.idCity,
+        idProv: data.idProv,
+        isPrimary: true,
       };
 
       const address = await Address.create(
@@ -76,7 +78,7 @@ const userController = {
       const token = await jwt.sign({ ...user.dataValues }, secret_key, {
         expiresIn: "1d",
       });
-      const href = `http://localhost:3000/verify-email?token=${token}`;
+      const href = `https://jcwd010603.purwadhikabootcamp.com/verify-email?token=${token}`;
       // verify via email
       const mail = await mailer(
         {
@@ -542,7 +544,7 @@ const userController = {
         expiresIn: "1h",
       });
 
-      const href = `http://localhost:3000/setup-password?token=${token}`;
+      const href = `https://jcwd010603.purwadhikabootcamp.com/setup-password?token=${token}`;
       // verify via email
       const mail = await mailer({
         to: email,
