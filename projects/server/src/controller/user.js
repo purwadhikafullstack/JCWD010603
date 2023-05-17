@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const { Op } = require("sequelize");
 const { sequelize } = require("../models");
 const secret_key = process.env.secret_key;
+const urlServer = process.env.SERVER_URL;
 const mailer = require("../library/mailer");
 const { nanoid } = require("nanoid");
 const db = require("../models");
@@ -76,7 +77,7 @@ const userController = {
       const token = await jwt.sign({ ...user.dataValues }, secret_key, {
         expiresIn: "1d",
       });
-      const href = `http://localhost:3000/verify-email?token=${token}`;
+      const href = `${urlServer}/verify-email?token=${token}`;
       // verify via email
       const mail = await mailer(
         {

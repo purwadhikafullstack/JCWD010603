@@ -23,6 +23,17 @@ import {
   AlertDialogBody,
   AlertDialogFooter,
   useToast,
+  TableContainer,
+  TableCaption,
+  Table,
+  Tbody,
+  Tr,
+  Grid,
+  Td,
+  GridItem,
+  Icon,
+  Tooltip,
+  Spinner
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import React from "react";
@@ -31,6 +42,7 @@ import Navbar from "../components/navbar"; //loggedin
 import { axiosInstance } from "../config/config";
 import { Link as ReachLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { TbListDetails } from "react-icons/tb";
 import ReactPaginate from "react-paginate";
 import "bulma/css/bulma.css";
 
@@ -39,19 +51,20 @@ export default function UserTrans() {
   let navigate = useNavigate();
   const cancelRef = React.useRef();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen : isOpenDetail, onOpen : onOpenDetail, onClose : onCloseDetail } = useDisclosure();
   const { isOpen : isOpen1, onOpen : onOpen1, onClose : onClose1 } = useDisclosure();
   const { isOpen : isOpen2, onOpen : onOpen2, onClose : onClose2 } = useDisclosure();
   const [userTrans, setUserTrans] = useState([]);
+  const [detailTrans, setDetailTrans] = useState([]);
+  const [idTrans, setIdTrans] = useState({});
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(3);
+  const [limit, setLimit] = useState(4);
   const [pages, setPages] = useState(10);
   const [rows, setRows] = useState(0);
   const [order, setOrder] = useState("DESC");
-
   const [cancelDialog, setCancelDialog] = useState(false);
   const toast = useToast();
-
-  const [idTrans, setIdTrans] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
   const user = JSON.parse(localStorage.getItem("userID"))
   ? JSON.parse(localStorage.getItem("userID")) : null;
@@ -61,8 +74,9 @@ export default function UserTrans() {
     _hover: {
       bg: "none",
       border: "2px solid #FFB84C",
+      borderRight:0,
       color: "#FFB84C",
-      transform: "scale(1.10)",
+      
  },
     _active: {
       size: "sm",
@@ -72,8 +86,9 @@ export default function UserTrans() {
     _hover: {
       bg: "none",
       border: "2px solid #0E8388",
+      borderRight:0,
       color: "#0E8388",
-      transform: "scale(1.10)",
+      
  },
     _active: {
       size: "sm",
@@ -83,8 +98,9 @@ export default function UserTrans() {
     _hover: {
       bg: "none",
       border: "2px solid #3E54AC",
+      borderRight:0,
       color: "#3E54AC",
-      transform: "scale(1.10)",
+      
  },
     _active: {
       size: "sm",
@@ -94,8 +110,9 @@ export default function UserTrans() {
     _hover: {
       bg: "none",
       border: "2px solid #6D5D6E",
+      borderRight:0,
       color: "#6D5D6E",
-      transform: "scale(1.10)",
+      
  },
     _active: {
       size: "sm",
@@ -105,13 +122,27 @@ export default function UserTrans() {
     _hover: {
       bg: "none",
       border: "2px solid #F45050",
+      borderRight:0,
       color: "#F45050",
-      transform: "scale(1.10)",
+      
  },
     _active: {
       size: "sm",
     },
   };
+  const detailButtonStyle = {
+    _hover: {
+      bg: "none",
+      border: "2px solid #BACDDB",
+      borderLeft:0,
+      color: "#BACDDB",
+      
+ },
+    _active: {
+      size: "sm",
+    },
+  };
+  
 
   const uploadButtonStyle = {
     _hover: {
@@ -163,6 +194,16 @@ export default function UserTrans() {
       borderRadius: "10px",
     },
   };
+
+  const handleDetailTrans = (e) => {
+
+    setTimeout(()=> {
+      setDetailTrans(e)
+      onOpenDetail()
+    },500)
+
+    console.log(detailTrans);
+  }
 
   const changePage = ({ selected }) => {
     setPage(parseInt(selected) + 1);
@@ -238,20 +279,22 @@ export default function UserTrans() {
     !user?
     navigate('/userlogin')
     :
-
     fetchTransactions();
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 300);
   }, [page]);
 
   return (
     <Flex direction="column">
       {localStorage.getItem("userID") ? <Navbar /> : <NavBar />}
 
+      {isLoading ? (
+      <Center w={"100vw"} h="100vh" alignContent={"center"}>
+        <Spinner size={"xl"} thickness="10px" color="blue.500" />
+      </Center>
+    ) : (
       <Flex w="430px" h="90vh" m="0 auto" direction="column" sx={scrollStyle}>
-        {" "}
-        {/* Cart Body */}
-        {/* <Heading textAlign='center' color='#2C3639' my={5}>
-                      Cart
-                  </Heading> */}
         <Flex w="85%" m="0 auto">
           <Text my={3} fontWeight="bold" color="#2C3639">
             Transaction List
@@ -260,9 +303,8 @@ export default function UserTrans() {
         <Flex
           direction="column"
           w="85%"
-          h="560px"
+          h="600px"
           m="0 auto"
-          py={5}
           borderBottom="4px solid #2C3639"
           borderTop="4px solid #2C3639"
           overflow="auto"
@@ -364,7 +406,8 @@ export default function UserTrans() {
                           color="white"
                           bg="#FFB84C"
                           cursor="pointer"
-                          mr={3}
+                          borderLeftRadius={10}
+                          borderRightRadius={0}
                           onClick={() =>
                             cancelStatus1({ id: val.id, noTrans: val.noTrans })
                           }
@@ -379,7 +422,8 @@ export default function UserTrans() {
                           color="white"
                           bg="#0E8388"
                           cursor="pointer"
-                          mr={3}
+                          borderLeftRadius={10}
+                          borderRightRadius={0}
                           onClick={() => cancelStatus2({id: val.id, noTrans: val.noTrans})}
                           sx={confirmButtonStyle}
                         >
@@ -392,7 +436,9 @@ export default function UserTrans() {
                           color="white"
                           bg="#3E54AC"
                           cursor="pointer"
-                          mr={3}
+                          borderLeftRadius={10}
+                          borderRightRadius={0}
+
                           onClick={() => changeStatus({id: val.id, noTrans: val.noTrans})}
                           sx={deliveredButtonStyle}
                         >
@@ -405,7 +451,8 @@ export default function UserTrans() {
                           color="white"
                           bg="#6D5D6E"
                           cursor="pointer"
-                          mr={3}
+                          borderLeftRadius={10}
+                          borderRightRadius={0}
                           sx={arrivedButtonStyle}
                         >
                           {val.Transaction_status?.name}
@@ -418,14 +465,28 @@ export default function UserTrans() {
                           color="white"
                           bg="#F45050"
                           cursor="pointer"
-                          mr={3}
                           sx={canceledButtonStyle}
+                          borderLeftRadius={10}
+                          borderRightRadius={0}
                         >
                           {val.Transaction_status?.name}
                         </Button>
                       )
 
                       }
+                        <Tooltip label='Order details' placement="top" fontSize='md' bg="#BACDDB">
+                      <Button 
+                      sx={detailButtonStyle}
+                      size="xs"
+                          // as={BiTrash}
+                          color="white"
+                          bg="#BACDDB"
+                          cursor="pointer"
+                          borderLeftRadius={0}
+                          borderRightRadius={10}
+                      onClick={() => {handleDetailTrans(val.Transaction_items)}}>
+                      <Icon as={TbListDetails}/></Button>
+                      </Tooltip>
                     </Flex>
                   </>
                 );
@@ -457,15 +518,13 @@ export default function UserTrans() {
             />
           </nav>
         </Flex>
-        <Box w="85%" m="0 auto" textAlign={"right"}>
-          Total Transaction: {rows} | Page: {rows ? page : 0} of {pages}
-        </Box>
         </>
         ) : null }
       </Flex>
+    )}
       <Modal margin onClose={onClose1} isOpen={isOpen1} isCentered>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent maxW="430px" fontSize={["sm", "md"]}>
           <ModalHeader fontSize={"2xl"} fontWeight={"bold"}>
             Transaction Status
           </ModalHeader>
@@ -497,7 +556,7 @@ export default function UserTrans() {
       </Modal>
       <Modal margin onClose={onClose2} isOpen={isOpen2} isCentered>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent maxW="430px" fontSize={["sm", "md"]}>
           <ModalHeader fontSize={"2xl"} fontWeight={"bold"}>
             Transaction Status
           </ModalHeader>
@@ -529,7 +588,7 @@ export default function UserTrans() {
       </Modal>
       <Modal margin onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent maxW="430px" fontSize={["sm", "md"]}>
           <ModalHeader fontSize={"2xl"} fontWeight={"bold"}>
             Transaction Status
           </ModalHeader>
@@ -564,6 +623,57 @@ export default function UserTrans() {
               </Flex>
             </Center>
           </ModalBody>
+        </ModalContent>
+      </Modal>
+      <Modal onClose={onCloseDetail} isOpen={isOpenDetail} isCentered>
+        <ModalOverlay />
+        <ModalContent maxW="430px" fontSize={["sm", "md"]}>
+          <ModalHeader>Order Detail</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody py={"35px"}>
+
+          {detailTrans.length > 0 ? 
+            <>
+          <Grid fontWeight={"semibold"} bg={"#86A3B8"} textAlign={"center"} width={"inherit"} templateColumns={"2fr 2fr 1fr 1fr"}>
+          <GridItem border={"1px"}>Product Name</GridItem>
+          <GridItem border={"1px"}>Price</GridItem>
+          <GridItem border={"1px"}>Weight</GridItem>
+          <GridItem  border={"1px"}>Qty</GridItem>
+          </Grid>
+          
+          {detailTrans?.map((val, idx) => {
+                    return (
+                        <Grid width={"inherit"} textAlign={"center"} templateColumns={"2fr 2fr 1fr 1fr"} key={idx} >
+                      {/* <Tr w={"100%"} key={idx}> */}
+                          <GridItem bg={"#DDDDDD"} border={"1px"}>{val.Product?.name}</GridItem>
+                          <GridItem bg={"#EEEEEE"} border={"1px"}>Rp. {(val.Product?.price).toLocaleString()}</GridItem>
+                          <GridItem bg={"#DDDDDD"} border={"1px"}>{val.Product?.weight} gr</GridItem>
+                          <GridItem bg={"#EEEEEE"} border={"1px"}>{val.qty} pcs</GridItem>
+                      {/* </Tr> */}
+                        </Grid>
+                    );
+                  })}
+                  </>
+                  : <Flex
+                          flexDir={"column"}
+                          w="inherit"
+                              justify={"center"}
+                              textAlign={"center"} fontSize={["xl", "2xl"]}
+                  fontWeight="semibold"
+                            >
+                            Order details is empty
+                              </Flex>
+                }
+            {/* <TableContainer>
+              <Table variant="striped" w={"100%"} border={1}>
+                <Tbody>
+                </Tbody>
+              </Table>
+            </TableContainer> */}
+          </ModalBody>
+          <ModalFooter>
+            <Button onClick={onCloseDetail}>Close</Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
       <AlertDialog
