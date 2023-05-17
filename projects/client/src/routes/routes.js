@@ -54,7 +54,11 @@ const routes = [
   },
   {
     path: "/record-stock",
-    element: <RecordStock />,
+    element: (
+      <ProtectedPage adminLogin={true} adminGuest={false}>
+        <RecordStock />
+      </ProtectedPage>
+    ),
   },
   {
     path: "/user-transactions",

@@ -84,7 +84,7 @@ const adminController = {
         attributes: ["id", "username", "email", "isSuperAdmin", "BranchId"],
         include: {
           model: Branch,
-          attributes: ["city"],
+          attributes: ["city", "name"],
         },
       });
       return res.status(200).json({

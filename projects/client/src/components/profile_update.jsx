@@ -182,7 +182,7 @@ export default function UpdateProfile(props) {
             flexDir={"column"}
             gap={5}
           >
-            <Link to="/userpage" as={ReachLink}>
+            <Link to="/" as={ReachLink}>
               <Flex textAlign={"left"} color="white">
                 <Icon
                   boxSize={"7"}
