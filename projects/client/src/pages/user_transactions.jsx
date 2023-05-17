@@ -29,7 +29,6 @@ import React from "react";
 import NavBar from "../components/navbarhome"; //not loggedin
 import Navbar from "../components/navbar"; //loggedin
 import { axiosInstance } from "../config/config";
-import { BiTrash, BiEdit, BiChevronRight, BiChevronLeft } from "react-icons/bi";
 import { Link as ReachLink } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import "bulma/css/bulma.css";
@@ -47,7 +46,6 @@ export default function UserTrans() {
   const [order, setOrder] = useState("DESC");
 
   const [cancelDialog, setCancelDialog] = useState(false);
-  const [editDialog, setEditDialog] = useState(false);
   const toast = useToast();
 
   const [idTrans, setIdTrans] = useState({});
@@ -89,8 +87,8 @@ export default function UserTrans() {
   const arrivedButtonStyle = {
     _hover: {
       bg: "none",
-      border: "2px solid #1F8A70",
-      color: "#1F8A70",
+      border: "2px solid #6D5D6E",
+      color: "#6D5D6E",
       transform: "scale(1.10)",
  },
     _active: {
@@ -133,7 +131,7 @@ export default function UserTrans() {
   };
   const completeButtonModalStyle = {
     _hover: {
-      bg: "#1F8A70",
+      bg: "#6D5D6E",
       // border: "2px solid #9e3939",
       color: "#F1F6F9",
       transform: "scale(1.05)",
@@ -395,7 +393,7 @@ export default function UserTrans() {
                           size="xs"
                           // as={BiTrash}
                           color="white"
-                          bg="#1F8A70"
+                          bg="#6D5D6E"
                           cursor="pointer"
                           mr={3}
                           sx={arrivedButtonStyle}
@@ -411,7 +409,6 @@ export default function UserTrans() {
                           bg="#F45050"
                           cursor="pointer"
                           mr={3}
-                          // onClick={() => cancelStatus({id: val.id, noTrans: val.noTrans})}
                           sx={canceledButtonStyle}
                         >
                           {val.Transaction_status?.name}
@@ -419,16 +416,6 @@ export default function UserTrans() {
                       )
 
                       }
-                      {/* <Flex mr={4} py={2}>
-                          <IconButton
-                            size="xs"
-                            as={BiEdit}
-                            color="gray.400"
-                            bg="none"
-                            cursor="pointer" onClick={() => editCart(val.id)}
-                            sx={editButtonStyle}
-                          />
-                        </Flex> */}
                     </Flex>
                   </>
                 );
@@ -436,6 +423,8 @@ export default function UserTrans() {
             </>
           )}
         </Flex>
+        {userTrans ? (
+          <>
         <Flex w="100%" h="50px" m="0 auto" justify={"center"} align="center">
           <nav
             role={"navigation"}
@@ -459,27 +448,10 @@ export default function UserTrans() {
           </nav>
         </Flex>
         <Box w="85%" m="0 auto" textAlign={"right"}>
-          Total Data: {rows} | Page: {rows ? page : 0} of {pages}
+          Total Transaction: {rows} | Page: {rows ? page : 0} of {pages}
         </Box>
-        <Button
-          w="85%"
-          h="40px"
-          m="20px auto 0px"
-          // bg={cartData.length > 0 ? "#2C3639" : "#BEBEBE"}
-          color="white"
-          // sx={cartData.length > 0 ? confirmButtonStyle : {}}
-          // disabled={cartData.length === 0}
-          p="0px"
-          // cursor={cartData.length > 0 ? "pointer" : "context-menu"}
-        >
-          {/* {cartData.length > 0 ? (
-              <Link href="/new-order" w="100%" h="100%" _hover={{ textStyle: 'none' }}>
-                <Center h="100%">Confirm & Buy</Center>
-              </Link>
-            ) : (
-              <Center h="100%">Confirm & Buy</Center>
-            )} */}
-        </Button>
+        </>
+        ) : null }
       </Flex>
       <Modal margin onClose={onClose1} isOpen={isOpen1} isCentered>
         <ModalOverlay />

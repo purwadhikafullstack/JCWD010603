@@ -173,7 +173,7 @@ const adminController = {
     }
   },
 
-  getBranches: async (req, res) => {
+  getBranches: async (req, res) => {  
     try {
       const result = await Branch.findAll({
         attributes: [
