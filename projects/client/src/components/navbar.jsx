@@ -97,47 +97,46 @@ export default function Navbar(props) {
                   <PopoverContent minW={{ base: "100%", lg: "max-content" }}>
                     <PopoverArrow backgroundColor={"#A27B5C"} />
 
-                    <PopoverHeader bgColor={"#A27B5C"} color="white">
-                      {" "}
-                      SELAMAT DATANG {userSelector?.username}!
-                    </PopoverHeader>
-                    <PopoverBody>
-                      <List fontSize={"14px"} color="#7D7D7D" gap={5}>
-                        <Divider orientation="horizontal" m={2} />
-                        <ListItem>
-                          <Link to="/user-transactions" as={ReachLink}>
-                            TRANSACTION LIST
-                          </Link>
-                        </ListItem>
-                        <Divider orientation="horizontal" m={2} />
-                        <ListItem>
-                          <Link to="/update-profile" as={ReachLink}>
-                            PROFILE
-                          </Link>
-                        </ListItem>
-                        <Divider orientation="horizontal" m={2} />
-                        <ListItem>
-                          <Link to="/list-address" as={ReachLink}>
-                            ADDRESS
-                          </Link>
-                        </ListItem>
-                        <Divider orientation="horizontal" m={2} />
-                        <ListItem>
-                          <Link to="/reset" as={ReachLink}>
-                            CHANGE PASSWORD
-                          </Link>
-                        </ListItem>
-                        <Divider orientation="horizontal" m={2} />
-                        <ListItem>
-                          <Link to="/userlogin" as={ReachLink} onClick={logOut}>
-                            LOGOUT{" "}
-                          </Link>{" "}
-                        </ListItem>
-                      </List>
-                    </PopoverBody>
-                  </PopoverContent>
-                </Popover>
-              </Flex>
+                  <PopoverHeader bgColor={"#A27B5C"} color="white">
+                    {" "}
+                    WELCOME {userSelector?.username}!
+                  </PopoverHeader>
+                  <PopoverBody>
+                    <List fontSize={"14px"} color="#7D7D7D" gap={5}>
+                      <Divider orientation="horizontal" m={2} />
+                      <ListItem>
+                        <Link to="/user-transactions" as={ReachLink}>
+                          TRANSACTION LIST
+                        </Link>
+                      </ListItem>
+                      <Divider orientation="horizontal" m={2} />
+                      <ListItem>
+                        <Link to="/update-profile" as={ReachLink}>
+                          PROFILE
+                        </Link>
+                      </ListItem>
+                      <Divider orientation="horizontal" m={2} />
+                      <ListItem>
+                        <Link to="/list-address" as={ReachLink}>
+                          ADDRESS
+                        </Link>
+                      </ListItem>
+                      <Divider orientation="horizontal" m={2} />
+                      <ListItem>
+                        <Link to="/reset" as={ReachLink}>
+                          CHANGE PASSWORD
+                        </Link>
+                      </ListItem>
+                      <Divider orientation="horizontal" m={2} />
+                      <ListItem>
+                        <Link to="/userlogin" as={ReachLink} onClick={logOut}>
+                          LOGOUT{" "}
+                        </Link>{" "}
+                      </ListItem>
+                    </List>
+                  </PopoverBody>
+                </PopoverContent>
+              </Popover>
             </Flex>
           </Flex>
         </Flex>
