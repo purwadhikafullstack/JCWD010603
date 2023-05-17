@@ -642,28 +642,6 @@ export default function Record() {
                                           
                                         </Grid>
                                       </Grid>
-                                      {superAdmin ? null : (
-                                        <Flex
-                                          w="100%"
-                                          justify="space-between"
-                                          mt="4"
-                                        >
-                                          <Button
-                                            variant="outline"
-                                            colorScheme="yellow"
-                                            onClick={() => cancelOrder(val.id)}
-                                          >
-                                            <b>Cancel</b>
-                                          </Button>
-                                          <Button
-                                            colorScheme="teal"
-                                            variant="solid"
-                                            onClick={() => sendOrder(val.id)}
-                                          >
-                                            Send
-                                          </Button>
-                                        </Flex>
-                                      )}
                                     </PopoverBody>
                                   </PopoverContent>
                                 </Popover>
