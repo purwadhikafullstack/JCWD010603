@@ -628,7 +628,7 @@ export default function UserTrans() {
       <Modal onClose={onCloseDetail} isOpen={isOpenDetail} isCentered>
         <ModalOverlay />
         <ModalContent maxW="430px" fontSize={["sm", "md"]}>
-          <ModalHeader>Order Detail</ModalHeader>
+          <ModalHeader>Order Details</ModalHeader>
           <ModalCloseButton />
           <ModalBody py={"35px"}>
 

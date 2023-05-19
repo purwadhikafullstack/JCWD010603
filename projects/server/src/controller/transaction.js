@@ -531,6 +531,7 @@ const transactionController = {
           {
             model: Product,
             attributes: ["name", "imgProduct", "price"],
+            paranoid : false,
             include: [
               {
                 model: Branch,
