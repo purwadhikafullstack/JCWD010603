@@ -28,11 +28,10 @@ export default function LoginAdmin() {
   const [status, setStatus] = useState(false);
   const [errMsg, setErrMsg] = useState("");
   const [loginStat, setLoginStat] = useState("");
-
+  
   function pressEnter(e) {
     if (e.key === 'Enter') {
       Login();
-      // fetchCategory();
     }
   };
 
@@ -44,11 +43,11 @@ export default function LoginAdmin() {
           password,
         })
       );
-      console.log(isAuth.data.message);
-      if (isAuth.data.message) {
+      if (isAuth.message) {
         setLoginStat("Failed")
-        setErrMsg(isAuth.data.message)
+        setErrMsg(isAuth.message)
       }
+      console.log(isAuth.message);
       if (isAuth.status) {
 
         if (isAuth.data.id) {
@@ -62,7 +61,7 @@ export default function LoginAdmin() {
       console.log(`Error = ${error}`);
     }
   }
-  console.log(errMsg);
+  console.log(loginStat)
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -76,7 +75,7 @@ export default function LoginAdmin() {
       setEmail(event.target.value);
     }
   };
-
+  console.log(errMsg);
   return (
     <>
       <Center

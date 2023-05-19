@@ -1,5 +1,13 @@
 import SidebarAdmin from "../components/sidebar_admin";
-import { Flex, Center, Spinner, Box, Select, option } from "@chakra-ui/react";
+import {
+  Flex,
+  Center,
+  Spinner,
+  Box,
+  Select,
+  option,
+  useMediaQuery,
+} from "@chakra-ui/react";
 import Chart from "../components/chart";
 import { axiosInstance } from "../config/config";
 import { useEffect, useState } from "react";
@@ -16,28 +24,48 @@ export default function Dashboard() {
   const [dataProductAll, setDataProductAll] = useState(0);
   const [dataCountProduct, setdataCountProduct] = useState(dataProductAll);
   const [dataAdmin, setDataAdmin] = useState(0);
+  const [branchName, setBranchName] = useState("");
   const [dataStock, setDataStock] = useState(0);
+  const [dataCat, setDataCat] = useState([]);
   const [dataIncome, setDataIncome] = useState([]);
   const [datachartline, setDatachartline] = useState([]);
   const [datachartbar, setDatachartbar] = useState([]);
   const [dataTransaction, setDataTransaction] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [idBranch, setIdBranch] = useState(1);
-
+  const [idBranch, setIdBranch] = useState(
+    JSON.parse(localStorage.getItem("data")).BranchId
+  );
+  const superAdmin = JSON.parse(localStorage.getItem("data")).isSuperAdmin;
   async function fetchDataBranch() {
-    await axiosInstance.get("/api/admin/branches").then((res) => {
-      setDataBranch(res.data.result);
-    });
+    setIsLoading(true);
+    await axiosInstance
+      .get("/api/admin/branches")
+      .then((res) => {
+        setDataBranch(res.data.result);
+      })
+      .finally(() => setIsLoading(false));
   }
 
   const fetchDataTransactionHeader = async () => {
     try {
-      console.log(idBranch);
-      const response = await axiosInstance.get(
-        `/api/transaction/transaction-detail/${idBranch}`
-      );
+      setIsLoading(true);
+      const response = await axiosInstance
+        .get(`/api/transaction/transaction-detail/${idBranch}`)
+        .finally(() => setIsLoading(false));
       const result = response.data.result;
       setDatachartline(result);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+  const fetchDataTransactionItem = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axiosInstance
+        .get(`/api/transaction/gettransactionbycategorybybranch/${idBranch}`)
+        .finally(() => setIsLoading(false));
+      const result = response.data.result;
+      setDataCat(result);
     } catch (err) {
       console.log(err.message);
     }
@@ -45,10 +73,10 @@ export default function Dashboard() {
 
   const fetchDataCountAdmin = async () => {
     try {
-      console.log(idBranch);
-      const response = await axiosInstance.get(
-        `/api/admin/countadmin/${idBranch}`
-      );
+      setIsLoading(true);
+      const response = await axiosInstance
+        .get(`/api/admin/countadmin/${idBranch}`)
+        .finally(() => setIsLoading(false));
       const result = response.data.result;
       setDataAdmin(result);
     } catch (err) {
@@ -58,10 +86,10 @@ export default function Dashboard() {
 
   const fetchDataCountBranch = async () => {
     try {
-      console.log(idBranch);
-      const response = await axiosInstance.get(
-        `/api/product/countproductbybranch/${idBranch}`
-      );
+      setIsLoading(true);
+      const response = await axiosInstance
+        .get(`/api/product/countproductbybranch/${idBranch}`)
+        .finally(() => setIsLoading(false));
       const result = response.data.result;
       setdataCountProduct(result);
     } catch (err) {
@@ -71,10 +99,10 @@ export default function Dashboard() {
 
   const fetchDataIncomeTransaction = async () => {
     try {
-      console.log(idBranch);
-      const response = await axiosInstance.get(
-        `/api/transaction/getIncomeTransactionByBranch/${idBranch}`
-      );
+      setIsLoading(true);
+      const response = await axiosInstance
+        .get(`/api/transaction/getIncomeTransactionByBranch/${idBranch}`)
+        .finally(() => setIsLoading(false));
       const result = response.data.result[0];
 
       setDataIncome(parseInt(result.income));
@@ -85,10 +113,10 @@ export default function Dashboard() {
 
   const fetchDataStock = async () => {
     try {
-      console.log(idBranch);
-      const response = await axiosInstance.get(
-        `/api/product/totalstockbybranch/${idBranch}`
-      );
+      setIsLoading(true);
+      const response = await axiosInstance
+        .get(`/api/product/totalstockbybranch/${idBranch}`)
+        .finally(() => setIsLoading(false));
       const result = response.data.result[0];
 
       setDataStock(result.stock);
@@ -99,10 +127,10 @@ export default function Dashboard() {
 
   const fetchDataTransaction = async () => {
     try {
-      console.log(idBranch);
-      const response = await axiosInstance.get(
-        `/api/transaction/counttransactionbybranch/${idBranch}`
-      );
+      setIsLoading(true);
+      const response = await axiosInstance
+        .get(`/api/transaction/counttransactionbybranch/${idBranch}`)
+        .finally(() => setIsLoading(false));
       const result = response.data.result;
 
       setDataTransaction(result);
@@ -118,16 +146,28 @@ export default function Dashboard() {
     fetchDataIncomeTransaction();
     fetchDataStock();
     fetchDataTransactionHeader();
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
+    fetchDataTransactionItem();
+    fetchDataBranch();
   }, [idBranch]);
 
-  useEffect(() => {
-    fetchDataBranch();
-    // fetchDataTransactionHeader();
-  }, []);
-  console.log(dataBranch);
+  const webkit = {
+    "::-webkit-scrollbar": {
+      height: "0.3em",
+      width: "0.3em",
+      backgroundColor: "none",
+      borderRadius: "10px",
+    },
+    "::-webkit-scrollbar-thumb": {
+      backgroundColor: "gray.200",
+      borderRadius: "10px",
+    },
+    "::-webkit-scrollbar-thumb:hover": {
+      backgroundColor: "#555555",
+      borderRadius: "10px",
+    },
+  };
+  const [isSmallerThan1500] = useMediaQuery("(max-width: 1500px)");
+  const [isSmallerThan650] = useMediaQuery("(max-width: 650px)");
   return (
     <>
       {isLoading ? (
@@ -136,35 +176,48 @@ export default function Dashboard() {
         </Center>
       ) : (
         <>
-          <Flex>
+          <Flex w="100%" h="100vh" justify="space-between">
             <SidebarAdmin />
-            <Flex>
-              <Center flexDir="column" py={10} marginLeft={"80px"}>
-                <Flex fontSize={"30px"} fontWeight="bold">
-                  Dashboard
-                </Flex>
-                <Flex w="400px" py={3}>
-                  <Select
-                    onChange={(e) => {
-                      setIdBranch(e.target.value);
-                    }}
+            <Flex w={isSmallerThan1500 ? "90%" : "80%"} h="100%">
+              <Center flexDir="column" w="100%" sx={webkit} overflow="auto">
+                <Flex w="60%" direction="column" justify="center">
+                  <Flex
+                    fontSize={["sm", "md", "lg"]}
+                    fontWeight="bold"
+                    justify="center"
                   >
-                    {dataBranch?.map((branch) => {
-                      return <option value={branch.id}>{branch.name}</option>;
-                    })}
-                  </Select>
+                    Dashboard
+                  </Flex>
+                  <Flex w={["100%", "80%", "60%", "40%"]} py={3} m="0 auto">
+                    {superAdmin ? (
+                      <Select
+                        onChange={(e) => {
+                          setIdBranch(e.target.value);
+                          setBranchName(e.target.textContent);
+                        }}
+                        value={idBranch}
+                        placeholder="Select"
+                      >
+                        {dataBranch?.map((branch) => {
+                          return (
+                            <option value={branch.id}>{branch.name}</option>
+                          );
+                        })}
+                      </Select>
+                    ) : null}
+                  </Flex>
                 </Flex>
                 <Flex
-                  w="1200px"
+                  w="90%"
                   gap={5}
                   paddingTop="20px"
                   paddingBottom={"20px"}
                   justifyContent="start"
                   flexDir={"row"}
                   flexWrap="wrap"
-                  overflowX={"auto"}
+                  // overflowX={"auto"}
                   overflowY={"auto"}
-                  h="full"
+                  h={isSmallerThan650 ? "50vh" : "60vh"}
                   py={10}
                 >
                   <Center
@@ -245,7 +298,9 @@ export default function Dashboard() {
                     <Flex fontSize={"40px"}>{dataStock}</Flex>
                   </Center>
                 </Flex>
-                <Chart data={datachartline} />
+                <Flex m="0 auto">
+                  <Chart data={datachartline} datacat={dataCat} />
+                </Flex>
               </Center>
             </Flex>
           </Flex>

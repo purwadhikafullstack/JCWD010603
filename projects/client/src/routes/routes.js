@@ -54,7 +54,11 @@ const routes = [
   },
   {
     path: "/record-stock",
-    element: <RecordStock />,
+    element: (
+      <ProtectedPage adminLogin={true} adminGuest={false}>
+        <RecordStock />
+      </ProtectedPage>
+    ),
   },
   {
     path: "/user-transactions",
@@ -82,7 +86,11 @@ const routes = [
   },
   {
     path: "/confirm-deliver/:noTrans",
-    element: <ConfirmDeliverPage />,
+    element: (
+      <ProtectedPageUser userLogin={true}>
+        <ConfirmDeliverPage />
+      </ProtectedPageUser>
+    ),
   },
   {
     path: "/setup-password",
@@ -90,11 +98,19 @@ const routes = [
   },
   {
     path: "/new-order",
-    element: <NewOrder />,
+    element: (
+      <ProtectedPageUser userLogin={true}>
+        <NewOrder />
+      </ProtectedPageUser>
+    ),
   },
   {
     path: "/upload-payment/:noTrans",
-    element: <Upload />,
+    element: (
+      <ProtectedPageUser userLogin={true}>
+        <Upload />
+      </ProtectedPageUser>
+    ),
   },
   {
     path: "/userpage",
@@ -130,11 +146,19 @@ const routes = [
   },
   {
     path: "/reset",
-    element: <Reset />,
+    element: (
+      <ProtectedPageUser userLogin={true}>
+        <Reset />
+      </ProtectedPageUser>
+    ),
   },
   {
     path: "/detail-product/:id",
-    element: <DetailProduct />,
+    element: (
+      <ProtectedPageUser userLogin={true}>
+        <DetailProduct />
+      </ProtectedPageUser>
+    ),
   },
 
   {
@@ -151,7 +175,11 @@ const routes = [
   },
   {
     path: "/cart",
-    element: <Cart />,
+    element: (
+      <ProtectedPageUser userLogin={true}>
+        <Cart />
+      </ProtectedPageUser>
+    ),
   },
   {
     path: "/update-profile",
