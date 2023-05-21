@@ -291,6 +291,7 @@ const transactionController = {
       const result = await Transaction_header.update(
         {
           ...data,
+          TransactionStatusId: 2,
         },
         {
           where: {
@@ -941,7 +942,7 @@ const transactionController = {
             "totalWeight",
             "imgUpload",
             "createdAt",
-            "TransactionStatusId"
+            "TransactionStatusId",
           ],
           include: [
             {
