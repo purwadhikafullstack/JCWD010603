@@ -392,7 +392,7 @@ const userController = {
       });
     } catch (err) {
       res.status(400).json({
-        message: err,
+        message: err.message,
       });
       console.log(err);
     }
@@ -447,6 +447,9 @@ const userController = {
       res.set("Content-type", "image/**");
     } catch (err) {
       res.send(err);
+      return res.status(400).json({
+        message: err.message,
+      });
     }
   },
 
@@ -768,7 +771,7 @@ const userController = {
       res.status(201).send("Success send request for reset password");
     } catch (err) {
       await t.rollback();
-      res.status(401).json({ errors: err.message });
+      return res.status(401).json({ errors: err.message });
     }
   },
 
@@ -863,8 +866,8 @@ const userController = {
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
-        message: err,
+      return res.status(400).json({
+        message: err.message,
       });
     }
   },
@@ -877,8 +880,8 @@ const userController = {
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
-        message: err,
+      return res.status(400).json({
+        message: err.message,
       });
     }
   },
@@ -907,7 +910,7 @@ const userController = {
       });
     } catch (err) {
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -954,7 +957,7 @@ const userController = {
     } catch (err) {
       await t.rollback();
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
