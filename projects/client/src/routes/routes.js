@@ -95,7 +95,7 @@ const routes = [
     ),
   },
   {
-    path: "/upload-payment/:noTrans",
+    path: "/upload-payment/:id",
     element: (
       <ProtectedPageUser userLogin={true}>
         <Upload />

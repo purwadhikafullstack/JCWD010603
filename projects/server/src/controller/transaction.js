@@ -278,7 +278,7 @@ const transactionController = {
   },
   uploadFoto: async (req, res) => {
     try {
-      const noTrans = req.params.noTrans;
+      const id = req.params.id;
 
       const data = {};
 
@@ -294,7 +294,7 @@ const transactionController = {
         },
         {
           where: {
-            noTrans: noTrans,
+            id: id,
           },
         }
       );

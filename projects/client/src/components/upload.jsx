@@ -35,13 +35,13 @@ export default function UpdateProfile(props) {
 
   const location = useLocation();
   const toast = useToast();
-  const [noTrans, setNoTrans] = useState(0);
+  const [idTrans, setIdTrans] = useState(0);
 
   const [selectedFile, setSelectedFile] = useState(null);
   const inputFileRef = useRef(null);
   const [enable, setEnable] = useState(false);
   useEffect(() => {
-    setNoTrans(location.pathname?.split("/")[2]);
+    setIdTrans(location.pathname?.split("/")[2]);
   }, []);
 
   const navigate = useNavigate();
@@ -84,7 +84,7 @@ export default function UpdateProfile(props) {
       const formData = new FormData();
       formData.append("image", image);
       await axiosInstance
-        .patch(`/api/transaction/uploadfoto/${noTrans}`, formData)
+        .patch(`/api/transaction/uploadfoto/${idTrans}`, formData)
         .then(async (res) => {
           console.log(res.data.result);
           toast({
@@ -104,7 +104,7 @@ export default function UpdateProfile(props) {
             isClosable: true,
           });
         });
-      navigate("/product-list");
+      navigate("/user-transactions");
     },
   });
   useEffect(() => {
