@@ -39,13 +39,6 @@ const routes = [
     ),
   },
    {
-=======
-    path: "/userlogin",
-    element: <PageLogin />,
-  },
-
-  {
->>>>>>> 720bb7ff4c32f536ba45ad4def78ac7db76c2e9d
     path: "/",
     element: <HomePage />,
   },
