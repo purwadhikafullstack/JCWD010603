@@ -30,7 +30,7 @@ router.get(
 );
 router.post("/create-transaction/:id", transactionController.addTranscation);
 router.patch(
-  "/uploadfoto/:noTrans",
+  "/uploadfoto/:id",
   fileUploader({
     destinationFolder: "IMAGE_UPLOAD",
     fileType: "image",
