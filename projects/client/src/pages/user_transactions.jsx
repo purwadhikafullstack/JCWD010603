@@ -269,7 +269,7 @@ export default function UserTrans() {
     setIdTrans(e);
     onOpen();
   };
-  const cancelStatus1 = (e) => {
+  const changeStatus1 = (e) => {
     setIdTrans(e);
     onOpen1();
   };
@@ -424,7 +424,7 @@ export default function UserTrans() {
                           borderLeftRadius={10}
                           borderRightRadius={0}
                           onClick={() =>
-                            cancelStatus1({ id: val.id, noTrans: val.noTrans })
+                            changeStatus1({ id: val.id, noTrans: val.noTrans })
                           }
                           sx={requestButtonStyle}
                         >
@@ -472,7 +472,7 @@ export default function UserTrans() {
                         >
                           {val.Transaction_status?.name}
                         </Button>
-                      ) : (
+                      ) : val.TransactionStatusId === 5 ? (
                         <Button
                           size="xs"
                           // as={BiTrash}
@@ -485,7 +485,7 @@ export default function UserTrans() {
                         >
                           {val.Transaction_status?.name}
                         </Button>
-                      )
+                      ) : null
 
                       }
                         <Tooltip label='Order details' placement="top" fontSize='md' bg="#BACDDB">
@@ -551,7 +551,7 @@ export default function UserTrans() {
               <Flex justify={"center"} columnGap={"35px"}>
                 <Button sx={uploadButtonStyle}>
                   <Link
-                    to={`/upload-payment/${idTrans.noTrans}`}
+                    to={`/upload-payment/${idTrans.id}`}
                     as={ReachLink}
                   >
                     Upload
