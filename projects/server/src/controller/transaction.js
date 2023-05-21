@@ -31,8 +31,8 @@ const transactionController = {
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
-        message: err,
+      return res.status(400).json({
+        message: err.message,
       });
     }
   },
@@ -61,8 +61,8 @@ const transactionController = {
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
-        message: err,
+      return res.status(400).json({
+        message: err.message,
       });
     }
   },
@@ -77,8 +77,8 @@ const transactionController = {
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
-        message: err,
+      return res.status(400).json({
+        message: err.message,
       });
     }
   },
@@ -100,8 +100,8 @@ const transactionController = {
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
-        message: err,
+      return res.status(400).json({
+        message: err.message,
       });
     }
   },
@@ -115,8 +115,8 @@ const transactionController = {
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
-        message: err,
+      return res.status(400).json({
+        message: err.message,
       });
     }
   },
@@ -154,8 +154,8 @@ const transactionController = {
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
-        message: err,
+      return res.status(400).json({
+        message: err.message,
       });
     }
   },
@@ -249,7 +249,7 @@ const transactionController = {
       await t.rollback();
 
       return res.status(400).json({
-        message: error,
+        message: error.message,
       });
     }
   },
@@ -271,8 +271,8 @@ const transactionController = {
       res.send(result);
     } catch (error) {
       console.error(error);
-      res.status(400).json({
-        message: error,
+      return res.status(400).json({
+        message: error.message,
       });
     }
   },
@@ -348,8 +348,8 @@ const transactionController = {
                 BranchId: { [Op.like]: `%${search}%` },
               },
               {
-                TransactionStatusId: { [Op.like]: `%${search}%` }
-              }
+                TransactionStatusId: { [Op.like]: `%${search}%` },
+              },
             ],
           },
           include: [
@@ -623,7 +623,7 @@ const transactionController = {
     } catch (err) {
       console.log(err);
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -679,7 +679,7 @@ const transactionController = {
     } catch (err) {
       console.log(err);
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -739,7 +739,7 @@ const transactionController = {
     } catch (err) {
       console.log(err);
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -774,7 +774,7 @@ const transactionController = {
     } catch (err) {
       console.log(err);
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -813,7 +813,7 @@ const transactionController = {
     } catch (err) {
       console.log(err);
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -871,7 +871,7 @@ const transactionController = {
       await t.rollback();
       console.log(err);
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -896,7 +896,7 @@ const transactionController = {
     } catch (err) {
       console.log(err);
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
