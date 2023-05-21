@@ -7,6 +7,7 @@ import SidebarAdmin from '../components/sidebar_admin';
 import ProductReport from '../components/productReport';
 import TransactionReport from '../components/transactionReport';
 import UserReport from '../components/userReport';
+import { useEffect } from 'react';
 
 export default function Report() {
     const webkit = {
@@ -26,6 +27,9 @@ export default function Report() {
         },
     };
 
+    useEffect(()=> {
+        document.title = 'KOPIO | Sales Report'
+    },[])
     return (
         <Flex
             w='100%' bg='gray.100'

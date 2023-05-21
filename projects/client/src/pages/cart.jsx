@@ -124,6 +124,9 @@ export default function Cart() {
   useEffect(() => {
     fetchCartData();
   }, [pages]);
+  useEffect(()=> {
+    document.title = 'KOPIO | Cart'
+  }, [])
 
   // EDIT CART
   function handleEditInput(value) {
@@ -202,7 +205,7 @@ export default function Cart() {
         {/* <Heading textAlign='center' color='#2C3639' my={5}>
                     Cart
                 </Heading> */}
-        <Link to='/product-list-user' as={ReachLink}>
+        <Link to='/product-list' as={ReachLink}>
           <IconButton
             aria-label="backButton"
             icon={<ArrowBackIcon boxSize="1.5em" _hover={{ boxSize: "1.6em" }} />}
@@ -243,7 +246,7 @@ export default function Cart() {
                 >
                   Your cart is empty
                 </Text>
-                <Link to="/product-list-user" as={ReachLink}>
+                <Link to="/product-list" as={ReachLink}>
                   <Button>Start Shopping 🛒</Button>
                 </Link>
               </Flex>
@@ -490,7 +493,7 @@ export default function Cart() {
         >
           {cartData.length > 0 ? (
             <Link
-              to="/new-order"
+              to="/checkout"
               as={ReachLink}
               w="100%"
               h="100%"

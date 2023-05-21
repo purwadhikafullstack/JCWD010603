@@ -17,6 +17,7 @@ export default function AddAdressPage() {
   }
 
   useEffect(() => {
+    document.title = 'KOPIO | Address Create'
     fetchData();
 
     setTimeout(() => {

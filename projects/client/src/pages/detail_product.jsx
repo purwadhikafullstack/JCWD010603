@@ -12,6 +12,7 @@ export default function DetailProductPage() {
 
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
+    document.title = 'KOPIO | Product Detail'
     // fetchPosts();
 
     setTimeout(() => {

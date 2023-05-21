@@ -12,7 +12,11 @@ import {
 import "../style/admin.css";
 import Logo from "../asset/logo.png";
 import { Link as ReachLink } from "react-router-dom";
+import { useEffect } from "react";
 export default function Page404() {
+  useEffect(()=> {
+    document.title = 'KOPIO | Error 404'
+  },[])
   return (
     <>
       <Center
@@ -43,7 +47,7 @@ export default function Page404() {
                 Oops! the page you were looking for does not exist
               </Text>
               <Flex w="100%" justify="center" pt={4}>
-                <Link to="/userpage" as={ReachLink}>
+                <Link to="/" as={ReachLink}>
                   <button class="bn-32 bn32">Go back</button>
                 </Link>
               </Flex>

@@ -31,7 +31,7 @@ export default function Banner() {
         }}
       >
         <Link
-          to="/product-list-user"
+          to="/product-list"
           as={ReachLink}
           _hover={{ textStyle: "none" }}
         >

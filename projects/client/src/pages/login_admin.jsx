@@ -20,6 +20,7 @@ import { adminLogin } from "../redux/middleware/adminauth";
 import "../style/admin.css";
 
 import Logo from "../asset/logo.png";
+import { useEffect } from "react";
 
 export default function LoginAdmin() {
   let dispatch = useDispatch();
@@ -29,6 +30,11 @@ export default function LoginAdmin() {
   const [errMsg, setErrMsg] = useState("");
   const [loginStat, setLoginStat] = useState("");
   
+
+  useEffect(()=> {
+    document.title = 'KOPIO | Login Admin'
+  }, [])
+
   function pressEnter(e) {
     if (e.key === 'Enter') {
       Login();
@@ -54,7 +60,7 @@ export default function LoginAdmin() {
           setLoginStat("Success")
           return navigate('/dashboard', { state: { admin: isAuth.data }, replace: true });
         }
-        return navigate('/admin_login', { state: { admin: isAuth.data }, replace: true });
+        return navigate('/admin-login', { state: { admin: isAuth.data }, replace: true });
       }
       return setStatus(true);
     } catch (error) {

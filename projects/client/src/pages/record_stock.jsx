@@ -162,6 +162,7 @@ export default function Record() {
   };
 
   useEffect(() => {
+    document.title = 'KOPIO | Stock Record'
     JSON.parse(localStorage.getItem("data")).isSuperAdmin ?
     navigate('/dashboard')
     :

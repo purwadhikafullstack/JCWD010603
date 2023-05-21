@@ -61,6 +61,13 @@ export default function UserTrans() {
     onClose: onClose2,
   } = useDisclosure();
 
+  const {
+    isOpen: isOpenDetail,
+    onOpen: onOpenDetail,
+    onClose: onCloseDetail,
+  } = useDisclosure();
+
+
   const [userTrans, setUserTrans] = useState([]);
   const [detailTrans, setDetailTrans] = useState([]);
   const [idTrans, setIdTrans] = useState({});
@@ -219,8 +226,6 @@ export default function UserTrans() {
   }
 
   const statusTrans = async (e) => {
-    console.log(e);
-    console.log(idTrans);
     try {
       await axiosInstance.patch(
         `/api/transaction/userTransactionStatus/${e.id}?status=${e.status}`
@@ -282,13 +287,17 @@ export default function UserTrans() {
 
   useEffect(() => {
     !user?
-    navigate('/userlogin')
+    navigate('/login')
     :
     fetchTransactions();
     setTimeout(() => {
       setIsLoading(false);
     }, 300);
   }, [page]);
+
+  useEffect(()=> {
+    document.title = 'KOPIO | Transactions'
+  }, [])
 
   return (
     <Flex direction="column">
@@ -331,17 +340,18 @@ export default function UserTrans() {
                 >
                   Your transaction list is empty
                 </Text>
-                <Link to="/product-list-user" as={ReachLink}>
+                <Link to="/product-list" as={ReachLink}>
                   <Button>Start Shopping 🛒</Button>
                 </Link>
               </Flex>
             </Center>
           ) : (
             <>
-              {userTrans?.map((val) => {
+              {userTrans?.map((val,idx) => {
+                console.log(val)
                 return (
                   <>
-                    <Flex w="100%" align="center" m="10px auto 0px">
+                    <Flex w="100%" align="center" m="10px auto 0px" key={idx}>
                       <Flex
                         w={["80px", "85px", "90px"]}
                         h={["80px", "85px", "90px"]}
@@ -403,7 +413,7 @@ export default function UserTrans() {
                       borderBottom="1px solid rgba(44, 54, 57, 0.1)"
                       align="center"
                     >
-                      {val.Transaction_statusId === 1 &&
+                      {val.TransactionStatusId === 1 &&
                       val.imgUpload === null ? (
                         <Button
                           size="xs"
@@ -420,7 +430,7 @@ export default function UserTrans() {
                         >
                           {val.Transaction_status?.name}
                         </Button>
-                      ) : val.Transaction_statusId === 2 ? (
+                      ) : val.TransactionStatusId === 2 ? (
                         <Button
                           size="xs"
                           // as={BiTrash}
@@ -434,7 +444,7 @@ export default function UserTrans() {
                         >
                           {val.Transaction_status?.name}
                         </Button>
-                      ) : val.Transaction_statusId === 3 ? (
+                      ) : val.TransactionStatusId === 3 ? (
                         <Button
                           size="xs"
                           // as={BiTrash}
@@ -449,7 +459,7 @@ export default function UserTrans() {
                         >
                           {val.Transaction_status?.name}
                         </Button>
-                      ) : val.Transaction_statusId === 4 ? (
+                      ) : val.TransactionStatusId === 4 ? (
                         <Button
                           size="xs"
                           // as={BiTrash}

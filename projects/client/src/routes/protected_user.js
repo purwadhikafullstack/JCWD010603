@@ -18,7 +18,7 @@ function ProtectedPageUser({
     console.log("adminSelector:", adminSelector);
     console.log("adminLogin:", adminLogin);
     if (userLogin && !userSelector.id) {
-      return navigate("/userlogin", { replace: true });
+      return navigate("/login", { replace: true });
     }
 
     if (userSelector.id && userSelector.isVerivy) {

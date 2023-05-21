@@ -107,6 +107,7 @@ export default function AdminSetting() {
     }
   };
   useEffect(() => {
+    document.title = 'KOPIO | Settings Admin'
     fetchProvince();
   }, []);
 

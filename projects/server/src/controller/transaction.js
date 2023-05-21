@@ -941,6 +941,7 @@ const transactionController = {
             "totalWeight",
             "imgUpload",
             "createdAt",
+            "TransactionStatusId"
           ],
           include: [
             {
