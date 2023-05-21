@@ -221,8 +221,8 @@ const productController = {
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
-        message: err,
+      return res.status(400).json({
+        message: err.message,
       });
     }
   },
@@ -244,8 +244,8 @@ const productController = {
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
-        message: err,
+      return res.status(400).json({
+        message: err.message,
       });
     }
   },
@@ -265,8 +265,8 @@ const productController = {
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
-        message: err,
+      return res.status(400).json({
+        message: err.message,
       });
     }
   },
@@ -287,7 +287,7 @@ const productController = {
     } catch (err) {
       console.log(err);
       res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -314,7 +314,7 @@ const productController = {
     } catch (err) {
       console.log(err);
       res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -355,6 +355,9 @@ const productController = {
       }
     } catch (err) {
       next(err);
+      res.status(400).json({
+        message: err.message,
+      });
     }
   },
   getFilterProductByNameByAllBranch: async (req, res, next) => {
@@ -394,6 +397,9 @@ const productController = {
       }
     } catch (err) {
       next(err);
+      return res.status(400).json({
+        message: err.message,
+      });
     }
   },
   getProductById: async (req, res) => {
@@ -416,8 +422,8 @@ const productController = {
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
-        message: err,
+      return res.status(400).json({
+        message: err.message,
       });
     }
   },
@@ -431,8 +437,8 @@ const productController = {
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
-        message: err,
+      return res.status(400).json({
+        message: err.message,
       });
     }
   },
@@ -446,14 +452,14 @@ const productController = {
           },
         ],
       });
-      res.status(200).json({
+      return res.status(200).json({
         message: "get product",
         result: getProduct,
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
-        message: err,
+      return res.status(400).json({
+        message: err.message,
       });
     }
   },
@@ -477,8 +483,8 @@ const productController = {
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
-        message: err,
+      return res.status(400).json({
+        message: err.message,
       });
     }
   },
@@ -507,12 +513,12 @@ const productController = {
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
-        message: err,
+      return res.status(400).json({
+        message: err.message,
       });
     }
   },
-  getProductFilterBranch : async (req,res) => {
+  getProductFilterBranch: async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
     const search = parseInt(req.query.search) || "";
@@ -565,7 +571,7 @@ const productController = {
       if (!result) {
         throw new Error("Fetching all product branch failed");
       }
-      
+
       await t.commit();
       res.status(201).json({
         result: result,
@@ -579,7 +585,7 @@ const productController = {
       await t.rollback();
       return res.status(401).json({ message: err.message });
     }
-  }
+  },
 };
 
 module.exports = productController;

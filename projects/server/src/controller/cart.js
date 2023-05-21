@@ -46,7 +46,7 @@ const cartController = {
       });
     } catch (err) {
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -68,7 +68,7 @@ const cartController = {
       });
     } catch (err) {
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -138,7 +138,7 @@ const cartController = {
     } catch (err) {
       console.log(err);
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -168,7 +168,7 @@ const cartController = {
     } catch (err) {
       console.log(err);
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -193,7 +193,9 @@ const cartController = {
 
       const availableStock = checkProduct.stock - qty;
       if (availableStock < 0) {
-        throw new Error(`Stock is not enough. Available stock is ${checkProduct.stock}.`);
+        throw new Error(
+          `Stock is not enough. Available stock is ${checkProduct.stock}.`
+        );
       }
 
       await cartItem.update({ qty }, { transaction: t });
@@ -222,7 +224,9 @@ const cartController = {
 
     const t = await sequelize.transaction();
     try {
-      const checkProduct = await Product.findByPk(ProductId, { transaction: t });
+      const checkProduct = await Product.findByPk(ProductId, {
+        transaction: t,
+      });
       if (!checkProduct) {
         await t.rollback();
         return res.status(401).json({
@@ -297,7 +301,6 @@ const cartController = {
       });
     }
   },
-
 };
 
 module.exports = cartController;

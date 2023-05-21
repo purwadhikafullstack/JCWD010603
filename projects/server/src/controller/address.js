@@ -62,7 +62,7 @@ const addressController = {
     } catch (error) {
       console.error(error);
       return res.status(400).json({
-        message: error,
+        message: error.message,
       });
     }
   },
@@ -129,10 +129,10 @@ const addressController = {
         }
       );
       res.send(result);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
       return res.status(400).json({
-        message: error,
+        message: err.message,
       });
     }
   },
@@ -151,7 +151,7 @@ const addressController = {
     } catch (err) {
       console.log(err);
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -168,7 +168,7 @@ const addressController = {
     } catch (err) {
       console.log(err);
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -185,7 +185,7 @@ const addressController = {
     } catch (err) {
       console.log(err);
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -199,7 +199,7 @@ const addressController = {
     } catch (err) {
       console.log(err);
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -218,7 +218,7 @@ const addressController = {
     } catch (err) {
       console.log(err);
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },

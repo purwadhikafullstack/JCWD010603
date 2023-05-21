@@ -93,7 +93,7 @@ const adminController = {
       });
     } catch (err) {
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -112,7 +112,7 @@ const adminController = {
       });
     } catch (err) {
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -173,7 +173,7 @@ const adminController = {
     }
   },
 
-  getBranches: async (req, res) => {  
+  getBranches: async (req, res) => {
     try {
       const result = await Branch.findAll({
         attributes: [
@@ -191,7 +191,7 @@ const adminController = {
       });
     } catch (err) {
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -257,7 +257,7 @@ const adminController = {
       });
     } catch (err) {
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -394,7 +394,7 @@ const adminController = {
       });
     } catch (err) {
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
