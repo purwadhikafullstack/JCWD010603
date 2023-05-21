@@ -268,6 +268,7 @@ export default function Discount() {
   // FETCH VOUCHER - END -
   // FETCH BRANCH DATA ID
   useEffect(() => {
+    document.title = 'KOPIO | Discount & Voucher'
     if (
       JSON.parse(localStorage.getItem("data"))
         ? JSON.parse(localStorage.getItem("data")).isSuperAdmin

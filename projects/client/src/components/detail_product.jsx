@@ -102,7 +102,7 @@ export default function DetailProduct(props) {
           flexDir="column"
           gap={5}
         >
-          <Link to="/product-list-user" as={ReachLink}>
+          <Link to="/product-list" as={ReachLink}>
             <Flex textAlign={"left"}>
               <Icon
                 boxSize={"7"}
@@ -127,7 +127,7 @@ export default function DetailProduct(props) {
               <Flex py={3}>
                 <Breadcrumb>
                   <BreadcrumbItem>
-                    <BreadcrumbLink as={ReachLink} to="/product-list-user">
+                    <BreadcrumbLink as={ReachLink} to="/product-list">
                       Product
                     </BreadcrumbLink>
                   </BreadcrumbItem>

@@ -25,6 +25,7 @@ export default function UpdateAdressPage() {
   }
 
   useEffect(() => {
+    document.title = 'KOPIO | Address Update'
     fetchData();
 
     setTimeout(() => {

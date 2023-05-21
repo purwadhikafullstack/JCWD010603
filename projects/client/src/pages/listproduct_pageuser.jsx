@@ -72,6 +72,7 @@ export default function PageProducts() {
     fetchProductBranch();
   }, [idBranch]);
   useEffect(() => {
+    document.title = 'KOPIO | Product'
     // fetchPosts();
     fetchData();
     fetchDataCat();

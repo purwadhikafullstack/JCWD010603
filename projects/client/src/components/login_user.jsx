@@ -40,6 +40,7 @@ export default function Login() {
 
   useEffect(() => {
     setEnable(false);
+    document.title = 'KOPIO | Login'
     console.log(user);
   }, []);
   useEffect(() => {

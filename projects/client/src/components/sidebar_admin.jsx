@@ -54,7 +54,7 @@ export default function SidebarAdmin() {
     });
     localStorage.clear();
     // window.location.reload(true);
-    navigate('/admin_login')
+    navigate('/admin-login')
 
   }
   const userData = JSON.parse(localStorage.getItem("data"));
@@ -127,7 +127,7 @@ export default function SidebarAdmin() {
             superAdmin === 1 ?
               <Link
                 sx={linkStyles}
-                to="/admin_category"
+                to="/category"
                 as={ReachLink}
                 display="flex"
                 alignItems="center"
@@ -199,7 +199,7 @@ export default function SidebarAdmin() {
           </Link>
           <Link
             sx={linkStyles}
-            to="/sales_report"
+            to="/sales-report"
             as={ReachLink}
             display="flex"
             alignItems="center"
@@ -225,7 +225,7 @@ export default function SidebarAdmin() {
           </Link>
           <Link
             sx={linkStyles}
-            to={!userData.isSuperAdmin ? null : "/admin_setting"}
+            to={!userData.isSuperAdmin ? null : "/admin-setting"}
             as={ReachLink}
             display="flex"
             alignItems="center"
@@ -261,7 +261,7 @@ export default function SidebarAdmin() {
           <Link
             fontSize="xl"
             mr={2}
-            to="/admin_login"
+            to="/admin-login"
             as={ReachLink}
             display="flex"
             alignItems="center"

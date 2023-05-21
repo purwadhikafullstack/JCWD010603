@@ -18,6 +18,7 @@ export default function Dashboard() {
     });
   }
   useEffect(() => {
+    document.title = 'KOPIO | Dashboard'
     fetchDataProduct();
   }, []);
   const [dataBranch, setDataBranch] = useState();

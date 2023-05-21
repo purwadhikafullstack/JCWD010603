@@ -8,7 +8,7 @@ function ProtectedPageUser({ children, userLogin = false, guestOnly = false }) {
 
   useEffect(() => {
     if (userLogin && !userSelector.id) {
-      return navigate("/userlogin", { replace: true });
+      return navigate("/login", { replace: true });
     }
   }, []);
   return children;

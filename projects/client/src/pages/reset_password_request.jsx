@@ -62,7 +62,7 @@ export default function Register() {
   const handleSuccess = (e) => {
     NotifySuccess();
     setInterval(() => {
-      navigate("/userlogin");
+      navigate("/login");
     }, 6000);
   };
 
@@ -96,6 +96,10 @@ export default function Register() {
     }
   }, [formik.values]);
 
+  useEffect(()=> {
+    document.title = 'KOPIO | Reset Password Request'
+  }, [])
+
   return (
     <>
       <Center flex={1} align={"center"} justifyContent={"center"}>
@@ -110,7 +114,7 @@ export default function Register() {
           flexDir="column"
           gap={8}
         >
-          <Link to="/userlogin" as={ReachLink}>
+          <Link to="/login" as={ReachLink}>
             <Flex textAlign={"left"} color="white">
               <Icon
                 boxSize={"7"}

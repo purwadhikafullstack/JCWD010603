@@ -33,33 +33,6 @@ export default function PageProducts() {
       setDataCat(res.data.result);
     });
   }
-  // const fetchFinPro = async (search) => {
-  //   let url = "";
-
-  //   url += `name=${search}`;
-
-  //   console.log(url);
-
-  //   await axiosInstance.get("/api/product/find?" + url).then((res) => {
-  //     setData(res.data.result);
-  //   });
-  
-  // const fetchFilPro = async (callback) => {
-  //   let url = "";
-  //   categories1.map((val, idx) => {
-  //     idx ? (url += `&${val}=${val}`) : (url += `${val}=${val}`);
-  //   });
-
-  //   url += `&order=${sort}&orderby=${sortby}`;
-
-  //   console.log(url);
-
-  //   await axiosInstance.get("/api/product/filter?" + url).then((res) => {
-  //     setData(res.data.result);
-  //   });
-  //   callback?.();
-  // };
-
   const selectPage = (e) => {
     // console.log(e);
     setPage(e)
@@ -76,6 +49,10 @@ const fetchFilPro = async () => {
       setData(res.data.result);
     });
   };
+
+  useEffect (()=> {
+    document.title = 'KOPIO | Product List'
+  })
 
   useEffect(() => {
     JSON.parse(localStorage.getItem("data")).isSuperAdmin ?

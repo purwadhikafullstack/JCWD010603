@@ -104,7 +104,7 @@ export default function UpdateProfile(props) {
             isClosable: true,
           });
         });
-      navigate("/product-list-user");
+      navigate("/product-list");
     },
   });
   useEffect(() => {

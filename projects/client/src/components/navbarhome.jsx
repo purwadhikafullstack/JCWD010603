@@ -94,7 +94,7 @@ export default function NavbarHome(props) {
                         </ListItem>
                         <Divider orientation="horizontal" m={2} />
                         <ListItem>
-                          <Link to="/userlogin" as={ReachLink}>
+                          <Link to="/login" as={ReachLink}>
                             SIGN IN
                           </Link>
                         </ListItem>
