@@ -7,8 +7,6 @@ function ProtectedPageUser({ children, userLogin = false, guestOnly = false }) {
   const userSelector = useSelector((state) => state.auth);
 
   useEffect(() => {
-    console.log("userSelector:", userSelector);
-    console.log("adminLogin:", userLogin);
     if (userLogin && !userSelector.id) {
       return navigate("/userlogin", { replace: true });
     }
