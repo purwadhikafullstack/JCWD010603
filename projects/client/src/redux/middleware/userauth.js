@@ -14,7 +14,7 @@ export function userLogin(values) {
           payload: userData.user,
         });
         localStorage.setItem("token", userData.token);
-        localStorage.setItem("dataUser", JSON.stringify(res.data.result));
+        localStorage.setItem("dataUser", JSON.stringify(res.data.result.user));
         localStorage.setItem("userID", userData.user.id);
         return { status: true, data: userData.user };
       }
