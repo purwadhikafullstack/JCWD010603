@@ -119,7 +119,7 @@ const routes = [
     ),
   },
   {
-    path: "/list-address",
+    path: "/address",
     element: (
       <ProtectedPageUser userLogin={true}>
         <ListAddressPage />
