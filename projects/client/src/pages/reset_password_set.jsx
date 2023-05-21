@@ -59,7 +59,7 @@ export default function Register() {
   const handleSuccess = () => {
     NotifySuccess();
     setInterval(() => {
-      navigate("/userlogin");
+      navigate("/login");
     }, 6000);
   };
 
@@ -105,6 +105,9 @@ export default function Register() {
     }
   }, [formik.values]);
 
+  useEffect(()=> {
+    document.title = 'KOPIO | New Password Setup'
+  }, [])
   return (
     <>
       <Center flex={1} align={"center"} justifyContent={"center"}>

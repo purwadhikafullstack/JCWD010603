@@ -156,7 +156,7 @@ export default function UpdateProfile(props) {
 
     try {
       await axiosInstance.patch("/api/user/editprofile/" + User_id, Data);
-      navigate("/userpage");
+      navigate("/");
     } catch (error) {
       console.error(error);
     }

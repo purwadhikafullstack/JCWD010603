@@ -375,6 +375,7 @@ export default function Record() {
   }
 
   useEffect(() => {
+    document.title = 'KOPIO | Transactions'
     superAdmin ? fetchBranch() : fetchStatus();
   }, []);
   useEffect(() => {

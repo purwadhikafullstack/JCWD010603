@@ -144,6 +144,7 @@ export default function AdminCategory() {
   }
 
   useEffect(() => {
+    document.title = 'KOPIO | Categories'
     fetchCategory();
   }, []);
 

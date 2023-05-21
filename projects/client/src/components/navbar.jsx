@@ -35,7 +35,6 @@ export default function Navbar(props) {
     window.location.reload(true);
   }
 
-  // console.log(userSelector);
 
   return (
     <>
@@ -111,25 +110,25 @@ export default function Navbar(props) {
                         </ListItem>
                         <Divider orientation="horizontal" m={2} />
                         <ListItem>
-                          <Link to="/update-profile" as={ReachLink}>
+                          <Link to="/profile" as={ReachLink}>
                             PROFILE
                           </Link>
                         </ListItem>
                         <Divider orientation="horizontal" m={2} />
                         <ListItem>
-                          <Link to="/list-address" as={ReachLink}>
+                          <Link to="/address" as={ReachLink}>
                             ADDRESS
                           </Link>
                         </ListItem>
                         <Divider orientation="horizontal" m={2} />
                         <ListItem>
-                          <Link to="/reset" as={ReachLink}>
+                          <Link to="/password-change" as={ReachLink}>
                             CHANGE PASSWORD
                           </Link>
                         </ListItem>
                         <Divider orientation="horizontal" m={2} />
                         <ListItem>
-                          <Link to="/userlogin" as={ReachLink} onClick={logOut}>
+                          <Link to="/login" as={ReachLink} onClick={logOut}>
                             LOGOUT{" "}
                           </Link>{" "}
                         </ListItem>

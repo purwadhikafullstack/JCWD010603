@@ -99,7 +99,7 @@ export default function Register() {
   const handleSuccess = () => {
     NotifySuccess();
     setInterval(() => {
-      navigate("/userlogin");
+      navigate("/login");
     }, 6000);
   };
 
@@ -179,6 +179,7 @@ export default function Register() {
   const [enable, setEnable] = useState(false);
 
   useEffect(() => {
+    document.title = 'KOPIO | Register'
     let {
       email,
       password,

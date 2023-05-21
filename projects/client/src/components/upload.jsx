@@ -130,7 +130,7 @@ export default function UpdateProfile(props) {
           gap={2}
         >
           <Flex w="430px" h="80px" bgColor="#2C3639" flexDir={"column"}>
-            <Link to="/userpage" as={ReachLink}>
+            <Link to="/user-transactions" as={ReachLink}>
               <Flex textAlign={"left"} color="white">
                 <Icon
                   boxSize={"7"}

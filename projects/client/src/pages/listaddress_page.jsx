@@ -34,6 +34,7 @@ export default function ListAddressPage() {
   const userSelector = useSelector((state) => state.auth);
 
   useEffect(() => {
+    document.title = 'KOPIO | Address'
     setUser_id(userSelector?.id);
   }, []);
   function deleteCategory(id) {
