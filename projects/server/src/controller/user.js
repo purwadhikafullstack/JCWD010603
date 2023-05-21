@@ -362,6 +362,7 @@ const userController = {
     try {
       const { email, password } = req.body;
       const user = await User.findOne({
+        attributes: ["id", "username", "password", "isVerify"],
         where: {
           email: email,
         },
