@@ -33,7 +33,7 @@ import {
   GridItem,
   Icon,
   Tooltip,
-  Spinner
+  Spinner,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import React from "react";
@@ -50,6 +50,11 @@ export default function UserTrans() {
   let navigate = useNavigate();
   const cancelRef = React.useRef();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenDetail,
+    onOpen: onOpenDetail,
+    onClose: onCloseDetail,
+  } = useDisclosure();
   const {
     isOpen: isOpen1,
     onOpen: onOpen1,
@@ -82,9 +87,9 @@ export default function UserTrans() {
     _hover: {
       bg: "none",
       border: "2px solid #FFB84C",
-      borderRight:0,
-      color: "#FFB84C",     
- },
+      borderRight: 0,
+      color: "#FFB84C",
+    },
 
     _active: {
       size: "sm",
@@ -94,9 +99,9 @@ export default function UserTrans() {
     _hover: {
       bg: "none",
       border: "2px solid #0E8388",
-      borderRight:0,
+      borderRight: 0,
       color: "#0E8388",
- },
+    },
     _active: {
       size: "sm",
     },
@@ -105,9 +110,9 @@ export default function UserTrans() {
     _hover: {
       bg: "none",
       border: "2px solid #3E54AC",
-      borderRight:0,
-      color: "#3E54AC",      
- },
+      borderRight: 0,
+      color: "#3E54AC",
+    },
     _active: {
       size: "sm",
     },
@@ -116,9 +121,9 @@ export default function UserTrans() {
     _hover: {
       bg: "none",
       border: "2px solid #6D5D6E",
-      borderRight:0,
-      color: "#6D5D6E",      
- },
+      borderRight: 0,
+      color: "#6D5D6E",
+    },
     _active: {
       size: "sm",
     },
@@ -127,10 +132,9 @@ export default function UserTrans() {
     _hover: {
       bg: "none",
       border: "2px solid #F45050",
-      borderRight:0,
+      borderRight: 0,
       color: "#F45050",
-      
- },
+    },
     _active: {
       size: "sm",
     },
@@ -139,15 +143,13 @@ export default function UserTrans() {
     _hover: {
       bg: "none",
       border: "2px solid #BACDDB",
-      borderLeft:0,
+      borderLeft: 0,
       color: "#BACDDB",
-      
- },
+    },
     _active: {
       size: "sm",
     },
   };
-  
 
   const uploadButtonStyle = {
     _hover: {
@@ -201,14 +203,13 @@ export default function UserTrans() {
   };
 
   const handleDetailTrans = (e) => {
-
-    setTimeout(()=> {
-      setDetailTrans(e)
-      onOpenDetail()
-    },100)
+    setTimeout(() => {
+      setDetailTrans(e);
+      onOpenDetail();
+    }, 100);
 
     console.log(detailTrans);
-  }
+  };
 
   const changePage = ({ selected }) => {
     setPage(parseInt(selected) + 1);
@@ -281,10 +282,7 @@ export default function UserTrans() {
   };
 
   useEffect(() => {
-    !user?
-    navigate('/userlogin')
-    :
-    fetchTransactions();
+    !user ? navigate("/userlogin") : fetchTransactions();
     setTimeout(() => {
       setIsLoading(false);
     }, 300);
@@ -295,237 +293,259 @@ export default function UserTrans() {
       {localStorage.getItem("userID") ? <Navbar /> : <NavBar />}
 
       {isLoading ? (
-      <Center w={"100vw"} h="100vh" alignContent={"center"}>
-        <Spinner size={"xl"} thickness="10px" color="blue.500" />
-      </Center>
-    ) : (
-      <Flex w="430px" h="90vh" m="0 auto" direction="column" sx={scrollStyle}>
-        <Flex w="85%" m="0 auto">
-          <Text my={3} fontWeight="bold" color="#2C3639">
-            Transaction List
-          </Text>
-        </Flex>
-        <Flex
-          direction="column"
-          w="85%"
-          h="600px"
-          m="0 auto"
-          borderBottom="4px solid #2C3639"
-          borderTop="4px solid #2C3639"
-          overflow="auto"
-          sx={scrollStyle}
-          borderRadius={5}
-        >
-          {userTrans.length === 0 ? (
-            <Center w="100%" h="100%">
-              <Flex
-                direction="column"
-                h="100px"
-                align="center"
-                justify="space-between"
-              >
-                <Text
-                  textAlign="center"
-                  fontSize={["md", "lg"]}
-                  fontWeight="bold"
-                >
-                  Your transaction list is empty
-                </Text>
-                <Link to="/product-list-user" as={ReachLink}>
-                  <Button>Start Shopping 🛒</Button>
-                </Link>
-              </Flex>
-            </Center>
-          ) : (
-            <>
-              {userTrans?.map((val) => {
-                return (
-                  <>
-                    <Flex w="100%" align="center" m="10px auto 0px">
-                      <Flex
-                        w={["80px", "85px", "90px"]}
-                        h={["80px", "85px", "90px"]}
-                        borderRadius={5}
-                        overflow="hidden"
-                      >
-                        <Image
-                          src={val.Transaction_items[0]?.Product.imgProduct}
-                          objectFit="cover"
-                          w="100%"
-                          h="auto"
-                        />
-                      </Flex>
-                      <Flex
-                        w={["55%", "60%", "65%", "70%"]}
-                        h={["80px", "85px", "90px"]}
-                        pl={3}
-                        direction="column"
-                        justify="space-between"
-                      >
-                        <Box>
-                          <Text
-                            color="#2C3639"
-                            fontWeight="bold"
-                            fontSize={["sm", "md"]}
-                            letterSpacing={2}
-                          >
-                            {val.noTrans}
-                          </Text>
-                          <Text
-                            color="#2C3639"
-                            fontWeight="bold"
-                            fontSize={["xs", "sm"]}
-                          >
-                            Rp.{val.grandPrice.toLocaleString()}
-                          </Text>
-                          <Text
-                            color="#2C3639"
-                            fontSize={["xs", "sm"]}
-                            fontWeight="bold"
-                          >
-                            {val.totalWeight} gr
-                          </Text>
-                        </Box>
-                        <Text
-                          color="#2C3639"
-                          fontSize={["xs", "sm"]}
-                          fontWeight="bold"
-                        >
-                          {val.createdAt.split("T")[0]}
-                        </Text>
-                      </Flex>
-                    </Flex>
-                    <Flex
-                      justify="center"
-                      w="100%"
-                      h={["30px", "35px", "40px"]}
-                      m="0px auto 10px"
-                      borderBottom="1px solid rgba(44, 54, 57, 0.1)"
-                      align="center"
-                    >
-                      {val.Transaction_statusId === 1 &&
-                      val.imgUpload === null ? (
-                        <Button
-                          size="xs"
-                          // as={BiTrash}
-                          color="white"
-                          bg="#FFB84C"
-                          cursor="pointer"
-                          borderLeftRadius={10}
-                          borderRightRadius={0}
-                          onClick={() =>
-                            cancelStatus1({ id: val.id, noTrans: val.noTrans })
-                          }
-                          sx={requestButtonStyle}
-                        >
-                          {val.Transaction_status?.name}
-                        </Button>
-                      ) : val.Transaction_statusId === 2 ? (
-                        <Button
-                          size="xs"
-                          // as={BiTrash}
-                          color="white"
-                          bg="#0E8388"
-                          cursor="pointer"
-                          borderLeftRadius={10}
-                          borderRightRadius={0}
-                          onClick={() => cancelStatus2({id: val.id, noTrans: val.noTrans})}
-                          sx={confirmButtonStyle}
-                        >
-                          {val.Transaction_status?.name}
-                        </Button>
-                      ) : val.Transaction_statusId === 3 ? (
-                        <Button
-                          size="xs"
-                          // as={BiTrash}
-                          color="white"
-                          bg="#3E54AC"
-                          cursor="pointer"
-                          borderLeftRadius={10}
-                          borderRightRadius={0}
-
-                          onClick={() => changeStatus({id: val.id, noTrans: val.noTrans})}
-                          sx={deliveredButtonStyle}
-                        >
-                          {val.Transaction_status?.name}
-                        </Button>
-                      ) : val.Transaction_statusId === 4 ? (
-                        <Button
-                          size="xs"
-                          // as={BiTrash}
-                          color="white"
-                          bg="#6D5D6E"
-                          cursor="pointer"
-                          borderLeftRadius={10}
-                          borderRightRadius={0}
-                          sx={arrivedButtonStyle}
-                        >
-                          {val.Transaction_status?.name}
-                        </Button>
-                      ) : (
-                        <Button
-                          size="xs"
-                          // as={BiTrash}
-                          color="white"
-                          bg="#F45050"
-                          cursor="pointer"
-                          sx={canceledButtonStyle}
-                          borderLeftRadius={10}
-                          borderRightRadius={0}
-                        >
-                          {val.Transaction_status?.name}
-                        </Button>
-                      )
-
-                      }
-                        <Tooltip label='Order details' placement="top" fontSize='md' bg="#BACDDB">
-                      <Button 
-                      sx={detailButtonStyle}
-                      size="xs"
-                          // as={BiTrash}
-                          color="white"
-                          bg="#BACDDB"
-                          cursor="pointer"
-                          borderLeftRadius={0}
-                          borderRightRadius={10}
-                      onClick={() => {handleDetailTrans(val.Transaction_items)}}>
-                      <Icon as={TbListDetails}/></Button>
-                      </Tooltip>
-                    </Flex>
-                  </>
-                );
-              })}
-            </>
-          )}
-        </Flex>
-        {userTrans ? (
-          <>
-        <Flex w="100%" h="50px" m="0 auto" justify={"center"} align="center">
-          <nav
-            role={"navigation"}
-            aria-label={"pagination"}
-            className="pagination is-small is-centered"
+        <Center w={"100vw"} h="100vh" alignContent={"center"}>
+          <Spinner size={"xl"} thickness="10px" color="blue.500" />
+        </Center>
+      ) : (
+        <Flex w="430px" h="90vh" m="0 auto" direction="column" sx={scrollStyle}>
+          <Flex w="85%" m="0 auto">
+            <Text my={3} fontWeight="bold" color="#2C3639">
+              Transaction List
+            </Text>
+          </Flex>
+          <Flex
+            direction="column"
+            w="85%"
+            h="600px"
+            m="0 auto"
+            borderBottom="4px solid #2C3639"
+            borderTop="4px solid #2C3639"
+            overflow="auto"
+            sx={scrollStyle}
+            borderRadius={5}
           >
-            <ReactPaginate
-            pageRangeDisplayed={1}
-            marginPagesDisplayed={2}
-              previousLabel={"< Prev"}
-              nextLabel={"Next >"}
-              pageCount={pages}
-              onPageChange={changePage}
-              containerClassName={"pagination-list"}
-              pageLinkClassName={"pagination-link"}
-              previousLinkClassName={"pagination-previous"}
-              nextLinkClassName={"pagination-next"}
-              activeLinkClassName={"pagination-link is-current"}
-              disableLinkClassName={"pagination-link is-disabled"}
-            />
-          </nav>
+            {userTrans.length === 0 ? (
+              <Center w="100%" h="100%">
+                <Flex
+                  direction="column"
+                  h="100px"
+                  align="center"
+                  justify="space-between"
+                >
+                  <Text
+                    textAlign="center"
+                    fontSize={["md", "lg"]}
+                    fontWeight="bold"
+                  >
+                    Your transaction list is empty
+                  </Text>
+                  <Link to="/product-list-user" as={ReachLink}>
+                    <Button>Start Shopping 🛒</Button>
+                  </Link>
+                </Flex>
+              </Center>
+            ) : (
+              <>
+                {userTrans?.map((val) => {
+                  return (
+                    <>
+                      <Flex w="100%" align="center" m="10px auto 0px">
+                        <Flex
+                          w={["80px", "85px", "90px"]}
+                          h={["80px", "85px", "90px"]}
+                          borderRadius={5}
+                          overflow="hidden"
+                        >
+                          <Image
+                            src={val.Transaction_items[0]?.Product.imgProduct}
+                            objectFit="cover"
+                            w="100%"
+                            h="auto"
+                          />
+                        </Flex>
+                        <Flex
+                          w={["55%", "60%", "65%", "70%"]}
+                          h={["80px", "85px", "90px"]}
+                          pl={3}
+                          direction="column"
+                          justify="space-between"
+                        >
+                          <Box>
+                            <Text
+                              color="#2C3639"
+                              fontWeight="bold"
+                              fontSize={["sm", "md"]}
+                              letterSpacing={2}
+                            >
+                              {val.noTrans}
+                            </Text>
+                            <Text
+                              color="#2C3639"
+                              fontWeight="bold"
+                              fontSize={["xs", "sm"]}
+                            >
+                              Rp.{val.grandPrice.toLocaleString()}
+                            </Text>
+                            <Text
+                              color="#2C3639"
+                              fontSize={["xs", "sm"]}
+                              fontWeight="bold"
+                            >
+                              {val.totalWeight} gr
+                            </Text>
+                          </Box>
+                          <Text
+                            color="#2C3639"
+                            fontSize={["xs", "sm"]}
+                            fontWeight="bold"
+                          >
+                            {val.createdAt.split("T")[0]}
+                          </Text>
+                        </Flex>
+                      </Flex>
+                      <Flex
+                        justify="center"
+                        w="100%"
+                        h={["30px", "35px", "40px"]}
+                        m="0px auto 10px"
+                        borderBottom="1px solid rgba(44, 54, 57, 0.1)"
+                        align="center"
+                      >
+                        {val.Transaction_statusId === 1 &&
+                        val.imgUpload === null ? (
+                          <Button
+                            size="xs"
+                            // as={BiTrash}
+                            color="white"
+                            bg="#FFB84C"
+                            cursor="pointer"
+                            borderLeftRadius={10}
+                            borderRightRadius={0}
+                            onClick={() =>
+                              cancelStatus1({
+                                id: val.id,
+                                noTrans: val.noTrans,
+                              })
+                            }
+                            sx={requestButtonStyle}
+                          >
+                            {val.Transaction_status?.name}
+                          </Button>
+                        ) : val.Transaction_statusId === 2 ? (
+                          <Button
+                            size="xs"
+                            // as={BiTrash}
+                            color="white"
+                            bg="#0E8388"
+                            cursor="pointer"
+                            borderLeftRadius={10}
+                            borderRightRadius={0}
+                            onClick={() =>
+                              cancelStatus2({
+                                id: val.id,
+                                noTrans: val.noTrans,
+                              })
+                            }
+                            sx={confirmButtonStyle}
+                          >
+                            {val.Transaction_status?.name}
+                          </Button>
+                        ) : val.Transaction_statusId === 3 ? (
+                          <Button
+                            size="xs"
+                            // as={BiTrash}
+                            color="white"
+                            bg="#3E54AC"
+                            cursor="pointer"
+                            borderLeftRadius={10}
+                            borderRightRadius={0}
+                            onClick={() =>
+                              changeStatus({ id: val.id, noTrans: val.noTrans })
+                            }
+                            sx={deliveredButtonStyle}
+                          >
+                            {val.Transaction_status?.name}
+                          </Button>
+                        ) : val.Transaction_statusId === 4 ? (
+                          <Button
+                            size="xs"
+                            // as={BiTrash}
+                            color="white"
+                            bg="#6D5D6E"
+                            cursor="pointer"
+                            borderLeftRadius={10}
+                            borderRightRadius={0}
+                            sx={arrivedButtonStyle}
+                          >
+                            {val.Transaction_status?.name}
+                          </Button>
+                        ) : (
+                          <Button
+                            size="xs"
+                            // as={BiTrash}
+                            color="white"
+                            bg="#F45050"
+                            cursor="pointer"
+                            sx={canceledButtonStyle}
+                            borderLeftRadius={10}
+                            borderRightRadius={0}
+                          >
+                            {val.Transaction_status?.name}
+                          </Button>
+                        )}
+                        <Tooltip
+                          label="Order details"
+                          placement="top"
+                          fontSize="md"
+                          bg="#BACDDB"
+                        >
+                          <Button
+                            sx={detailButtonStyle}
+                            size="xs"
+                            // as={BiTrash}
+                            color="white"
+                            bg="#BACDDB"
+                            cursor="pointer"
+                            borderLeftRadius={0}
+                            borderRightRadius={10}
+                            onClick={() => {
+                              handleDetailTrans(val.Transaction_items);
+                            }}
+                          >
+                            <Icon as={TbListDetails} />
+                          </Button>
+                        </Tooltip>
+                      </Flex>
+                    </>
+                  );
+                })}
+              </>
+            )}
+          </Flex>
+          {userTrans ? (
+            <>
+              <Flex
+                w="100%"
+                h="50px"
+                m="0 auto"
+                justify={"center"}
+                align="center"
+              >
+                <nav
+                  role={"navigation"}
+                  aria-label={"pagination"}
+                  className="pagination is-small is-centered"
+                >
+                  <ReactPaginate
+                    pageRangeDisplayed={1}
+                    marginPagesDisplayed={2}
+                    previousLabel={"< Prev"}
+                    nextLabel={"Next >"}
+                    pageCount={pages}
+                    onPageChange={changePage}
+                    containerClassName={"pagination-list"}
+                    pageLinkClassName={"pagination-link"}
+                    previousLinkClassName={"pagination-previous"}
+                    nextLinkClassName={"pagination-next"}
+                    activeLinkClassName={"pagination-link is-current"}
+                    disableLinkClassName={"pagination-link is-disabled"}
+                  />
+                </nav>
+              </Flex>
+            </>
+          ) : null}
         </Flex>
-        </>
-        ) : null }
-      </Flex>
-    )}
+      )}
       <Modal margin onClose={onClose1} isOpen={isOpen1} isCentered>
         <ModalOverlay />
         <ModalContent maxW="430px" fontSize={["sm", "md"]}>
@@ -640,39 +660,59 @@ export default function UserTrans() {
           <ModalHeader>Order Details</ModalHeader>
           <ModalCloseButton />
           <ModalBody py={"35px"}>
+            {detailTrans.length > 0 ? (
+              <>
+                <Grid
+                  fontWeight={"semibold"}
+                  bg={"#86A3B8"}
+                  textAlign={"center"}
+                  width={"inherit"}
+                  templateColumns={"2fr 2fr 1fr 1fr"}
+                >
+                  <GridItem border={"1px"}>Product Name</GridItem>
+                  <GridItem border={"1px"}>Price</GridItem>
+                  <GridItem border={"1px"}>Weight</GridItem>
+                  <GridItem border={"1px"}>Qty</GridItem>
+                </Grid>
 
-          {detailTrans.length > 0 ? 
-            <>
-          <Grid fontWeight={"semibold"} bg={"#86A3B8"} textAlign={"center"} width={"inherit"} templateColumns={"2fr 2fr 1fr 1fr"}>
-          <GridItem border={"1px"}>Product Name</GridItem>
-          <GridItem border={"1px"}>Price</GridItem>
-          <GridItem border={"1px"}>Weight</GridItem>
-          <GridItem  border={"1px"}>Qty</GridItem>
-          </Grid>
-          
-          {detailTrans?.map((val, idx) => {
-                    return (
-                        <Grid width={"inherit"} textAlign={"center"} templateColumns={"2fr 2fr 1fr 1fr"} key={idx} >
+                {detailTrans?.map((val, idx) => {
+                  return (
+                    <Grid
+                      width={"inherit"}
+                      textAlign={"center"}
+                      templateColumns={"2fr 2fr 1fr 1fr"}
+                      key={idx}
+                    >
                       {/* <Tr w={"100%"} key={idx}> */}
-                          <GridItem bg={"#DDDDDD"} border={"1px"}>{val.Product?.name}</GridItem>
-                          <GridItem bg={"#EEEEEE"} border={"1px"}>Rp. {(val.Product?.price).toLocaleString()}</GridItem>
-                          <GridItem bg={"#DDDDDD"} border={"1px"}>{val.Product?.weight} gr</GridItem>
-                          <GridItem bg={"#EEEEEE"} border={"1px"}>{val.qty} pcs</GridItem>
+                      <GridItem bg={"#DDDDDD"} border={"1px"}>
+                        {val.Product?.name}
+                      </GridItem>
+                      <GridItem bg={"#EEEEEE"} border={"1px"}>
+                        Rp. {(val.Product?.price).toLocaleString()}
+                      </GridItem>
+                      <GridItem bg={"#DDDDDD"} border={"1px"}>
+                        {val.Product?.weight} gr
+                      </GridItem>
+                      <GridItem bg={"#EEEEEE"} border={"1px"}>
+                        {val.qty} pcs
+                      </GridItem>
                       {/* </Tr> */}
-                        </Grid>
-                    );
-                  })}
-                  </>
-                  : <Flex
-                          flexDir={"column"}
-                          w="inherit"
-                              justify={"center"}
-                              textAlign={"center"} fontSize={["xl", "2xl"]}
-                  fontWeight="semibold"
-                            >
-                            Order details is empty
-                              </Flex>
-                }
+                    </Grid>
+                  );
+                })}
+              </>
+            ) : (
+              <Flex
+                flexDir={"column"}
+                w="inherit"
+                justify={"center"}
+                textAlign={"center"}
+                fontSize={["xl", "2xl"]}
+                fontWeight="semibold"
+              >
+                Order details is empty
+              </Flex>
+            )}
             {/* <TableContainer>
               <Table variant="striped" w={"100%"} border={1}>
                 <Tbody>

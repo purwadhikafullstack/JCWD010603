@@ -34,20 +34,9 @@ import UserTrans from "../pages/user_transactions";
 const routes = [
   {
     path: "/userlogin",
-    element: (
-      <ProtectedPageUser userGuest={true}>
-        <PageLogin />
-      </ProtectedPageUser>
-    ),
+    element: <PageLogin />,
   },
-  // {
-  //   path: "/",
-  //   element: <HomePage />,
-  // },
-  // {
-  //   path: "/add-product",
-  //   element: <AddProductPage />,
-  // },
+
   {
     path: "/",
     element: <HomePage />,
