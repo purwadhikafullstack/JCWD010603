@@ -67,7 +67,7 @@ export default function UserTrans() {
     onClose: onCloseDetail,
   } = useDisclosure();
 
-
+  
   const [userTrans, setUserTrans] = useState([]);
   const [detailTrans, setDetailTrans] = useState([]);
   const [idTrans, setIdTrans] = useState({});
@@ -79,11 +79,11 @@ export default function UserTrans() {
   const [cancelDialog, setCancelDialog] = useState(false);
   const toast = useToast();
   const [isLoading, setIsLoading] = useState(true);
-
+  
   const user = JSON.parse(localStorage.getItem("userID"))
-    ? JSON.parse(localStorage.getItem("userID"))
-    : null;
-
+  ? JSON.parse(localStorage.getItem("userID"))
+  : null;
+  
   // STYLE
   const requestButtonStyle = {
     _hover: {
@@ -508,9 +508,9 @@ export default function UserTrans() {
             </>
           )}
         </Flex>
-        {userTrans ? (
           <>
         <Flex w="100%" h="50px" m="0 auto" justify={"center"} align="center">
+        {userTrans.length !== 0 ? (
           <nav
             role={"navigation"}
             aria-label={"pagination"}
@@ -531,9 +531,9 @@ export default function UserTrans() {
               disableLinkClassName={"pagination-link is-disabled"}
             />
           </nav>
+        ) : null }
         </Flex>
         </>
-        ) : null }
       </Flex>
     )}
       <Modal margin onClose={onClose1} isOpen={isOpen1} isCentered>

@@ -84,7 +84,7 @@ export default function ChangePassword({ id }) {
           },
         }
       );
-      navigate("/userpage");
+      navigate("/");
     } catch (error) {
       console.log(error);
       setErrorMessage("Failed to change password");
