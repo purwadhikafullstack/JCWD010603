@@ -35,7 +35,6 @@ export default function Navbar(props) {
     window.location.reload(true);
   }
 
-  // console.log(userSelector);
 
   return (
     <>
