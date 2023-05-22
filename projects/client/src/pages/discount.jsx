@@ -644,7 +644,9 @@ export default function Discount() {
                                 -{" "}
                                 {val.nominal
                                   ? "Rp " + val.nominal.toLocaleString()
-                                  : val.presentase + " %"}
+                                  : val.presentase
+                                    ? val.presentase + " %"
+                                    : val.Voucher_type.name === "GRATIS ONGKIR" ? "gratis ongkir" : "B1G1"}
                               </Text>
                               <Text fontSize={["sm", "md", "lg"]}>
                                 Exp : {date}
