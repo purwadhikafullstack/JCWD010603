@@ -154,7 +154,7 @@ export default function AddAdress(props) {
             flexDir={"column"}
             gap={5}
           >
-            <Link to="/list-address" as={ReachLink}>
+            <Link to="/address" as={ReachLink}>
               <Flex textAlign={"left"} color="white">
                 <Icon
                   boxSize={"7"}
