@@ -64,7 +64,7 @@ export default function NewOrder(props) {
   const [cost, setCost] = useState(0);
   const [nominal, setNominal] = useState(0);
   const [origin, setOrigin] = useState(0);
-
+  const [productId, setProductId] = useState(0);
   const [destination, setDestination] = useState(0);
   const [weight, setWeight] = useState(1000);
   const [service, setService] = useState([]);
@@ -77,7 +77,6 @@ export default function NewOrder(props) {
   const tgl = moment().format("YYYYMMDD");
 
   const cancelRef = React.useRef();
-
   const fetchcounttransaction = async () => {
     setIsLoading(true);
     await axiosInstance
@@ -170,6 +169,8 @@ export default function NewOrder(props) {
         orderList: JSON.stringify([...orderList]),
         totalWeight: weight,
         BranchId: BranchId,
+        voucherApply: voucherApply,
+        productId: productId,
       })
 
       .then((res) => {
@@ -672,9 +673,21 @@ export default function NewOrder(props) {
                                   w="400px"
                                   onClick={(e) => {
                                     setNominal(
-                                      e.target.value > 0 ? e.target.value : cost
+                                      e.target.value === "GRATIS ONGKIR"
+                                        ? cost
+                                        : e.target.value === "BUY 1 GET 1"
+                                        ? 0
+                                        : val.nominal
+                                        ? val.nominal
+                                        : Math.ceil(
+                                            (data?.totalPrice *
+                                              parseInt(val.presentase)) /
+                                              100
+                                          )
                                     );
                                     setVoucherInput(e.target.textContent);
+                                    setVoucherApply(e.target.value);
+                                    setProductId(val.ProductId);
                                   }}
                                   p={3}
                                 >
@@ -688,18 +701,10 @@ export default function NewOrder(props) {
                                     }}
                                     w="500px"
                                     h="50px"
-                                    value={
-                                      val.nominal
-                                        ? val.nominal
-                                        : Math.ceil(
-                                            (data?.totalPrice *
-                                              parseInt(val.presentase)) /
-                                              100
-                                          )
-                                    }
+                                    value={val.Voucher_type.name}
                                   >
                                     {val.code} - {val.name} | <br />
-                                    {val.Voucher_type.name} | Until :
+                                    Until :
                                     {moment(val.expiredDate).format(
                                       "YYYY-MM-DD"
                                     )}

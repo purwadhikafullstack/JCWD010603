@@ -165,7 +165,14 @@ const transactionController = {
       // const tgl = moment().format("YYYYMMDD");
       // const countHeader = await Transaction_header.count();
       // const noTrans = `TRS-${tgl}000${countHeader + 1}`;
-      const { grandPrice, BranchId, totalWeight, noTrans } = req.body;
+      const {
+        grandPrice,
+        BranchId,
+        totalWeight,
+        noTrans,
+        voucherApply,
+        productId,
+      } = req.body;
       const UserId = req.params.id;
 
       const addHeader = await Transaction_header.create(
@@ -188,6 +195,10 @@ const transactionController = {
       // });
       const orderlist = JSON.parse(req.body.orderList);
       const arrItem = [];
+      // (voucherApply = "BUY 1 GET 1")
+      //   ? arrItem.push({ qty: 1, ProductId: productId })
+      //   : arrItem.push();
+
       orderlist.map(async (val) => {
         let obj = {
           qty: val.qty,
