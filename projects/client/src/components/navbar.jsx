@@ -97,12 +97,12 @@ export default function Navbar(props) {
                   <PopoverContent minW={{ base: "100%", lg: "max-content" }}>
                     <PopoverArrow backgroundColor={"#A27B5C"} />
 
-                    <PopoverHeader bgColor={"#A27B5C"} color="white">
+                    <PopoverHeader bgColor={"#A27B5C"} color="white" textAlign='center'>
                       {" "}
                       WELCOME {userSelector?.username}!
                     </PopoverHeader>
                     <PopoverBody>
-                      <List fontSize={"14px"} color="#7D7D7D" gap={5}>
+                      <List fontSize={"14px"} color="#7D7D7D" gap={5} textAlign='center'>
                         <Divider orientation="horizontal" m={2} />
                         <ListItem>
                           <Link to="/user-transactions" as={ReachLink}>
