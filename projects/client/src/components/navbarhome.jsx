@@ -83,12 +83,12 @@ export default function NavbarHome(props) {
                   <PopoverContent>
                     <PopoverArrow backgroundColor={"#A27B5C"} />
 
-                    <PopoverHeader bgColor={"#A27B5C"} color="white">
+                    <PopoverHeader bgColor={"#A27B5C"} color="white" textAlign='center'>
                       {" "}
-                      SELAMAT DATANG !
+                      WELCOME !
                     </PopoverHeader>
                     <PopoverBody>
-                      <List fontSize={"14px"} color="#7D7D7D" gap={5}>
+                      <List fontSize={"14px"} color="#7D7D7D" gap={5} textAlign='center'>
                         <ListItem>
                           <Link to="/register" as={ReachLink}>
                             REGISTER
