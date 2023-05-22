@@ -21,6 +21,7 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
   useToast,
+  useMediaQuery,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import React from "react";
@@ -194,12 +195,13 @@ export default function Cart() {
         setDeleteDialog(false);
       });
   }
+  const [isSmallerThan430] = useMediaQuery("(max-width: 430px)");
 
   return (
     <Flex direction="column">
       {localStorage.getItem("userID") ? <Navbar /> : <NavBar />}
 
-      <Flex w="430px" h="90vh" m="0 auto" direction="column" sx={scrollStyle}>
+      <Flex w={isSmallerThan430 ? "100%" : "430px"} h={isSmallerThan430 ? "95vh" : "90vh"} m="0 auto" direction="column" sx={scrollStyle}>
         {" "}
         {/* Cart Body */}
         {/* <Heading textAlign='center' color='#2C3639' my={5}>
@@ -483,7 +485,7 @@ export default function Cart() {
         <Button
           w="85%"
           h="40px"
-          m="20px auto 0px"
+          m="20px auto 20px"
           bg={cartData.length > 0 ? "#2C3639" : "#BEBEBE"}
           color="white"
           sx={cartData.length > 0 ? confirmButtonStyle : {}}

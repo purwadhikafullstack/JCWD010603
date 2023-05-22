@@ -33,7 +33,8 @@ import {
   GridItem,
   Icon,
   Tooltip,
-  Spinner
+  Spinner,
+  useMediaQuery,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import React from "react";
@@ -299,6 +300,8 @@ export default function UserTrans() {
     document.title = 'KOPIO | Transactions'
   }, [])
 
+  const [isSmallerThan430] = useMediaQuery("(max-width: 430px)");
+
   return (
     <Flex direction="column">
       {localStorage.getItem("userID") ? <Navbar /> : <NavBar />}
@@ -308,7 +311,7 @@ export default function UserTrans() {
         <Spinner size={"xl"} thickness="10px" color="blue.500" />
       </Center>
     ) : (
-      <Flex w="430px" h="90vh" m="0 auto" direction="column" sx={scrollStyle}>
+      <Flex w={isSmallerThan430 ? "100%" : "430px"} h="90vh" m="0 auto" direction="column" sx={scrollStyle}>
         <Flex w="85%" m="0 auto">
           <Text my={3} fontWeight="bold" color="#2C3639">
             Transaction List
