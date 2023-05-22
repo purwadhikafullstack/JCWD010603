@@ -22,10 +22,10 @@ import LogoHD from "../asset/logo.png";
 export default function NavbarHome(props) {
   return (
     <>
-      <Center flex={1} align={"center"} justifyContent={"center"}>
+      {/* <Center flex={1} align={"center"} justifyContent={"center"}> */}
         <Flex
           zIndex={100}
-          // px={2}
+          m='0 auto'
           h="70px"
           backgroundColor="#2C3639"
           w="430px"
@@ -108,7 +108,7 @@ export default function NavbarHome(props) {
             </Flex>
           </Flex>
         </Flex>
-      </Center>
+      {/* </Center> */}
     </>
   );
 }
