@@ -293,15 +293,6 @@ const voucherDiscountController = {
     try {
       const today = new Date();
       const result = await Voucher.findAll({
-        attributes: [
-          "id",
-          "name",
-          "code",
-          "expiredDate",
-          "nominal",
-          "presentase",
-          "ProductId",
-        ],
         where: {
           [Op.and]: [
             {
