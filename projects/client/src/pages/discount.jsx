@@ -370,7 +370,7 @@ export default function Discount() {
       >
         <Flex w="100%" minH="150px" h="30%" direction="column" px={5} py={2}>
           <Flex mb={5} align="center">
-            <Button
+            {/* <Button
               size={["xs", "sm"]}
               bg="#2C3639"
               color="white"
@@ -378,7 +378,7 @@ export default function Discount() {
               onClick={onOpenType}
             >
               Create new
-            </Button>
+            </Button> */}
             <Heading ml={5} size={["sm", "md"]}>
               Voucher type
             </Heading>
@@ -414,7 +414,7 @@ export default function Discount() {
                         {val.name}
                       </Text>
                     </Flex>
-                    <Tooltip label="Delete" placement="top-start">
+                    {/* <Tooltip label="Delete" placement="top-start">
                       <IconButton //delete button
                         icon={<FiX />}
                         borderRadius="full"
@@ -425,7 +425,7 @@ export default function Discount() {
                           backgroundColor: "none",
                         }}
                       />
-                    </Tooltip>
+                    </Tooltip> */}
                   </Flex>
                 </>
               );

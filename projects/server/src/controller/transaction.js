@@ -959,6 +959,7 @@ const transactionController = {
                     "imgProduct",
                     "desc",
                   ],
+                  paranoid: false,
                 },
               ],
             },

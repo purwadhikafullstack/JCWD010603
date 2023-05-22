@@ -61,7 +61,7 @@ export default function CatsContainer() {
                 })}
             </Grid>
             {/* Show More Button */}
-            {!showAll && categoryData.length > 10 && (
+            {!showAll && categoryData.length > 8 && (
                 <Flex w='35%' m='0 auto' justify='space-around' align='center' onClick={handleShowAll} borderRadius={50} bg='#2C3639' color='white'
                     _hover={{
                         cursor: "pointer",

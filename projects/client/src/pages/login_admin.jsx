@@ -67,7 +67,6 @@ export default function LoginAdmin() {
       console.log(`Error = ${error}`);
     }
   }
-  console.log(loginStat)
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

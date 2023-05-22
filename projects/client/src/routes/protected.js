@@ -13,7 +13,7 @@ function ProtectedPage({
   let navigate = useNavigate();
   const userSelector = useSelector((state) => state.auth);
   const adminSelector = useSelector((state) => state.adminAuth);
-
+  console.log(`admin = ${adminSelector.id}`)
   useEffect(() => {
     if (userLogin && !userSelector.id) {
       return navigate("/login", { replace: true });
@@ -24,7 +24,6 @@ function ProtectedPage({
     if (!adminLogin && adminSelector.id) {
       return navigate("/category", { replace: true });
     }
-    console.log("superadmin =", superAdmin);
     if (!adminSelector.isSuperAdmin && superAdmin) {
       return navigate("/dashboard", { replace: true });
     }
