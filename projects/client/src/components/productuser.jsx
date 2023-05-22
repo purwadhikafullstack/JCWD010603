@@ -240,7 +240,8 @@ export default function ProductUserPage(props) {
                               fontSize="18px"
                               color={"#2C3639"}
                               fontWeight="bold"
-                              maxH={"500px"}
+                              maxH={"250px"}
+                              overflowY={"hidden"}
                             >
                               TYPES OF COFFEE
                             </Flex>
@@ -256,6 +257,10 @@ export default function ProductUserPage(props) {
                           direction="column"
                           fontSize="10px"
                           color={"black"}
+                          h={"70px"}
+                          overflowX={"auto"}
+                          overflowY={"auto"}
+                          sx={beautyScroll}
                         >
                           {datacat?.map((product) => {
                             return (
