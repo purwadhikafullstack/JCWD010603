@@ -25,7 +25,6 @@ import { useFormik } from "formik";
 // import user_types from "../redux/auth/types";
 // import { userLogin } from "../redux/middleware/userauth";
 // import YupPassword from 'yup-password';
-import axios from "axios";
 // import AsyncSelect from "react-select/async"
 import Logo from "../assets/logo.png";
 
@@ -76,7 +75,7 @@ export default function Register() {
   // province
   const fetchProvince = async () => {
     try {
-      const response = await axios.get("/api/api_rajaongkir/province");
+      const response = await axiosInstance.get("/api/api_rajaongkir/province");
       const result = response.data;
 
       setProvince(result);
@@ -107,7 +106,9 @@ export default function Register() {
   const fetchCity = async () => {
     try {
       console.log(idProv);
-      const response = await axios.get(`/api/api_rajaongkir/city/${idProv}`);
+      const response = await axiosInstance.get(
+        `/api/api_rajaongkir/city/${idProv}`
+      );
       const result = response.data;
       setCity(result);
     } catch (err) {
@@ -179,7 +180,7 @@ export default function Register() {
   const [enable, setEnable] = useState(false);
 
   useEffect(() => {
-    document.title = 'KOPIO | Register'
+    document.title = "KOPIO | Register";
     let {
       email,
       password,
@@ -390,14 +391,14 @@ export default function Register() {
                   const selectedProvince = province.find(
                     (val) => val.province === e.target.value
                   );
-                  formik.setFieldValue("province", e.target.value);
+                  formik.setFieldValue("province", selectedProvince.province);
                   formik.setFieldValue("idProv", selectedProvince.province_id);
-                  handleId(e.target.value);
+                  handleId(selectedProvince.province_id);
                 }}
               >
                 {province.map((p) => {
                   return (
-                    <option key={p.province_id} value={p.province_id}>
+                    <option key={p.province_id} value={p.province}>
                       {p.province}
                     </option>
                   );
@@ -431,7 +432,7 @@ export default function Register() {
                 >
                   {city.map((c) => {
                     return (
-                      <option key={c.city_id} value={c.city_id}>
+                      <option key={c.city_id} value={c.city_name}>
                         {c.city_name}
                       </option>
                     );
