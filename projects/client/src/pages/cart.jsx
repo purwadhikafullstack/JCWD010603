@@ -30,7 +30,6 @@ import { axiosInstance } from "../config/config";
 import { BiTrash, BiEdit, BiChevronRight, BiChevronLeft } from "react-icons/bi";
 import { Link as ReachLink } from "react-router-dom";
 import { ArrowBackIcon } from '@chakra-ui/icons';
-import { useNavigate } from "react-router-dom";
 
 export default function Cart() {
   const [cartData, setCartData] = useState([]);
@@ -44,11 +43,7 @@ export default function Cart() {
   const [editInput, setEditInput] = useState(0);
   const cancelRef = React.useRef();
   const toast = useToast();
-  const navigate = useNavigate();
 
-  function handleBackClick() {
-    navigate(-1);
-  }
 
   // STYLE
   const deleteButtonStyle = {
@@ -129,6 +124,9 @@ export default function Cart() {
   useEffect(() => {
     fetchCartData();
   }, [pages]);
+  useEffect(()=> {
+    document.title = 'KOPIO | Cart'
+  }, [])
 
   // EDIT CART
   function handleEditInput(value) {
@@ -207,14 +205,15 @@ export default function Cart() {
         {/* <Heading textAlign='center' color='#2C3639' my={5}>
                     Cart
                 </Heading> */}
-        <IconButton
-          aria-label="backButton"
-          icon={<ArrowBackIcon boxSize="1.5em" _hover={{ boxSize: "1.6em" }} />}
-          w="30px"
-          bg="none"
-          _hover={{ bg: "none", color: "#141617" }}
-          onClick={handleBackClick}
-        />
+        <Link to='/product-list' as={ReachLink}>
+          <IconButton
+            aria-label="backButton"
+            icon={<ArrowBackIcon boxSize="1.5em" _hover={{ boxSize: "1.6em" }} />}
+            w="30px"
+            bg="none"
+            _hover={{ bg: "none", color: "#141617" }}
+          />
+        </Link>
         <Flex w="85%" m="0 auto">
           <Text my={3} fontWeight="bold" color="#2C3639">
             Cart
@@ -247,7 +246,7 @@ export default function Cart() {
                 >
                   Your cart is empty
                 </Text>
-                <Link to="/product-list-user" as={ReachLink}>
+                <Link to="/product-list" as={ReachLink}>
                   <Button>Start Shopping 🛒</Button>
                 </Link>
               </Flex>
@@ -494,7 +493,7 @@ export default function Cart() {
         >
           {cartData.length > 0 ? (
             <Link
-              to="/new-order"
+              to="/checkout"
               as={ReachLink}
               w="100%"
               h="100%"

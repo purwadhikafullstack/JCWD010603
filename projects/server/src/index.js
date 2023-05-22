@@ -1,5 +1,5 @@
 const path = require("path");
-require("dotenv").config({path: path.resolve(__dirname,"../.env")});
+require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 const express = require("express");
 const bcrypt = require("bcrypt");
 const cors = require("cors");
@@ -20,6 +20,7 @@ const app = express();
 app.use(cors());
 const options = {
   origin: "https://jcwd010603.purwadhikabootcamp.com",
+  // origin: "http://localhost:3000",
 };
 app.use(cors(options));
 
@@ -74,9 +75,9 @@ const clientPath = "../../client/build";
 app.use(express.static(join(__dirname, clientPath)));
 
 // Serve the HTML page
-// app.get("*", (req, res) => {
-//   res.sendFile(join(__dirname, clientPath, "index.html"));
-// });
+app.get("*", (req, res) => {
+  res.sendFile(join(__dirname, clientPath, "index.html"));
+});
 
 app.get("/api", (req, res) => {
   res.send(`Hello, this is my API`);

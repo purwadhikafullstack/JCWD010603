@@ -174,7 +174,7 @@ export default function NewOrder(props) {
 
       .then((res) => {
         if (res.status === 200) {
-          navigate("/upload-payment/" + noTrans);
+          navigate("/user-transactions");
           setOrderList([]);
         }
       });

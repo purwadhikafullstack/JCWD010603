@@ -107,6 +107,7 @@ export default function AdminSetting() {
     }
   };
   useEffect(() => {
+    document.title = 'KOPIO | Settings Admin'
     fetchProvince();
   }, []);
 
@@ -210,8 +211,12 @@ export default function AdminSetting() {
         .email("Please enter a valid email"),
       password: Yup.string().required("Password is required"),
       passwordConfirm: Yup.string()
-        .required("Password must match")
-        .oneOf([Yup.ref("password"), null], "Password must match"),
+        .when("password", {
+          is: (password) => password && password.length > 0,
+          then: Yup.string()
+            .required("Password must match")
+            .oneOf([Yup.ref("password"), null], "Password must match"),
+        }),
       branches: Yup.number().required("Select branches"),
     }),
     onSubmit: async () => {
@@ -227,7 +232,7 @@ export default function AdminSetting() {
           setMsg("New Admin Created");
         })
         .catch((error) => {
-          console.log(error);
+          console.log(`apa error catch ? ${error}`);
           setStatus("error");
           setMsg(error.response.data.error);
         })
@@ -260,7 +265,8 @@ export default function AdminSetting() {
       district: Yup.string().required("Please enter a district"),
       city: Yup.string().required("Please enter a city"),
       province: Yup.string().required("Please enter a province"),
-      postalCode: Yup.number().required("Please enter a postal code"),
+      postalCode: Yup.number().typeError("Postal code must be a number")
+        .required("Please enter a postal code"),
     }),
     onSubmit: async () => {
       const res = await axiosInstance
@@ -414,6 +420,9 @@ export default function AdminSetting() {
                             placeholder={"Password"}
                           />
                         </InputGroup>
+                        <FormHelperText w={"268px"} paddingX="1" color={"red"}>
+                          {formik.errors.password}
+                        </FormHelperText>
                       </FormControl>
 
                       <FormControl id="confirmpassword">
@@ -431,6 +440,9 @@ export default function AdminSetting() {
                             placeholder="Confirm Password"
                           />
                         </InputGroup>
+                        <FormHelperText w={"268px"} paddingX="1" color={"red"}>
+                          {formik.errors.passwordConfirm}
+                        </FormHelperText>
                       </FormControl>
 
                       <FormControl>
@@ -532,6 +544,9 @@ export default function AdminSetting() {
                             }
                             placeholder={"Set a Branch Name"}
                           />
+                          <FormHelperText w={"268px"} paddingX="1" color={"red"}>
+                            {branchformik.errors.name}
+                          </FormHelperText>
                         </FormControl>
                       </Box>
 
@@ -563,6 +578,9 @@ export default function AdminSetting() {
                             );
                           })}
                         </Select>
+                        <FormHelperText w={"268px"} paddingX="1" color={"red"}>
+                          {branchformik.errors.province}
+                        </FormHelperText>
                       </FormControl>
 
                       <FormControl id="city">
@@ -592,6 +610,9 @@ export default function AdminSetting() {
                             );
                           })}
                         </Select>
+                        <FormHelperText w={"268px"} paddingX="1" color={"red"}>
+                          {branchformik.errors.city}
+                        </FormHelperText>
                       </FormControl>
 
                       <FormControl id="district">
@@ -607,6 +628,9 @@ export default function AdminSetting() {
                           placeholder={"District"}
                           type="text"
                         />
+                        <FormHelperText w={"268px"} paddingX="1" color={"red"}>
+                          {branchformik.errors.district}
+                        </FormHelperText>
                       </FormControl>
 
                       <FormControl id="postalCode">
@@ -624,6 +648,9 @@ export default function AdminSetting() {
                             placeholder="Postal Code"
                           />
                         </InputGroup>
+                        <FormHelperText w={"268px"} paddingX="1" color={"red"}>
+                          {branchformik.errors.postalCode}
+                        </FormHelperText>
                       </FormControl>
                       <br />
                       <Stack spacing={10} pt={2}>
@@ -680,7 +707,7 @@ export default function AdminSetting() {
                         </Text>
                       </Stack>
                       <Flex w="50%" justify="space-between">
-                        <Text fontSize={["sm", "md"]}>{val.Branch.city}</Text>
+                        <Text fontSize={["sm", "md"]}>{val.Branch.name}</Text>
 
                         <IconButton
                           as={FaUserSlash}
@@ -782,12 +809,12 @@ export default function AdminSetting() {
                     >
                       <Stack>
                         <Heading fontSize={["md", "lg", "xl", "2xl"]}>
-                          {val.city}
+                          {val.name}
                         </Heading>
-                        <Text fontSize={["sm", "md"]}>{val.province}</Text>
+                        <Text fontSize={["sm", "md"]}>{val.city}</Text>
                       </Stack>
                       <Flex w="50%" justify="space-between">
-                        <Text fontSize={["sm", "md"]}>{val.district}</Text>
+                        <Text fontSize={["sm", "md"]}>{val.province}</Text>
 
                         <IconButton
                           as={FaTimesCircle}

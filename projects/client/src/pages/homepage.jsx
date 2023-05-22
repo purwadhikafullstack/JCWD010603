@@ -110,6 +110,7 @@ export default function UserPage() {
       });
   }
   useEffect(() => {
+    document.title = 'KOPIO | Home'
     if (branchId !== null) {
       getProduct();
     }

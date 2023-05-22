@@ -1,5 +1,4 @@
 import HomePage from "../pages/homepage";
-import UserPage from "../pages/userpage";
 import PageLogin from "../pages/loginpage";
 import Reset from "../pages/resetpage";
 import UpdateProfile from "../pages/updateprofilepage";
@@ -23,7 +22,6 @@ import ConfirmDeliverPage from "../pages/confirmdeliver_page";
 import Cart from "../pages/cart";
 import Discount from "../pages/discount";
 import DetailProduct from "../pages/detail_product";
-import AddProductPage from "../pages/addproduct";
 import NewOrder from "../pages/neworder_page";
 import Upload from "../pages/upload_page";
 import Report from "../pages/report";
@@ -33,28 +31,24 @@ import UserTrans from "../pages/user_transactions";
 
 const routes = [
   {
-    path: "/userlogin",
+    path: "/login",
     element: (
       <ProtectedPageUser userGuest={true}>
         <PageLogin />
       </ProtectedPageUser>
     ),
   },
-  // {
-  //   path: "/",
-  //   element: <HomePage />,
-  // },
-  // {
-  //   path: "/add-product",
-  //   element: <AddProductPage />,
-  // },
-  {
+   {
     path: "/",
     element: <HomePage />,
   },
   {
     path: "/record-stock",
-    element: <RecordStock />,
+    element: (
+      <ProtectedPage adminLogin={true} adminGuest={false}>
+        <RecordStock />
+      </ProtectedPage>
+    ),
   },
   {
     path: "/user-transactions",
@@ -82,25 +76,29 @@ const routes = [
   },
   {
     path: "/confirm-deliver/:noTrans",
-    element: <ConfirmDeliverPage />,
+    element: (
+      <ProtectedPageUser userLogin={true}>
+        <ConfirmDeliverPage />
+      </ProtectedPageUser>
+    ),
   },
   {
     path: "/setup-password",
     element: <ResetPassSetPage />,
   },
   {
-    path: "/new-order",
-    element: <NewOrder />,
-  },
-  {
-    path: "/upload-payment/:noTrans",
-    element: <Upload />,
-  },
-  {
-    path: "/userpage",
+    path: "/checkout",
     element: (
       <ProtectedPageUser userLogin={true}>
-        <UserPage />
+        <NewOrder />
+      </ProtectedPageUser>
+    ),
+  },
+  {
+    path: "/upload-payment/:id",
+    element: (
+      <ProtectedPageUser userLogin={true}>
+        <Upload />
       </ProtectedPageUser>
     ),
   },
@@ -121,7 +119,7 @@ const routes = [
     ),
   },
   {
-    path: "/list-address",
+    path: "/address",
     element: (
       <ProtectedPageUser userLogin={true}>
         <ListAddressPage />
@@ -129,12 +127,20 @@ const routes = [
     ),
   },
   {
-    path: "/reset",
-    element: <Reset />,
+    path: "/password-change",
+    element: (
+      <ProtectedPageUser userLogin={true}>
+        <Reset />
+      </ProtectedPageUser>
+    ),
   },
   {
     path: "/detail-product/:id",
-    element: <DetailProduct />,
+    element: (
+      <ProtectedPageUser userLogin={true}>
+        <DetailProduct />
+      </ProtectedPageUser>
+    ),
   },
 
   {
@@ -146,15 +152,19 @@ const routes = [
     ),
   },
   {
-    path: "/product-list-user",
+    path: "/product-list",
     element: <ListProdukUser />,
   },
   {
     path: "/cart",
-    element: <Cart />,
+    element: (
+      <ProtectedPageUser userLogin={true}>
+        <Cart />
+      </ProtectedPageUser>
+    ),
   },
   {
-    path: "/update-profile",
+    path: "/profile",
     element: (
       <ProtectedPageUser userLogin={true}>
         <UpdateProfile />
@@ -162,7 +172,7 @@ const routes = [
     ),
   },
   {
-    path: "/admin_login",
+    path: "/admin-login",
     element: (
       <ProtectedPage adminGuest={true}>
         <LoginAdmin />
@@ -178,7 +188,7 @@ const routes = [
     ),
   },
   {
-    path: "/admin_setting",
+    path: "/admin-setting",
     element: (
       <ProtectedPage adminLogin={true} adminGuest={false} superAdmin={true}>
         <AdminSetting />
@@ -186,7 +196,7 @@ const routes = [
     ),
   },
   {
-    path: "/admin_category",
+    path: "/category",
     element: (
       <ProtectedPage adminLogin={true} adminGuest={false}>
         <AdminCategory />
@@ -206,7 +216,7 @@ const routes = [
     element: <Page404 />,
   },
   {
-    path: "/sales_report",
+    path: "/sales-report",
     element: (
       <ProtectedPage adminLogin={true} adminGuest={false}>
         <Report />

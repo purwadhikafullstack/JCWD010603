@@ -1,79 +1,29 @@
-import { Box } from "@chakra-ui/react";
 import LineChart from "./charts/LineChart";
 import BarChart from "./charts/BarChart";
-import {
-  Flex,
-  Image,
-  InputGroup,
-  InputRightElement,
-  Input,
-  InputRightAddon,
-  List,
-  ListItem,
-  Divider,
-  Button,
-  Grid,
-  GridItem,
-  Icon,
-  Center,
-  IconButton,
-  Slide,
-  Text,
-  Stack,
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  TableCaption,
-  TableContainer,
-  Accordion,
-  AccordionButton,
-  AccordionItem,
-  AccordionIcon,
-  AccordionPanel,
-  useMediaQuery
-} from "@chakra-ui/react";
+import { Flex, Center, useMediaQuery } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
 export default function ChartComponent(props) {
   const data = props.data;
+  const datacat = props.datacat;
   // const databar = props.dataBar;
 
-  const datax = data?.map((product) => product?.createdAt);
-  const datay = data?.map((product) => parseInt(product?.income));
-
-  // const x = [
-  //   "01/03/2023",
-  //   "02/03/2023",
-  //   "03/03/2023",
-  //   "04/03/2023",
-  //   "05/03/2023",
-  //   "06/03/2023",
-  //   "07/03/2023",
-  //   "08/03/2023",
-  //   "09/03/2023",
-  //   "10/03/2023",
-  // ];
-  // const datay = [25000, 13000];
-
-  const [option, setOption] = useState([]);
-  const [barData, setBarData] = useState([]);
-
-  // const [datax, setDataX] = useState([]);
-  // const [datay, setDataY] = useState([]);
+  const [option, setOption] = useState(
+    datacat?.map((product) => product?.Product.Category.name)
+  );
+  const [barData, setBarData] = useState(
+    datacat?.map((product) => product?.totalQty)
+  );
+  const [datax, setDataX] = useState(data?.map((product) => product?.date));
+  const [datay, setDataY] = useState(
+    data?.map((product) => parseInt(product?.grandPrice))
+  );
 
   useEffect(() => {
-    // console.log(databar);
-    // setOption([...props.dataBar?.map((product) => product?.name)]);
-    // setBarData([...props.dataBar?.map((product) => parseInt(product?.jumlah))]);
-
-    // setDataX([...props.data?.map((product) => product?.createdAt)]);
-    // setDataY([...props.data?.map((product) => parseInt(product?.income))]);
-    setOption(["Arabika", "Robusta"]);
-    setBarData([10, 15]);
+    setOption(datacat?.map((product) => product?.Product.Category.name));
+    setBarData(datacat?.map((product) => product?.totalQty));
+    setDataX(data?.map((product) => product?.date));
+    setDataY(data?.map((product) => parseInt(product?.grandPrice)));
   }, []);
   console.log(datax);
   console.log(datay);
@@ -360,11 +310,11 @@ export default function ChartComponent(props) {
 
   return (
     <>
-      <Flex gap={5} direction={isSmallerThan1500 ? 'column' : 'row'} h='100%'>
+      <Flex gap={5} direction={isSmallerThan1500 ? "column" : "row"} h="100%">
         <Flex
           w="full"
           // maxH="700px"
-          h={isSmallerThan1500? '50%' : '100%'}
+          h={isSmallerThan1500 ? "50%" : "100%"}
           maxW="1500px"
           mt="auto"
           flexDir={"column"}
@@ -375,8 +325,8 @@ export default function ChartComponent(props) {
           </Center>
           <LineChart
             // w="500px"
-            w={isSmallerThan650? '100%' : '500px'}
-            h={isSmallerThan1500? '50%' : '300px'}
+            w={isSmallerThan650 ? "100%" : "500px"}
+            h={isSmallerThan1500 ? "50%" : "300px"}
             chartData={chartData}
             chartOptions={lineChartOptionsTotalSpent}
           />
@@ -386,7 +336,7 @@ export default function ChartComponent(props) {
           // maxH="500px"
           maxW="1000px"
           mt="auto"
-          h={isSmallerThan1500? '50%' : '100%'}
+          h={isSmallerThan1500 ? "50%" : "100%"}
           flexDir={"column"}
           gap={3}
           px={15}
@@ -397,7 +347,7 @@ export default function ChartComponent(props) {
           </Center>
           <BarChart
             w="500px"
-            h={isSmallerThan1500? '50%' : '100%'}
+            h={isSmallerThan1500 ? "50%" : "100%"}
             chartData={barChartDataConsumption}
             chartOptions={barChartOptionsConsumption}
           />

@@ -23,43 +23,76 @@ import {
   AlertDialogBody,
   AlertDialogFooter,
   useToast,
+  TableContainer,
+  TableCaption,
+  Table,
+  Tbody,
+  Tr,
+  Grid,
+  Td,
+  GridItem,
+  Icon,
+  Tooltip,
+  Spinner
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import React from "react";
 import NavBar from "../components/navbarhome"; //not loggedin
 import Navbar from "../components/navbar"; //loggedin
 import { axiosInstance } from "../config/config";
-import { BiTrash, BiEdit, BiChevronRight, BiChevronLeft } from "react-icons/bi";
 import { Link as ReachLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { TbListDetails } from "react-icons/tb";
 import ReactPaginate from "react-paginate";
 import "bulma/css/bulma.css";
 
 export default function UserTrans() {
+  let navigate = useNavigate();
   const cancelRef = React.useRef();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { isOpen : isOpen1, onOpen : onOpen1, onClose : onClose1 } = useDisclosure();
-  const { isOpen : isOpen2, onOpen : onOpen2, onClose : onClose2 } = useDisclosure();
+  const {
+    isOpen: isOpen1,
+    onOpen: onOpen1,
+    onClose: onClose1,
+  } = useDisclosure();
+  const {
+    isOpen: isOpen2,
+    onOpen: onOpen2,
+    onClose: onClose2,
+  } = useDisclosure();
+
+  const {
+    isOpen: isOpenDetail,
+    onOpen: onOpenDetail,
+    onClose: onCloseDetail,
+  } = useDisclosure();
+
+  
   const [userTrans, setUserTrans] = useState([]);
+  const [detailTrans, setDetailTrans] = useState([]);
+  const [idTrans, setIdTrans] = useState({});
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(3);
+  const [limit, setLimit] = useState(4);
   const [pages, setPages] = useState(10);
   const [rows, setRows] = useState(0);
   const [order, setOrder] = useState("DESC");
-
   const [cancelDialog, setCancelDialog] = useState(false);
-  const [editDialog, setEditDialog] = useState(false);
   const toast = useToast();
-
-  const [idTrans, setIdTrans] = useState({});
-
+  const [isLoading, setIsLoading] = useState(true);
+  
+  const user = JSON.parse(localStorage.getItem("userID"))
+  ? JSON.parse(localStorage.getItem("userID"))
+  : null;
+  
   // STYLE
   const requestButtonStyle = {
     _hover: {
       bg: "none",
       border: "2px solid #FFB84C",
-      color: "#FFB84C",
-      transform: "scale(1.10)",
+      borderRight:0,
+      color: "#FFB84C",     
  },
+
     _active: {
       size: "sm",
     },
@@ -68,8 +101,8 @@ export default function UserTrans() {
     _hover: {
       bg: "none",
       border: "2px solid #0E8388",
+      borderRight:0,
       color: "#0E8388",
-      transform: "scale(1.10)",
  },
     _active: {
       size: "sm",
@@ -79,8 +112,8 @@ export default function UserTrans() {
     _hover: {
       bg: "none",
       border: "2px solid #3E54AC",
-      color: "#3E54AC",
-      transform: "scale(1.10)",
+      borderRight:0,
+      color: "#3E54AC",      
  },
     _active: {
       size: "sm",
@@ -89,9 +122,9 @@ export default function UserTrans() {
   const arrivedButtonStyle = {
     _hover: {
       bg: "none",
-      border: "2px solid #1F8A70",
-      color: "#1F8A70",
-      transform: "scale(1.10)",
+      border: "2px solid #6D5D6E",
+      borderRight:0,
+      color: "#6D5D6E",      
  },
     _active: {
       size: "sm",
@@ -101,13 +134,27 @@ export default function UserTrans() {
     _hover: {
       bg: "none",
       border: "2px solid #F45050",
+      borderRight:0,
       color: "#F45050",
-      transform: "scale(1.10)",
+      
  },
     _active: {
       size: "sm",
     },
   };
+  const detailButtonStyle = {
+    _hover: {
+      bg: "none",
+      border: "2px solid #BACDDB",
+      borderLeft:0,
+      color: "#BACDDB",
+      
+ },
+    _active: {
+      size: "sm",
+    },
+  };
+  
 
   const uploadButtonStyle = {
     _hover: {
@@ -133,7 +180,7 @@ export default function UserTrans() {
   };
   const completeButtonModalStyle = {
     _hover: {
-      bg: "#1F8A70",
+      bg: "#6D5D6E",
       // border: "2px solid #9e3939",
       color: "#F1F6F9",
       transform: "scale(1.05)",
@@ -160,6 +207,16 @@ export default function UserTrans() {
     },
   };
 
+  const handleDetailTrans = (e) => {
+
+    setTimeout(()=> {
+      setDetailTrans(e)
+      onOpenDetail()
+    },100)
+
+    console.log(detailTrans);
+  }
+
   const changePage = ({ selected }) => {
     setPage(parseInt(selected) + 1);
   };
@@ -169,14 +226,12 @@ export default function UserTrans() {
   }
 
   const statusTrans = async (e) => {
-    console.log(e);
-    console.log(idTrans);
     try {
       await axiosInstance.patch(
         `/api/transaction/userTransactionStatus/${e.id}?status=${e.status}`
-        );
-        fetchTransactions();
-        handleCloseCancelDialog()
+      );
+      fetchTransactions();
+      handleCloseCancelDialog();
       toast({
         title: "Status",
         description: `${e.msg} success`,
@@ -214,7 +269,7 @@ export default function UserTrans() {
     setIdTrans(e);
     onOpen();
   };
-  const cancelStatus1 = (e) => {
+  const changeStatus1 = (e) => {
     setIdTrans(e);
     onOpen1();
   };
@@ -226,24 +281,34 @@ export default function UserTrans() {
 
   const alertCancel = (e) => {
     setCancelDialog(true);
-    if(e === 1) onClose()
-    if(e === 2) onClose2()
-  }
+    if (e === 1) onClose();
+    if (e === 2) onClose2();
+  };
 
   useEffect(() => {
+    !user?
+    navigate('/login')
+    :
     fetchTransactions();
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 300);
   }, [page]);
+
+  useEffect(()=> {
+    document.title = 'KOPIO | Transactions'
+  }, [])
 
   return (
     <Flex direction="column">
       {localStorage.getItem("userID") ? <Navbar /> : <NavBar />}
 
+      {isLoading ? (
+      <Center w={"100vw"} h="100vh" alignContent={"center"}>
+        <Spinner size={"xl"} thickness="10px" color="blue.500" />
+      </Center>
+    ) : (
       <Flex w="430px" h="90vh" m="0 auto" direction="column" sx={scrollStyle}>
-        {" "}
-        {/* Cart Body */}
-        {/* <Heading textAlign='center' color='#2C3639' my={5}>
-                      Cart
-                  </Heading> */}
         <Flex w="85%" m="0 auto">
           <Text my={3} fontWeight="bold" color="#2C3639">
             Transaction List
@@ -252,9 +317,8 @@ export default function UserTrans() {
         <Flex
           direction="column"
           w="85%"
-          h="560px"
+          h="600px"
           m="0 auto"
-          py={5}
           borderBottom="4px solid #2C3639"
           borderTop="4px solid #2C3639"
           overflow="auto"
@@ -276,17 +340,18 @@ export default function UserTrans() {
                 >
                   Your transaction list is empty
                 </Text>
-                <Link to="/product-list-user" as={ReachLink}>
+                <Link to="/product-list" as={ReachLink}>
                   <Button>Start Shopping 🛒</Button>
                 </Link>
               </Flex>
             </Center>
           ) : (
             <>
-              {userTrans?.map((val) => {
+              {userTrans?.map((val,idx) => {
+                console.log(val)
                 return (
                   <>
-                    <Flex w="100%" align="center" m="10px auto 0px">
+                    <Flex w="100%" align="center" m="10px auto 0px" key={idx}>
                       <Flex
                         w={["80px", "85px", "90px"]}
                         h={["80px", "85px", "90px"]}
@@ -348,7 +413,7 @@ export default function UserTrans() {
                       borderBottom="1px solid rgba(44, 54, 57, 0.1)"
                       align="center"
                     >
-                      {val.Transaction_status.id === 1 &&
+                      {val.TransactionStatusId === 1 &&
                       val.imgUpload === null ? (
                         <Button
                           size="xs"
@@ -356,79 +421,86 @@ export default function UserTrans() {
                           color="white"
                           bg="#FFB84C"
                           cursor="pointer"
-                          mr={3}
+                          borderLeftRadius={10}
+                          borderRightRadius={0}
                           onClick={() =>
-                            cancelStatus1({ id: val.id, noTrans: val.noTrans })
+                            changeStatus1({ id: val.id, noTrans: val.noTrans })
                           }
                           sx={requestButtonStyle}
                         >
                           {val.Transaction_status?.name}
                         </Button>
-                      ) :  val.Transaction_status.id === 2 ? (
+                      ) : val.TransactionStatusId === 2 ? (
                         <Button
                           size="xs"
                           // as={BiTrash}
                           color="white"
                           bg="#0E8388"
                           cursor="pointer"
-                          mr={3}
+                          borderLeftRadius={10}
+                          borderRightRadius={0}
                           onClick={() => cancelStatus2({id: val.id, noTrans: val.noTrans})}
                           sx={confirmButtonStyle}
                         >
                           {val.Transaction_status?.name}
                         </Button>
-                      ) :  val.Transaction_status.id === 3 ? (
+                      ) : val.TransactionStatusId === 3 ? (
                         <Button
                           size="xs"
                           // as={BiTrash}
                           color="white"
                           bg="#3E54AC"
                           cursor="pointer"
-                          mr={3}
+                          borderLeftRadius={10}
+                          borderRightRadius={0}
+
                           onClick={() => changeStatus({id: val.id, noTrans: val.noTrans})}
                           sx={deliveredButtonStyle}
                         >
                           {val.Transaction_status?.name}
                         </Button>
-                      ) :  val.Transaction_status.id === 4 ? (
+                      ) : val.TransactionStatusId === 4 ? (
                         <Button
                           size="xs"
                           // as={BiTrash}
                           color="white"
-                          bg="#1F8A70"
+                          bg="#6D5D6E"
                           cursor="pointer"
-                          mr={3}
+                          borderLeftRadius={10}
+                          borderRightRadius={0}
                           sx={arrivedButtonStyle}
                         >
                           {val.Transaction_status?.name}
                         </Button>
-                      ):
-                      (
+                      ) : val.TransactionStatusId === 5 ? (
                         <Button
                           size="xs"
                           // as={BiTrash}
                           color="white"
                           bg="#F45050"
                           cursor="pointer"
-                          mr={3}
-                          // onClick={() => cancelStatus({id: val.id, noTrans: val.noTrans})}
                           sx={canceledButtonStyle}
+                          borderLeftRadius={10}
+                          borderRightRadius={0}
                         >
                           {val.Transaction_status?.name}
                         </Button>
-                      )
+                      ) : null
 
                       }
-                      {/* <Flex mr={4} py={2}>
-                          <IconButton
-                            size="xs"
-                            as={BiEdit}
-                            color="gray.400"
-                            bg="none"
-                            cursor="pointer" onClick={() => editCart(val.id)}
-                            sx={editButtonStyle}
-                          />
-                        </Flex> */}
+                        <Tooltip label='Order details' placement="top" fontSize='md' bg="#BACDDB">
+                      <Button 
+                      sx={detailButtonStyle}
+                      size="xs"
+                          // as={BiTrash}
+                          color="white"
+                          bg="#BACDDB"
+                          cursor="pointer"
+                          borderLeftRadius={0}
+                          borderRightRadius={10}
+                      onClick={() => {handleDetailTrans(val.Transaction_items)}}>
+                      <Icon as={TbListDetails}/></Button>
+                      </Tooltip>
                     </Flex>
                   </>
                 );
@@ -436,7 +508,9 @@ export default function UserTrans() {
             </>
           )}
         </Flex>
+          <>
         <Flex w="100%" h="50px" m="0 auto" justify={"center"} align="center">
+        {userTrans.length !== 0 ? (
           <nav
             role={"navigation"}
             aria-label={"pagination"}
@@ -457,33 +531,14 @@ export default function UserTrans() {
               disableLinkClassName={"pagination-link is-disabled"}
             />
           </nav>
+        ) : null }
         </Flex>
-        <Box w="85%" m="0 auto" textAlign={"right"}>
-          Total Data: {rows} | Page: {rows ? page : 0} of {pages}
-        </Box>
-        <Button
-          w="85%"
-          h="40px"
-          m="20px auto 0px"
-          // bg={cartData.length > 0 ? "#2C3639" : "#BEBEBE"}
-          color="white"
-          // sx={cartData.length > 0 ? confirmButtonStyle : {}}
-          // disabled={cartData.length === 0}
-          p="0px"
-          // cursor={cartData.length > 0 ? "pointer" : "context-menu"}
-        >
-          {/* {cartData.length > 0 ? (
-              <Link href="/new-order" w="100%" h="100%" _hover={{ textStyle: 'none' }}>
-                <Center h="100%">Confirm & Buy</Center>
-              </Link>
-            ) : (
-              <Center h="100%">Confirm & Buy</Center>
-            )} */}
-        </Button>
+        </>
       </Flex>
+    )}
       <Modal margin onClose={onClose1} isOpen={isOpen1} isCentered>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent maxW="430px" fontSize={["sm", "md"]}>
           <ModalHeader fontSize={"2xl"} fontWeight={"bold"}>
             Transaction Status
           </ModalHeader>
@@ -496,14 +551,16 @@ export default function UserTrans() {
               <Flex justify={"center"} columnGap={"35px"}>
                 <Button sx={uploadButtonStyle}>
                   <Link
-                    to={`/upload-payment/${idTrans.noTrans}`}
+                    to={`/upload-payment/${idTrans.id}`}
                     as={ReachLink}
                   >
                     Upload
                   </Link>
                 </Button>
                 <Button
-                  onClick={()=> {alertCancel(1)}}
+                  onClick={() => {
+                    alertCancel(1);
+                  }}
                   sx={cancelButtonModalStyle}
                 >
                   Cancel Order
@@ -515,7 +572,7 @@ export default function UserTrans() {
       </Modal>
       <Modal margin onClose={onClose2} isOpen={isOpen2} isCentered>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent maxW="430px" fontSize={["sm", "md"]}>
           <ModalHeader fontSize={"2xl"} fontWeight={"bold"}>
             Transaction Status
           </ModalHeader>
@@ -523,7 +580,8 @@ export default function UserTrans() {
           <ModalBody paddingBottom={9}>
             <Center display={"Grid"} textAlign={"center"} rowGap={"35px"}>
               <Text fontSize={"lg"} fontWeight={"semibold"}>
-                Your payment has been approve by admin, waiting admin to send your order
+                Your payment has been approve by admin, waiting admin to send
+                your order
               </Text>
               <Flex justify={"center"} columnGap={"35px"}>
                 {/* <Button sx={uploadButtonStyle}>
@@ -535,7 +593,9 @@ export default function UserTrans() {
                   </Link>
                 </Button> */}
                 <Button
-                  onClick={()=> {alertCancel(2)}}
+                  onClick={() => {
+                    alertCancel(2);
+                  }}
                   sx={cancelButtonModalStyle}
                 >
                   Cancel Order
@@ -547,7 +607,7 @@ export default function UserTrans() {
       </Modal>
       <Modal margin onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent maxW="430px" fontSize={["sm", "md"]}>
           <ModalHeader fontSize={"2xl"} fontWeight={"bold"}>
             Transaction Status
           </ModalHeader>
@@ -567,13 +627,13 @@ export default function UserTrans() {
                   </Link>
                 </Button> */}
                 <Button
-                    onClick={() => {
+                  onClick={() => {
                     statusTrans({
                       id: idTrans.id,
                       status: 4,
                       msg: `Order Complete`,
                     });
-                    onClose()
+                    onClose();
                   }}
                   sx={completeButtonModalStyle}
                 >
@@ -584,44 +644,99 @@ export default function UserTrans() {
           </ModalBody>
         </ModalContent>
       </Modal>
+      <Modal onClose={onCloseDetail} isOpen={isOpenDetail} isCentered>
+        <ModalOverlay />
+        <ModalContent maxW="430px" fontSize={["sm", "md"]}>
+          <ModalHeader>Order Details</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody py={"35px"}>
+
+          {detailTrans.length > 0 ? 
+            <>
+          <Grid fontWeight={"semibold"} bg={"#86A3B8"} textAlign={"center"} width={"inherit"} templateColumns={"2fr 2fr 1fr 1fr"}>
+          <GridItem border={"1px"}>Product Name</GridItem>
+          <GridItem border={"1px"}>Price</GridItem>
+          <GridItem border={"1px"}>Weight</GridItem>
+          <GridItem  border={"1px"}>Qty</GridItem>
+          </Grid>
+          
+          {detailTrans?.map((val, idx) => {
+                    return (
+                        <Grid width={"inherit"} textAlign={"center"} templateColumns={"2fr 2fr 1fr 1fr"} key={idx} >
+                      {/* <Tr w={"100%"} key={idx}> */}
+                          <GridItem bg={"#DDDDDD"} border={"1px"}>{val.Product?.name}</GridItem>
+                          <GridItem bg={"#EEEEEE"} border={"1px"}>Rp. {(val.Product?.price).toLocaleString()}</GridItem>
+                          <GridItem bg={"#DDDDDD"} border={"1px"}>{val.Product?.weight} gr</GridItem>
+                          <GridItem bg={"#EEEEEE"} border={"1px"}>{val.qty} pcs</GridItem>
+                      {/* </Tr> */}
+                        </Grid>
+                    );
+                  })}
+                  </>
+                  : <Flex
+                          flexDir={"column"}
+                          w="inherit"
+                              justify={"center"}
+                              textAlign={"center"} fontSize={["xl", "2xl"]}
+                  fontWeight="semibold"
+                            >
+                            Order details is empty
+                              </Flex>
+                }
+            {/* <TableContainer>
+              <Table variant="striped" w={"100%"} border={1}>
+                <Tbody>
+                </Tbody>
+              </Table>
+            </TableContainer> */}
+          </ModalBody>
+          <ModalFooter>
+            <Button onClick={onCloseDetail}>Close</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
       <AlertDialog
-            motionPreset="slideInBottom"
-            isOpen={cancelDialog}
-            leastDestructiveRef={cancelRef}
-            onClose={handleCloseCancelDialog}
-            isCentered
-          >
-            <AlertDialogOverlay>
-              <AlertDialogContent>
-                <AlertDialogHeader
-                  fontSize="lg"
-                  fontWeight="bold"
-                  textAlign="center"
-                >
-                  Transaction Cancel
-                </AlertDialogHeader>
+        motionPreset="slideInBottom"
+        isOpen={cancelDialog}
+        leastDestructiveRef={cancelRef}
+        onClose={handleCloseCancelDialog}
+        isCentered
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader
+              fontSize="lg"
+              fontWeight="bold"
+              textAlign="center"
+            >
+              Transaction Cancel
+            </AlertDialogHeader>
 
-                <AlertDialogBody textAlign="center">
-                  Are you sure you want cancel this order?
-                </AlertDialogBody>
+            <AlertDialogBody textAlign="center">
+              Are you sure you want cancel this order?
+            </AlertDialogBody>
 
-                <AlertDialogFooter>
-                  <Button ref={cancelRef} onClick={handleCloseCancelDialog}>
-                    Back
-                  </Button>
-                  <Button colorScheme="red" onClick={() => {
-                    statusTrans({
-                      id: idTrans.id,
-                      status: 5,
-                      msg: `Order Canceled`,
-                    });
-                  }} ml={3}>
-                    Cancel this order
-                  </Button>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialogOverlay>
-          </AlertDialog>
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={handleCloseCancelDialog}>
+                Back
+              </Button>
+              <Button
+                colorScheme="red"
+                onClick={() => {
+                  statusTrans({
+                    id: idTrans.id,
+                    status: 5,
+                    msg: `Order Canceled`,
+                  });
+                }}
+                ml={3}
+              >
+                Cancel this order
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </Flex>
   );
 }

@@ -5,7 +5,8 @@ import { axiosInstance } from "../config/config";
 import { Center, Spinner } from "@chakra-ui/react";
 import Products from "../components/productuser";
 
-import Navbar from "../components/navbar";
+import NavBar from "../components/navbarhome"; //not loggedin
+import Navbar from "../components/navbar"; //loggedin
 export default function PageProducts() {
   const [data, setData] = useState();
   const [datacat, setDataCat] = useState();
@@ -71,6 +72,7 @@ export default function PageProducts() {
     fetchProductBranch();
   }, [idBranch]);
   useEffect(() => {
+    document.title = 'KOPIO | Product'
     // fetchPosts();
     fetchData();
     fetchDataCat();
@@ -88,7 +90,7 @@ export default function PageProducts() {
         </Center>
       ) : (
         <>
-          <Navbar />
+          {localStorage.getItem("userID") ? <Navbar /> : <NavBar />}
 
           <Center>
             <Products

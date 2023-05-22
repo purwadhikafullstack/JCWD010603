@@ -34,6 +34,7 @@ export default function ListAddressPage() {
   const userSelector = useSelector((state) => state.auth);
 
   useEffect(() => {
+    document.title = 'KOPIO | Address'
     setUser_id(userSelector?.id);
   }, []);
   function deleteCategory(id) {
@@ -89,7 +90,7 @@ export default function ListAddressPage() {
             flexDir={"column"}
             gap={5}
           >
-            <Link to="/userpage" as={ReachLink}>
+            <Link to="/" as={ReachLink}>
               <Flex textAlign={"left"} color="white">
                 <Icon
                   boxSize={"7"}

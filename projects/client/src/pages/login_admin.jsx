@@ -20,6 +20,7 @@ import { adminLogin } from "../redux/middleware/adminauth";
 import "../style/admin.css";
 
 import Logo from "../asset/logo.png";
+import { useEffect } from "react";
 
 export default function LoginAdmin() {
   let dispatch = useDispatch();
@@ -28,11 +29,15 @@ export default function LoginAdmin() {
   const [status, setStatus] = useState(false);
   const [errMsg, setErrMsg] = useState("");
   const [loginStat, setLoginStat] = useState("");
+  
+
+  useEffect(()=> {
+    document.title = 'KOPIO | Login Admin'
+  }, [])
 
   function pressEnter(e) {
     if (e.key === 'Enter') {
       Login();
-      // fetchCategory();
     }
   };
 
@@ -44,25 +49,25 @@ export default function LoginAdmin() {
           password,
         })
       );
-      console.log(isAuth.data.message);
-      if (isAuth.data.message) {
+      if (isAuth.message) {
         setLoginStat("Failed")
-        setErrMsg(isAuth.data.message)
+        setErrMsg(isAuth.message)
       }
+      console.log(isAuth.message);
       if (isAuth.status) {
 
         if (isAuth.data.id) {
           setLoginStat("Success")
           return navigate('/dashboard', { state: { admin: isAuth.data }, replace: true });
         }
-        return navigate('/admin_login', { state: { admin: isAuth.data }, replace: true });
+        return navigate('/admin-login', { state: { admin: isAuth.data }, replace: true });
       }
       return setStatus(true);
     } catch (error) {
       console.log(`Error = ${error}`);
     }
   }
-  console.log(errMsg);
+  console.log(loginStat)
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -76,7 +81,7 @@ export default function LoginAdmin() {
       setEmail(event.target.value);
     }
   };
-
+  console.log(errMsg);
   return (
     <>
       <Center

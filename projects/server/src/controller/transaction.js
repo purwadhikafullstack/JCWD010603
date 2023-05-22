@@ -31,8 +31,8 @@ const transactionController = {
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
-        message: err,
+      return res.status(400).json({
+        message: err.message,
       });
     }
   },
@@ -61,8 +61,8 @@ const transactionController = {
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
-        message: err,
+      return res.status(400).json({
+        message: err.message,
       });
     }
   },
@@ -77,8 +77,8 @@ const transactionController = {
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
-        message: err,
+      return res.status(400).json({
+        message: err.message,
       });
     }
   },
@@ -100,8 +100,8 @@ const transactionController = {
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
-        message: err,
+      return res.status(400).json({
+        message: err.message,
       });
     }
   },
@@ -115,8 +115,8 @@ const transactionController = {
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
-        message: err,
+      return res.status(400).json({
+        message: err.message,
       });
     }
   },
@@ -126,16 +126,15 @@ const transactionController = {
       const dataTransaction = await Transaction_header.findAll({
         attributes: [
           "noTrans",
-          "createdAt",
-          // [
-          //   (sequelize.fn(
-          //     "DATE_FORMAT",
-          //     sequelize.col("createdAt"),
-          //     "%d-%m-%Y %H:%i:%s"
-          //   ),
-          //   "DATE"),
-          // ],
-          [sequelize.fn("sum", sequelize.col("grandPrice")), "income"],
+          [
+            sequelize.fn(
+              "date_format",
+              sequelize.col("Transaction_header.createdAt"),
+              "%Y-%m-%d"
+            ),
+            "date",
+          ],
+          "grandPrice",
         ],
         include: [
           {
@@ -146,7 +145,7 @@ const transactionController = {
         where: {
           BranchId: id,
         },
-        group: ["createdAt"],
+        group: ["date"],
       });
 
       res.status(200).json({
@@ -155,8 +154,8 @@ const transactionController = {
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
-        message: err,
+      return res.status(400).json({
+        message: err.message,
       });
     }
   },
@@ -250,7 +249,7 @@ const transactionController = {
       await t.rollback();
 
       return res.status(400).json({
-        message: error,
+        message: error.message,
       });
     }
   },
@@ -272,14 +271,14 @@ const transactionController = {
       res.send(result);
     } catch (error) {
       console.error(error);
-      res.status(400).json({
-        message: error,
+      return res.status(400).json({
+        message: error.message,
       });
     }
   },
   uploadFoto: async (req, res) => {
     try {
-      const noTrans = req.params.noTrans;
+      const id = req.params.id;
 
       const data = {};
 
@@ -292,10 +291,11 @@ const transactionController = {
       const result = await Transaction_header.update(
         {
           ...data,
+          TransactionStatusId: 2,
         },
         {
           where: {
-            noTrans: noTrans,
+            id: id,
           },
         }
       );
@@ -349,14 +349,14 @@ const transactionController = {
                 BranchId: { [Op.like]: `%${search}%` },
               },
               {
-                  TransactionStatusId : {[Op.like]: `%${search}%`}
-              }
+                TransactionStatusId: { [Op.like]: `%${search}%` },
+              },
             ],
           },
           include: [
             {
               model: Transaction_status,
-              attributes: ["name"],
+              attributes: ["name", "id"],
             },
             {
               model: Branch,
@@ -455,7 +455,7 @@ const transactionController = {
           include: [
             {
               model: Transaction_status,
-              attributes: ["name"],
+              attributes: ["name", "id"],
             },
             {
               model: Branch,
@@ -476,7 +476,7 @@ const transactionController = {
       if (!result) {
         throw new Error("Fetching all record stock branch failed");
       }
-      
+
       await t.commit();
       res.status(201).json({
         result: result,
@@ -531,6 +531,7 @@ const transactionController = {
           {
             model: Product,
             attributes: ["name", "imgProduct", "price"],
+            paranoid: false,
             include: [
               {
                 model: Branch,
@@ -593,6 +594,7 @@ const transactionController = {
           {
             model: Product,
             attributes: ["name", "imgProduct", "price"],
+            paranoid: false,
             include: [
               {
                 model: Branch,
@@ -622,7 +624,7 @@ const transactionController = {
     } catch (err) {
       console.log(err);
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -678,7 +680,7 @@ const transactionController = {
     } catch (err) {
       console.log(err);
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -738,7 +740,7 @@ const transactionController = {
     } catch (err) {
       console.log(err);
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -773,7 +775,7 @@ const transactionController = {
     } catch (err) {
       console.log(err);
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -812,7 +814,7 @@ const transactionController = {
     } catch (err) {
       console.log(err);
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -821,26 +823,31 @@ const transactionController = {
     try {
       const transactionHeaderId = req.params.id;
 
-      const transactionItems = await Transaction_item.findAll({
-        where: {
-          TransactionHeaderId: transactionHeaderId,
+      const transactionItems = await Transaction_item.findAll(
+        {
+          where: {
+            TransactionHeaderId: transactionHeaderId,
+          },
+          include: {
+            model: Product,
+          },
         },
-        include: {
-          model: Product,
-        },
-      },{ transaction: t });
-      
+        { transaction: t }
+      );
 
       await Promise.all(
-        transactionItems.map(async (item) => {
-          const product = item.Product;
-          const qtyToAdd = item.qty;
+        transactionItems.map(
+          async (item) => {
+            const product = item.Product;
+            const qtyToAdd = item.qty;
 
-          await Product.update(
-            { stock: product.stock + qtyToAdd },
-            { where: { id: product.id }}
-          );
-        },{ transaction: t })
+            await Product.update(
+              { stock: product.stock + qtyToAdd },
+              { where: { id: product.id } }
+            );
+          },
+          { transaction: t }
+        )
       );
 
       const updatedTransactionHeader = await Transaction_header.update(
@@ -850,8 +857,9 @@ const transactionController = {
         {
           where: {
             id: transactionHeaderId,
-          }
-        },{ transaction: t }
+          },
+        },
+        { transaction: t }
       );
 
       await t.commit();
@@ -864,7 +872,7 @@ const transactionController = {
       await t.rollback();
       console.log(err);
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -889,7 +897,7 @@ const transactionController = {
     } catch (err) {
       console.log(err);
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -934,6 +942,7 @@ const transactionController = {
             "totalWeight",
             "imgUpload",
             "createdAt",
+            "TransactionStatusId",
           ],
           include: [
             {
@@ -1048,6 +1057,45 @@ const transactionController = {
       res.status(201).json({ message: "Cancel transaction success" });
     } catch (err) {
       return res.status(401).json({ message: err.msg });
+    }
+  },
+  getTransactionItembyCategorybyBranch: async (req, res) => {
+    const BranchId = req.params.id;
+
+    try {
+      const data = await Transaction_item.findAll({
+        attributes: [
+          "ProductId",
+          [Sequelize.literal("SUM(qty)"), "totalQty"],
+          [Sequelize.literal("Product.CategoryId"), "categoryid"],
+        ],
+        include: [
+          {
+            model: Product,
+            attributes: ["CategoryId"],
+            include: [
+              {
+                model: Category,
+                attributes: ["name"],
+              },
+            ],
+          },
+          {
+            model: Transaction_header,
+            attributes: [],
+            where: {
+              BranchId: BranchId,
+            },
+          },
+        ],
+        group: ["categoryid"],
+      });
+
+      res.status(201).json({
+        result: data,
+      });
+    } catch (err) {
+      return res.status(401).json({ message: err.message });
     }
   },
 };

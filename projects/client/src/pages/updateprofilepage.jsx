@@ -19,6 +19,7 @@ export default function UpdateProfilePage() {
   }
 
   useEffect(() => {
+    document.title = 'KOPIO | Profile' 
     fetchData();
   }, []);
 

@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const { Op } = require("sequelize");
 const { sequelize } = require("../models");
 const secret_key = process.env.secret_key;
+const urlServer = process.env.SERVER_URL;
 const mailer = require("../library/mailer");
 const { nanoid } = require("nanoid");
 const db = require("../models");
@@ -20,7 +21,7 @@ const userController = {
   register: async (req, res) => {
     const data = req.body;
     console.log(req.body);
-    
+
     const t = await sequelize.transaction();
     try {
       // check password
@@ -54,7 +55,7 @@ const userController = {
       if (!userDetail) {
         throw new Error("Create user detail failed");
       }
- 
+
       const dataAddress = {
         UserId: user.dataValues.id,
         address: data.address,
@@ -62,7 +63,9 @@ const userController = {
         city: data.city,
         district: data.district,
         postalCode: data.postalCode,
-        isActive: true,
+        idCity: data.idCity,
+        idProv: data.idProv,
+        isPrimary: true,
       };
 
       const address = await Address.create(
@@ -76,7 +79,7 @@ const userController = {
       const token = await jwt.sign({ ...user.dataValues }, secret_key, {
         expiresIn: "1d",
       });
-      const href = `http://localhost:3000/verify-email?token=${token}`;
+      const href = `https://jcwd010603.purwadhikabootcamp.com/verify-email?token=${token}`;
       // verify via email
       const mail = await mailer(
         {
@@ -355,27 +358,11 @@ const userController = {
     }
   },
 
-  keeplogin: async (req, res) => {
-    try {
-      const token = req.headers.authorization;
-
-      const oldUser = await jwt.verify(token, process.env.secret_key);
-      const newUSer = await User.findByPk(oldUser.id);
-
-      delete newUSer.dataValues.password;
-
-      res.status(200).json({
-        result: newUSer,
-      });
-    } catch (err) {
-      return res.status(400).send(err);
-    }
-  },
-
   login: async (req, res) => {
     try {
       const { email, password } = req.body;
       const user = await User.findOne({
+        attributes: ["id", "username", "password", "isVerify"],
         where: {
           email: email,
         },
@@ -406,7 +393,7 @@ const userController = {
       });
     } catch (err) {
       res.status(400).json({
-        message: err,
+        message: err.message,
       });
       console.log(err);
     }
@@ -461,6 +448,9 @@ const userController = {
       res.set("Content-type", "image/**");
     } catch (err) {
       res.send(err);
+      return res.status(400).json({
+        message: err.message,
+      });
     }
   },
 
@@ -559,7 +549,7 @@ const userController = {
         expiresIn: "1h",
       });
 
-      const href = `http://localhost:3000/setup-password?token=${token}`;
+      const href = `https://jcwd010603.purwadhikabootcamp.com/setup-password?token=${token}`;
       // verify via email
       const mail = await mailer({
         to: email,
@@ -782,7 +772,7 @@ const userController = {
       res.status(201).send("Success send request for reset password");
     } catch (err) {
       await t.rollback();
-      res.status(401).json({ errors: err.message });
+      return res.status(401).json({ errors: err.message });
     }
   },
 
@@ -877,8 +867,8 @@ const userController = {
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
-        message: err,
+      return res.status(400).json({
+        message: err.message,
       });
     }
   },
@@ -891,8 +881,8 @@ const userController = {
       });
     } catch (err) {
       console.log(err);
-      res.status(400).json({
-        message: err,
+      return res.status(400).json({
+        message: err.message,
       });
     }
   },
@@ -921,7 +911,7 @@ const userController = {
       });
     } catch (err) {
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -968,7 +958,7 @@ const userController = {
     } catch (err) {
       await t.rollback();
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },

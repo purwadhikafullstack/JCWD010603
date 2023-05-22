@@ -84,7 +84,7 @@ const adminController = {
         attributes: ["id", "username", "email", "isSuperAdmin", "BranchId"],
         include: {
           model: Branch,
-          attributes: ["city"],
+          attributes: ["city", "name"],
         },
       });
       return res.status(200).json({
@@ -93,7 +93,7 @@ const adminController = {
       });
     } catch (err) {
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -112,7 +112,7 @@ const adminController = {
       });
     } catch (err) {
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -191,7 +191,7 @@ const adminController = {
       });
     } catch (err) {
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -257,7 +257,7 @@ const adminController = {
       });
     } catch (err) {
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -394,7 +394,7 @@ const adminController = {
       });
     } catch (err) {
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },

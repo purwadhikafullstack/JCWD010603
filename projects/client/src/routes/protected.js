@@ -16,13 +16,13 @@ function ProtectedPage({
 
   useEffect(() => {
     if (userLogin && !userSelector.id) {
-      return navigate("/userlogin", { replace: true });
+      return navigate("/login", { replace: true });
     }
     if (adminLogin && !adminSelector.id) {
-      return navigate("/admin_login", { replace: true });
+      return navigate("/admin-login", { replace: true });
     }
     if (!adminLogin && adminSelector.id) {
-      return navigate("/admin_category", { replace: true });
+      return navigate("/category", { replace: true });
     }
     console.log("superadmin =", superAdmin);
     if (!adminSelector.isSuperAdmin && superAdmin) {

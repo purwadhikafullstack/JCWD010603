@@ -56,6 +56,7 @@ export default function ChangePassword({ id }) {
     }),
   });
   useEffect(() => {
+    document.title = 'KOPIO | Password Change'
     let { oldPassword, newPassword, confirmPassword } = formik.values;
     if (!oldPassword || !newPassword || !confirmPassword) {
       setEnable(true);
@@ -76,11 +77,14 @@ export default function ChangePassword({ id }) {
         {
           oldPassword,
           newPassword,
+        },
+        {
+          headers: {
+            Authorization: "Bearer" + " " + localStorage.getItem("token"),
+          },
         }
       );
-      navigate("/userpage");
-      console.log("user edited");
-      console.log(response.data);
+      navigate("/");
     } catch (error) {
       console.log(error);
       setErrorMessage("Failed to change password");
@@ -99,7 +103,7 @@ export default function ChangePassword({ id }) {
           flexDir="column"
           gap={8}
         >
-          <Link to="/userpage" as={ReachLink}>
+          <Link to="/" as={ReachLink}>
             <Flex textAlign={"left"} py={5} color="white">
               <Icon
                 boxSize={"7"}

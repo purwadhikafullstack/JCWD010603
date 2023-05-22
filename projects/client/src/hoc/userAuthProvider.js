@@ -9,19 +9,14 @@ const UserAuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchData = async () => {
-    const token = localStorage.getItem("token");
-    await axiosInstance
-      .get("/api/user/keeplogin", { headers: { Authorization: token } })
-      .then((res) => {
-        dispatch({
-          type: user_types.USER_LOGIN,
-          payload: res.data.result,
-        });
-      })
-
-      .finally(() => {
-        setIsLoading(false);
+    const data = localStorage.getItem("dataUser");
+    if (data) {
+      dispatch({
+        type: user_types.USER_LOGIN,
+        payload: JSON.parse(data),
       });
+    }
+    setIsLoading(false);
   };
 
   useEffect(() => {

@@ -156,7 +156,7 @@ export default function UpdateProfile(props) {
 
     try {
       await axiosInstance.patch("/api/user/editprofile/" + User_id, Data);
-      navigate("/userpage");
+      navigate("/");
     } catch (error) {
       console.error(error);
     }
@@ -182,7 +182,7 @@ export default function UpdateProfile(props) {
             flexDir={"column"}
             gap={5}
           >
-            <Link to="/userpage" as={ReachLink}>
+            <Link to="/" as={ReachLink}>
               <Flex textAlign={"left"} color="white">
                 <Icon
                   boxSize={"7"}

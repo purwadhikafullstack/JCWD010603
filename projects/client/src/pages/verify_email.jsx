@@ -33,6 +33,7 @@ export default function VerifyEmail() {
   // console.log(msg)
 
   useEffect(() => {
+    document.title = 'KOPIO | Email Verify'
     verify();
   }, []);
 

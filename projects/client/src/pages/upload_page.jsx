@@ -20,6 +20,7 @@ export default function UploadPage() {
   }
 
   useEffect(() => {
+    document.title = 'Kopio | Payment Upload'
     fetchData();
   }, []);
 

@@ -40,7 +40,7 @@ export default function ConfirmationDeliver(props) {
     await axiosInstance
       .patch(`/api/transaction/confirmtransaction/${notrans}`)
       .then(() => {
-        navigate("/userpage");
+        navigate("/");
       })
       .finally(() => {
         setOpenAddressDialog(false);

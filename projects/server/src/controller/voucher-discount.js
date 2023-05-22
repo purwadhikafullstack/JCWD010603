@@ -42,7 +42,7 @@ const voucherDiscountController = {
       });
     } catch (err) {
       res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -201,10 +201,12 @@ const voucherDiscountController = {
           {
             model: Voucher_type,
             attributes: ["name"],
+            paranoid: false,
           },
           {
             model: Product,
             attributes: ["name"],
+            paranoid: false,
           },
         ],
       });
@@ -219,7 +221,7 @@ const voucherDiscountController = {
       });
     } catch (err) {
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -261,10 +263,12 @@ const voucherDiscountController = {
           {
             model: Voucher_type,
             attributes: ["name"],
+            paranoid: false,
           },
           {
             model: Product,
             attributes: ["name"],
+            paranoid: false,
           },
         ],
       });
@@ -279,7 +283,7 @@ const voucherDiscountController = {
       });
     } catch (err) {
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
@@ -326,7 +330,7 @@ const voucherDiscountController = {
       });
     } catch (err) {
       return res.status(400).json({
-        message: err,
+        message: err.message,
       });
     }
   },
