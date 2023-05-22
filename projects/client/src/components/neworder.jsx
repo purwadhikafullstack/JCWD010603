@@ -367,6 +367,7 @@ export default function NewOrder(props) {
                 gap={3}
                 py={3}
                 h="250px"
+                w='100%'
               >
                 {data.filterCart?.map((val) => {
                   return (
