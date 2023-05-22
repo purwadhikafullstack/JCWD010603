@@ -13,6 +13,7 @@ import {
   PopoverBody,
   ListItem,
   Center,
+  useMediaQuery,
 } from "@chakra-ui/react";
 
 import { Link as ReachLink } from "react-router-dom";
@@ -34,7 +35,7 @@ export default function Navbar(props) {
     localStorage.clear();
     window.location.reload(true);
   }
-
+  const [isSmallerThan430] = useMediaQuery("(max-width: 430px)");
 
   return (
     <>
@@ -44,7 +45,7 @@ export default function Navbar(props) {
           m='0 auto'
           h="70px"
           backgroundColor="#2C3639"
-          w="430px"
+          w={isSmallerThan430 ? "100%" : "430px"}
           padding="20px"
           borderBottom={"2px solid #E2E8F0"}
           display={"flex"}

@@ -1,14 +1,15 @@
 import {
-  Flex, Link, Button
+  Flex, Link, Button, useMediaQuery
 } from "@chakra-ui/react";
 import { Link as ReachLink } from "react-router-dom";
 import BannerImg from "../asset/bannerImage.png"
 
 export default function Banner() {
+  const [isSmallerThan430] = useMediaQuery("(max-width: 430px)");
   return (
     <Flex
       h="636px"
-      w="430px"
+      w={isSmallerThan430 ? "100%" : "430px"}
       m="0 auto"
       p={6}
       direction="column"

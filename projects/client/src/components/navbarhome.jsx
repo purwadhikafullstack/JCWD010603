@@ -13,6 +13,7 @@ import {
   PopoverBody,
   ListItem,
   Center,
+  useMediaQuery,
 } from "@chakra-ui/react";
 
 import { Link as ReachLink } from "react-router-dom";
@@ -20,6 +21,7 @@ import { AiOutlineMenu } from "react-icons/ai";
 import { SlBasket } from "react-icons/sl";
 import LogoHD from "../asset/logo.png";
 export default function NavbarHome(props) {
+  const [isSmallerThan430] = useMediaQuery("(max-width: 430px)");
   return (
     <>
       {/* <Center flex={1} align={"center"} justifyContent={"center"}> */}
@@ -28,7 +30,7 @@ export default function NavbarHome(props) {
           m='0 auto'
           h="70px"
           backgroundColor="#2C3639"
-          w="430px"
+          w={isSmallerThan430 ? "100%" : "430px"}
           padding="20px"
           borderBottom={"2px solid #E2E8F0"}
           display={"flex"}
