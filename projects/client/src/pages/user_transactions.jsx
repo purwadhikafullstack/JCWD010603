@@ -68,7 +68,7 @@ export default function UserTrans() {
     onClose: onCloseDetail,
   } = useDisclosure();
 
-  
+
   const [userTrans, setUserTrans] = useState([]);
   const [detailTrans, setDetailTrans] = useState([]);
   const [idTrans, setIdTrans] = useState({});
@@ -80,18 +80,18 @@ export default function UserTrans() {
   const [cancelDialog, setCancelDialog] = useState(false);
   const toast = useToast();
   const [isLoading, setIsLoading] = useState(true);
-  
+
   const user = JSON.parse(localStorage.getItem("userID"))
   ? JSON.parse(localStorage.getItem("userID"))
   : null;
-  
+
   // STYLE
   const requestButtonStyle = {
     _hover: {
       bg: "none",
       border: "2px solid #FFB84C",
       borderRight:0,
-      color: "#FFB84C",     
+      color: "#FFB84C",
  },
 
     _active: {
@@ -114,7 +114,7 @@ export default function UserTrans() {
       bg: "none",
       border: "2px solid #3E54AC",
       borderRight:0,
-      color: "#3E54AC",      
+      color: "#3E54AC",
  },
     _active: {
       size: "sm",
@@ -125,7 +125,7 @@ export default function UserTrans() {
       bg: "none",
       border: "2px solid #6D5D6E",
       borderRight:0,
-      color: "#6D5D6E",      
+      color: "#6D5D6E",
  },
     _active: {
       size: "sm",
@@ -137,7 +137,7 @@ export default function UserTrans() {
       border: "2px solid #F45050",
       borderRight:0,
       color: "#F45050",
-      
+
  },
     _active: {
       size: "sm",
@@ -149,13 +149,13 @@ export default function UserTrans() {
       border: "2px solid #BACDDB",
       borderLeft:0,
       color: "#BACDDB",
-      
+
  },
     _active: {
       size: "sm",
     },
   };
-  
+
 
   const uploadButtonStyle = {
     _hover: {
@@ -492,7 +492,7 @@ export default function UserTrans() {
 
                       }
                         <Tooltip label='Order details' placement="top" fontSize='md' bg="#BACDDB">
-                      <Button 
+                      <Button
                       sx={detailButtonStyle}
                       size="xs"
                           // as={BiTrash}
@@ -654,7 +654,7 @@ export default function UserTrans() {
           <ModalCloseButton />
           <ModalBody py={"35px"}>
 
-          {detailTrans.length > 0 ? 
+          {detailTrans.length > 0 ?
             <>
           <Grid fontWeight={"semibold"} bg={"#86A3B8"} textAlign={"center"} width={"inherit"} templateColumns={"2fr 2fr 1fr 1fr"}>
           <GridItem border={"1px"}>Product Name</GridItem>
@@ -662,7 +662,7 @@ export default function UserTrans() {
           <GridItem border={"1px"}>Weight</GridItem>
           <GridItem  border={"1px"}>Qty</GridItem>
           </Grid>
-          
+
           {detailTrans?.map((val, idx) => {
                     return (
                         <Grid width={"inherit"} textAlign={"center"} templateColumns={"2fr 2fr 1fr 1fr"} key={idx} >
