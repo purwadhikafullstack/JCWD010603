@@ -29,14 +29,19 @@ const adminController = {
       });
 
       if (!result) {
-        return res.status(400).json({
-          message: "User not found",
-        });
+        throw new Error("User not found");
       }
+
+      // Check if the email matches exactly (case-sensitive)
+      if (result.email !== email) {
+        throw new Error("Incorrect Email");
+      }
+
       const isValid = await bcrypt.compare(password, result.password);
       if (!isValid) {
-        throw new Error("Incorrect Email / Password");
+        throw new Error("Incorrect Password");
       }
+
       let payload = { id: result.id, isSuperAdmin: result.isSuperAdmin };
       const token = jwt.sign(payload, secret_key);
       return res.status(200).json({
