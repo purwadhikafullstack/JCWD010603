@@ -5,36 +5,17 @@ import { useEffect, useState } from "react";
 
 export default function ChartComponent(props) {
   const [isLoading, setIsLoading] = useState(true);
-  const data = props.data;
-  const datacat = props.datacat;
-  // const databar = props.dataBar;
 
-  const [option, setOption] = useState(
-    datacat?.map((product) => product?.Product.Category.name) || ""
-  );
-  const [barData, setBarData] = useState(
-    datacat?.map((product) => product?.totalQty) || 0
-  );
-  const [datax, setDataX] = useState(
-    data?.map((product) => product?.date) || ""
-  );
-  const [datay, setDataY] = useState(
-    data?.map((product) => parseInt(product?.grandPrice)) || 0
-  );
+  const datax = props.datax;
+  const datay = props.datay;
+  const option = props.option;
+  const barData = props.barData;
 
   useEffect(() => {
-    setOption(datacat?.map((product) => product?.Product.Category.name));
-    setBarData(datacat?.map((product) => product?.totalQty));
-    setDataX(data?.map((product) => product?.date));
-    setDataY(data?.map((product) => parseInt(product?.grandPrice)));
     setTimeout(() => {
       setIsLoading(false);
     }, 1500);
   }, []);
-  console.log(datax);
-  console.log(datay);
-  console.log(option);
-  console.log(barData);
   const [barChartDataConsumption, setBarChartDataConsumption] = useState([
     {
       name: "PRODUCT A",

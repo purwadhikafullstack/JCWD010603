@@ -23,6 +23,11 @@ export default function Dashboard() {
   }, []);
   const [dataBranch, setDataBranch] = useState();
   const [dataProductAll, setDataProductAll] = useState(0);
+  const [option, setOption] = useState([]);
+  const [barData, setBarData] = useState([]);
+  const [datax, setDataX] = useState([]);
+  const [datay, setDataY] = useState([]);
+
   const [dataCountProduct, setdataCountProduct] = useState(dataProductAll);
   const [dataAdmin, setDataAdmin] = useState(0);
   const [branchName, setBranchName] = useState("");
@@ -54,11 +59,18 @@ export default function Dashboard() {
   const fetchDataTransactionHeader = async () => {
     try {
       setIsLoading(true);
-      const response = await axiosInstance
+      await axiosInstance
         .get(`/api/transaction/transaction-detail/${idBranch}`)
+        .then((response) => {
+          setDatachartline(response.data.result);
+          setDataX(response.data.result?.map((product) => product?.date));
+          setDataY(
+            response.data.result?.map((product) =>
+              parseInt(product?.grandPrice)
+            )
+          );
+        })
         .finally(() => setIsLoading(false));
-      const result = response.data.result;
-      setDatachartline(result);
     } catch (err) {
       console.log(err.message);
     }
@@ -66,11 +78,18 @@ export default function Dashboard() {
   const fetchDataTransactionItem = async () => {
     try {
       setIsLoading(true);
-      const response = await axiosInstance
+      await axiosInstance
         .get(`/api/transaction/gettransactionbycategorybybranch/${idBranch}`)
+        .then((response) => {
+          setDataCat(response.data.result);
+          setOption(
+            response.data.result?.map(
+              (product) => product?.Product.Category.name
+            )
+          );
+          setBarData(response.data.result?.map((product) => product?.totalQty));
+        })
         .finally(() => setIsLoading(false));
-      const result = response.data.result;
-      setDataCat(result);
     } catch (err) {
       console.log(err.message);
     }
@@ -307,7 +326,14 @@ export default function Dashboard() {
                   </Center>
                 </Flex>
                 <Flex m="0 auto">
-                  <Chart data={datachartline} datacat={dataCat} />
+                  <Chart
+                    data={datachartline}
+                    datacat={dataCat}
+                    datax={datax}
+                    datay={datay}
+                    option={option}
+                    barData={barData}
+                  />
                 </Flex>
               </Center>
             </Flex>
