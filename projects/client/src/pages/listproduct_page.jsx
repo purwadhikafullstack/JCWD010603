@@ -6,8 +6,7 @@ import Products from "../components/product";
 import { useNavigate } from "react-router-dom";
 
 export default function PageProducts() {
-
-  let navigate = useNavigate()
+  let navigate = useNavigate();
   const [data, setData] = useState();
   const [datacat, setDataCat] = useState();
   const [isLoading, setIsLoading] = useState(true);
@@ -20,12 +19,18 @@ export default function PageProducts() {
   const [rows, setRows] = useState(0);
 
   function fetchData() {
-    axiosInstance.get(`/api/product/allProductBranch/${JSON.parse(localStorage.getItem("data")).BranchId}?page=${page}&limit=${limit}`).then((res) => {
-      setData(res.data.result);
-      setPage(res.data.page);
-      setPages(res.data.totalPage);
-      setRows(res.data.totalRows);
-    }); 
+    axiosInstance
+      .get(
+        `/api/product/allProductBranch/${
+          JSON.parse(localStorage.getItem("data")).BranchId
+        }?page=${page}&limit=${limit}`
+      )
+      .then((res) => {
+        setData(res.data.result);
+        setPage(res.data.page);
+        setPages(res.data.totalPage);
+        setRows(res.data.totalRows);
+      });
   }
 
   function fetchDataCat() {
@@ -35,9 +40,9 @@ export default function PageProducts() {
   }
   const selectPage = (e) => {
     // console.log(e);
-    setPage(e)
-  }
-const fetchFilPro = async () => {
+    setPage(e);
+  };
+  const fetchFilPro = async () => {
     let url = "filter[category]=";
     categories1.map((val, idx) => {
       idx ? (url += `,${val}`) : (url += `${val}`);
@@ -49,22 +54,33 @@ const fetchFilPro = async () => {
       setData(res.data.result);
     });
   };
+  const fetchFinPro = async (search) => {
+    let url = "";
 
-  useEffect (()=> {
-    document.title = 'KOPIO | Product List'
-  })
+    url += `name=${search}&branch=${
+      JSON.parse(localStorage.getItem("data"))
+        ? JSON.parse(localStorage.getItem("data")).BranchId
+        : null
+    }`;
+
+    await axiosInstance.get("/api/product/finduser?" + url).then((res) => {
+      setData(res.data.result);
+    });
+  };
+  useEffect(() => {
+    document.title = "KOPIO | Product List";
+  });
 
   useEffect(() => {
-    JSON.parse(localStorage.getItem("data")).isSuperAdmin ?
-    navigate('/dashboard')
-    :
-    fetchData();
+    JSON.parse(localStorage.getItem("data")).isSuperAdmin
+      ? navigate("/dashboard")
+      : fetchData();
     fetchDataCat();
     setTimeout(() => {
       setIsLoading(false);
     }, 500);
   }, [page]);
-  
+
   useEffect(() => {
     console.log(categories1);
   }, [categories1]);
@@ -82,7 +98,7 @@ const fetchFilPro = async () => {
           <Center marginLeft={["85px", "100px", "150px"]} w="100%">
             <Products
               data={data}
-              // fin={fetchFinPro}
+              fin={fetchFinPro}
               cat={[...categories1]}
               fetchData={fetchData}
               datacat={datacat}
@@ -91,12 +107,14 @@ const fetchFilPro = async () => {
               sortby={[...sortby]}
               setSort={setSort}
               setSortBy={setSortBy}
-              // filter={fetchFilPro}
+              filter={fetchFilPro}
               page={page}
               pages={pages}
               limit={limit}
-              rows={rows}            
-              select={ (e) => {selectPage(e)}}            
+              rows={rows}
+              select={(e) => {
+                selectPage(e);
+              }}
             />
           </Center>
         </>
