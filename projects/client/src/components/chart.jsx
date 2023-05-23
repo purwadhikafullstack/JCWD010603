@@ -29,7 +29,7 @@ export default function ChartComponent(props) {
     setDataY(data?.map((product) => parseInt(product?.grandPrice)));
     setTimeout(() => {
       setIsLoading(false);
-    }, 500);
+    }, 1500);
   }, []);
   console.log(datax);
   console.log(datay);
