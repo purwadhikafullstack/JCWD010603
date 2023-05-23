@@ -92,10 +92,10 @@ export default function Discount() {
     },
     validate: (values) => {
       const errors = {};
-      if (!values.presentase && !values.nominal) {
-        errors.presentase = "Either nominal or percentage must be filled";
-        errors.nominal = "Either nominal or percentage must be filled";
-      }
+      // if (!values.presentase && !values.nominal) {
+      //   errors.presentase = "Either nominal or percentage must be filled";
+      //   errors.nominal = "Either nominal or percentage must be filled";
+      // }
       if (values.nominal < 0) {
         errors.nominal = "Nominal cannot be negative";
       }
@@ -234,10 +234,9 @@ export default function Discount() {
   async function fetchVoucher() {
     await axiosInstance
       .get(
-        `/api/voucher_discount/getvoucher?page=${page}&BranchId=${
-          JSON.parse(localStorage.getItem("data"))
-            ? JSON.parse(localStorage.getItem("data")).BranchId
-            : null
+        `/api/voucher_discount/getvoucher?page=${page}&BranchId=${JSON.parse(localStorage.getItem("data"))
+          ? JSON.parse(localStorage.getItem("data")).BranchId
+          : null
         }`
       )
       .then((res) => {
@@ -284,10 +283,9 @@ export default function Discount() {
       async function fetchBranch() {
         await axiosInstance
           .get(
-            `/api/admin/getBranchId/${
-              JSON.parse(localStorage.getItem("data"))
-                ? JSON.parse(localStorage.getItem("data")).BranchId
-                : null
+            `/api/admin/getBranchId/${JSON.parse(localStorage.getItem("data"))
+              ? JSON.parse(localStorage.getItem("data")).BranchId
+              : null
             }`
           )
           .then((res) => {
@@ -370,7 +368,7 @@ export default function Discount() {
       >
         <Flex w="100%" minH="150px" h="30%" direction="column" px={5} py={2}>
           <Flex mb={5} align="center">
-            <Button
+            {/* <Button
               size={["xs", "sm"]}
               bg="#2C3639"
               color="white"
@@ -378,7 +376,7 @@ export default function Discount() {
               onClick={onOpenType}
             >
               Create new
-            </Button>
+            </Button> */}
             <Heading ml={5} size={["sm", "md"]}>
               Voucher type
             </Heading>
@@ -414,7 +412,7 @@ export default function Discount() {
                         {val.name}
                       </Text>
                     </Flex>
-                    <Tooltip label="Delete" placement="top-start">
+                    {/* <Tooltip label="Delete" placement="top-start">
                       <IconButton //delete button
                         icon={<FiX />}
                         borderRadius="full"
@@ -425,7 +423,7 @@ export default function Discount() {
                           backgroundColor: "none",
                         }}
                       />
-                    </Tooltip>
+                    </Tooltip> */}
                   </Flex>
                 </>
               );
@@ -597,181 +595,185 @@ export default function Discount() {
                       : null
                   )
                     ? allVoucher?.map((val, idx) => {
-                        const currentDate = new Date();
-                        const valDate = new Date(val.expiredDate);
-                        const date = new Date(
-                          val.expiredDate
-                        ).toLocaleDateString("en-US", {
-                          day: "2-digit",
-                          month: "long",
-                          year: "numeric",
-                        });
-                        const bg = valDate < currentDate ? "red.100" : "white";
-                        const color =
-                          valDate < currentDate ? "red.500" : "green.500";
+                      const currentDate = new Date();
+                      const valDate = new Date(val.expiredDate);
+                      const date = new Date(
+                        val.expiredDate
+                      ).toLocaleDateString("en-US", {
+                        day: "2-digit",
+                        month: "long",
+                        year: "numeric",
+                      });
+                      const bg = valDate < currentDate ? "red.100" : "white";
+                      const color =
+                        valDate < currentDate ? "red.500" : "green.500";
 
-                        return (
-                          <>
-                            <Flex
-                              key={idx}
-                              w="100%"
-                              bg={bg}
-                              borderRadius={5}
-                              color="#2C3639"
-                              m="3px auto"
-                              justify="space-between"
-                              align="center"
-                              p={3}
-                            >
-                              <Flex w="20%" direction="column">
-                                <Text
-                                  fontWeight="bold"
-                                  fontSize={["sm", "md", "lg"]}
-                                >
-                                  {val.name}
-                                </Text>
-                                <Text
-                                  fontWeight="bold"
-                                  fontSize={["sm", "md", "lg"]}
-                                >
-                                  Code : {val.code}
-                                </Text>
-                              </Flex>
-                              <Flex w="30%" direction="column">
-                                <Text
-                                  fontWeight="bold"
-                                  color={color}
-                                  fontSize={["sm", "md", "lg"]}
-                                >
-                                  -{" "}
-                                  {val.nominal
-                                    ? "Rp " + val.nominal.toLocaleString()
-                                    : val.presentase + " %"}
-                                </Text>
-                                <Text fontSize={["sm", "md", "lg"]}>
-                                  Exp : {date}
-                                </Text>
-                              </Flex>
-                              <Flex w="20%" direction="column">
-                                <Text
-                                  textAlign="right"
-                                  fontSize={["sm", "md", "lg"]}
-                                >
-                                  {val.Product
-                                    ? "Purchase of : " + val.Product.name
-                                    : null}
-                                </Text>
-                                <Text
-                                  textAlign="right"
-                                  fontSize={["sm", "md", "lg"]}
-                                >
-                                  {val.Voucher_type.name}
-                                </Text>
-                              </Flex>
-                              <Tooltip label="Delete" placement="top-start">
-                                <IconButton //delete button
-                                  icon={<FiX />}
-                                  borderRadius="full"
-                                  bg="none"
-                                  onClick={() => deleteAlert(val.id)}
-                                  _hover={{
-                                    color: "maroon",
-                                    backgroundColor: "none",
-                                  }}
-                                />
-                              </Tooltip>
+                      return (
+                        <>
+                          <Flex
+                            key={idx}
+                            w="100%"
+                            bg={bg}
+                            borderRadius={5}
+                            color="#2C3639"
+                            m="3px auto"
+                            justify="space-between"
+                            align="center"
+                            p={3}
+                          >
+                            <Flex w="20%" direction="column">
+                              <Text
+                                fontWeight="bold"
+                                fontSize={["sm", "md", "lg"]}
+                              >
+                                {val.name}
+                              </Text>
+                              <Text
+                                fontWeight="bold"
+                                fontSize={["sm", "md", "lg"]}
+                              >
+                                Code : {val.code}
+                              </Text>
                             </Flex>
-                          </>
-                        );
-                      })
+                            <Flex w="30%" direction="column">
+                              <Text
+                                fontWeight="bold"
+                                color={color}
+                                fontSize={["sm", "md", "lg"]}
+                              >
+                                -{" "}
+                                {val.nominal
+                                  ? "Rp " + val.nominal.toLocaleString()
+                                  : val.presentase
+                                    ? val.presentase + " %"
+                                    : val.Voucher_type.name === "GRATIS ONGKIR" ? "gratis ongkir" : "B1G1"}
+                              </Text>
+                              <Text fontSize={["sm", "md", "lg"]}>
+                                Exp : {date}
+                              </Text>
+                            </Flex>
+                            <Flex w="20%" direction="column">
+                              <Text
+                                textAlign="right"
+                                fontSize={["sm", "md", "lg"]}
+                              >
+                                {val.Product
+                                  ? "Purchase of : " + val.Product.name
+                                  : null}
+                              </Text>
+                              <Text
+                                textAlign="right"
+                                fontSize={["sm", "md", "lg"]}
+                              >
+                                {val.Voucher_type.name}
+                              </Text>
+                            </Flex>
+                            <Tooltip label="Delete" placement="top-start">
+                              <IconButton //delete button
+                                icon={<FiX />}
+                                borderRadius="full"
+                                bg="none"
+                                onClick={() => deleteAlert(val.id)}
+                                _hover={{
+                                  color: "maroon",
+                                  backgroundColor: "none",
+                                }}
+                              />
+                            </Tooltip>
+                          </Flex>
+                        </>
+                      );
+                    })
                     : voucherData.map((val, idx) => {
-                        const currentDate = new Date();
-                        const valDate = new Date(val.expiredDate);
-                        const date = new Date(
-                          val.expiredDate
-                        ).toLocaleDateString("en-US", {
-                          day: "2-digit",
-                          month: "long",
-                          year: "numeric",
-                        });
-                        const bg = valDate < currentDate ? "red.100" : "white";
-                        const color =
-                          valDate < currentDate ? "red.500" : "green.500";
+                      const currentDate = new Date();
+                      const valDate = new Date(val.expiredDate);
+                      const date = new Date(
+                        val.expiredDate
+                      ).toLocaleDateString("en-US", {
+                        day: "2-digit",
+                        month: "long",
+                        year: "numeric",
+                      });
+                      const bg = valDate < currentDate ? "red.100" : "white";
+                      const color =
+                        valDate < currentDate ? "red.500" : "green.500";
 
-                        return (
-                          <>
-                            <Flex
-                              key={idx}
-                              w="100%"
-                              bg={bg}
-                              borderRadius={5}
-                              color="#2C3639"
-                              m="3px auto"
-                              justify="space-between"
-                              align="center"
-                              p={3}
-                            >
-                              <Flex w="20%" direction="column">
-                                <Text
-                                  fontWeight="bold"
-                                  fontSize={["sm", "md", "lg"]}
-                                >
-                                  {val.name}
-                                </Text>
-                                <Text
-                                  fontWeight="bold"
-                                  fontSize={["sm", "md", "lg"]}
-                                >
-                                  Code : {val.code}
-                                </Text>
-                              </Flex>
-                              <Flex w="30%" direction="column">
-                                <Text
-                                  fontWeight="bold"
-                                  color={color}
-                                  fontSize={["sm", "md", "lg"]}
-                                >
-                                  -{" "}
-                                  {val.nominal
-                                    ? "Rp " + val.nominal.toLocaleString()
-                                    : val.presentase + " %"}
-                                </Text>
-                                <Text fontSize={["sm", "md", "lg"]}>
-                                  Exp : {date}
-                                </Text>
-                              </Flex>
-                              <Flex w="20%" direction="column">
-                                <Text
-                                  textAlign="right"
-                                  fontSize={["sm", "md", "lg"]}
-                                >
-                                  {val.Product
-                                    ? "Purchase of : " + val.Product.name
-                                    : null}
-                                </Text>
-                                <Text
-                                  textAlign="right"
-                                  fontSize={["sm", "md", "lg"]}
-                                >
-                                  {val.Voucher_type.name}
-                                </Text>
-                              </Flex>
-                              <Tooltip label="Delete" placement="top-start">
-                                <IconButton //delete button
-                                  icon={<FiX />}
-                                  borderRadius="full"
-                                  bg="none"
-                                  onClick={() => deleteAlert(val.id)}
-                                  _hover={{
-                                    color: "maroon",
-                                    backgroundColor: "none",
-                                  }}
-                                />
-                              </Tooltip>
+                      return (
+                        <>
+                          <Flex
+                            key={idx}
+                            w="100%"
+                            bg={bg}
+                            borderRadius={5}
+                            color="#2C3639"
+                            m="3px auto"
+                            justify="space-between"
+                            align="center"
+                            p={3}
+                          >
+                            <Flex w="20%" direction="column">
+                              <Text
+                                fontWeight="bold"
+                                fontSize={["sm", "md", "lg"]}
+                              >
+                                {val.name}
+                              </Text>
+                              <Text
+                                fontWeight="bold"
+                                fontSize={["sm", "md", "lg"]}
+                              >
+                                Code : {val.code}
+                              </Text>
                             </Flex>
-                          </>
-                        );
-                      })}
+                            <Flex w="30%" direction="column">
+                              <Text
+                                fontWeight="bold"
+                                color={color}
+                                fontSize={["sm", "md", "lg"]}
+                              >
+                                -{" "}
+                                {val.nominal
+                                  ? "Rp " + val.nominal.toLocaleString()
+                                  : val.presentase
+                                    ? val.presentase + " %"
+                                    : val.Voucher_type.name === "GRATIS ONGKIR" ? "gratis ongkir" : "B1G1"}
+                              </Text>
+                              <Text fontSize={["sm", "md", "lg"]}>
+                                Exp : {date}
+                              </Text>
+                            </Flex>
+                            <Flex w="20%" direction="column">
+                              <Text
+                                textAlign="right"
+                                fontSize={["sm", "md", "lg"]}
+                              >
+                                {val.Product
+                                  ? "Purchase of : " + val.Product.name
+                                  : null}
+                              </Text>
+                              <Text
+                                textAlign="right"
+                                fontSize={["sm", "md", "lg"]}
+                              >
+                                {val.Voucher_type.name}
+                              </Text>
+                            </Flex>
+                            <Tooltip label="Delete" placement="top-start">
+                              <IconButton //delete button
+                                icon={<FiX />}
+                                borderRadius="full"
+                                bg="none"
+                                onClick={() => deleteAlert(val.id)}
+                                _hover={{
+                                  color: "maroon",
+                                  backgroundColor: "none",
+                                }}
+                              />
+                            </Tooltip>
+                          </Flex>
+                        </>
+                      );
+                    })}
                 </>
               )}
 

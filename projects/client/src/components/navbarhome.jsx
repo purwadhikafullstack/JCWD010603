@@ -13,6 +13,7 @@ import {
   PopoverBody,
   ListItem,
   Center,
+  useMediaQuery,
 } from "@chakra-ui/react";
 
 import { Link as ReachLink } from "react-router-dom";
@@ -20,15 +21,16 @@ import { AiOutlineMenu } from "react-icons/ai";
 import { SlBasket } from "react-icons/sl";
 import LogoHD from "../asset/logo.png";
 export default function NavbarHome(props) {
+  const [isSmallerThan430] = useMediaQuery("(max-width: 430px)");
   return (
     <>
-      <Center flex={1} align={"center"} justifyContent={"center"}>
+      {/* <Center flex={1} align={"center"} justifyContent={"center"}> */}
         <Flex
           zIndex={100}
-          // px={2}
+          m='0 auto'
           h="70px"
           backgroundColor="#2C3639"
-          w="430px"
+          w={isSmallerThan430 ? "100%" : "430px"}
           padding="20px"
           borderBottom={"2px solid #E2E8F0"}
           display={"flex"}
@@ -81,12 +83,12 @@ export default function NavbarHome(props) {
                   <PopoverContent>
                     <PopoverArrow backgroundColor={"#A27B5C"} />
 
-                    <PopoverHeader bgColor={"#A27B5C"} color="white">
+                    <PopoverHeader bgColor={"#A27B5C"} color="white" textAlign='center'>
                       {" "}
-                      SELAMAT DATANG !
+                      WELCOME !
                     </PopoverHeader>
                     <PopoverBody>
-                      <List fontSize={"14px"} color="#7D7D7D" gap={5}>
+                      <List fontSize={"14px"} color="#7D7D7D" gap={5} textAlign='center'>
                         <ListItem>
                           <Link to="/register" as={ReachLink}>
                             REGISTER
@@ -108,7 +110,7 @@ export default function NavbarHome(props) {
             </Flex>
           </Flex>
         </Flex>
-      </Center>
+      {/* </Center> */}
     </>
   );
 }

@@ -15,7 +15,7 @@ router.post(
 router.patch(
   "/updatefoto/:UserId",
   fileUploader({
-    destinationFolder: "IMAGE_PRODUCT",
+    destinationFolder: "IMAGE_USER",
     fileType: "image",
     prefix: "POST",
   }).single("image"),

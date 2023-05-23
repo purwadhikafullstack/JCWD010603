@@ -44,10 +44,11 @@ const transactionController = {
           {
             model: Transaction_item,
             attributes: ["TransactionHeaderId", "qty", "ProductId"],
-            include: {
+            include: [{
               model: Product,
               attributes: ["name", "price", "imgProduct"],
-            },
+              paranoid: false
+            }],
           },
         ],
         where: {
@@ -140,6 +141,7 @@ const transactionController = {
           {
             model: Branch,
             attributes: ["name"],
+            paranoid: false
           },
         ],
         where: {
@@ -165,7 +167,14 @@ const transactionController = {
       // const tgl = moment().format("YYYYMMDD");
       // const countHeader = await Transaction_header.count();
       // const noTrans = `TRS-${tgl}000${countHeader + 1}`;
-      const { grandPrice, BranchId, totalWeight, noTrans } = req.body;
+      const {
+        grandPrice,
+        BranchId,
+        totalWeight,
+        noTrans,
+        voucherApply,
+        productId,
+      } = req.body;
       const UserId = req.params.id;
 
       const addHeader = await Transaction_header.create(
@@ -188,6 +197,10 @@ const transactionController = {
       // });
       const orderlist = JSON.parse(req.body.orderList);
       const arrItem = [];
+      // (voucherApply = "BUY 1 GET 1")
+      //   ? arrItem.push({ qty: 1, ProductId: productId })
+      //   : arrItem.push();
+
       orderlist.map(async (val) => {
         let obj = {
           qty: val.qty,
@@ -361,6 +374,7 @@ const transactionController = {
             {
               model: Branch,
               attributes: ["name"],
+              paranoid: false
             },
             {
               model: User,
@@ -397,7 +411,7 @@ const transactionController = {
     try {
       const data = await Transaction_item.findAll({
         where: { TransactionHeaderId: id },
-        include: { model: Product, attributes: ["name", "weight", "price"] },
+        include: [{ model: Product, attributes: ["name", "weight", "price"], paranoid: false }],
       });
 
       if (!data) throw new Error("Failed fetch transaction items");
@@ -460,6 +474,7 @@ const transactionController = {
             {
               model: Branch,
               attributes: ["name"],
+              paranoid: false
             },
             {
               model: User,
@@ -536,6 +551,7 @@ const transactionController = {
               {
                 model: Branch,
                 attributes: ["city"],
+                paranoid: false
               },
             ],
           },
@@ -599,6 +615,7 @@ const transactionController = {
               {
                 model: Branch,
                 attributes: ["city"],
+                paranoid: false
               },
             ],
           },
@@ -658,7 +675,7 @@ const transactionController = {
         include: [
           {
             model: Branch,
-            attributes: [],
+            paranoid: false,
           },
           {
             model: User,
@@ -715,7 +732,7 @@ const transactionController = {
         include: [
           {
             model: Branch,
-            attributes: [],
+            paranoid: false,
             where: {
               id: branchId,
             },
@@ -761,7 +778,7 @@ const transactionController = {
           },
           {
             model: Branch,
-            attributes: [],
+            paranoid: false,
           },
         ],
         group: ["userName", "branchName"],
@@ -797,7 +814,7 @@ const transactionController = {
           },
           {
             model: Branch,
-            attributes: [],
+            paranoid: false
           },
         ],
         where: {
@@ -959,6 +976,7 @@ const transactionController = {
                     "imgProduct",
                     "desc",
                   ],
+                  paranoid: false,
                 },
               ],
             },
@@ -1004,6 +1022,7 @@ const transactionController = {
             },
             include: {
               model: Product,
+              paranoid: false
             },
           },
           { transaction: t }
@@ -1073,10 +1092,12 @@ const transactionController = {
           {
             model: Product,
             attributes: ["CategoryId"],
+            paranoid: false,
             include: [
               {
                 model: Category,
                 attributes: ["name"],
+                paranoid: false
               },
             ],
           },

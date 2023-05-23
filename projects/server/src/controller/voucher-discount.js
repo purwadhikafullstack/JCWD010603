@@ -86,19 +86,19 @@ const voucherDiscountController = {
       }
 
       const existingVoucher = await Voucher.findOne({
-        where: { code: data.code },
+        where: { code: data.code, BranchId: data.BranchId },
       });
 
       if (existingVoucher) {
-        throw new Error("Voucher code already exists");
+        throw new Error("Voucher code already exists for the same branch");
       }
 
       const existingVoucherName = await Voucher.findOne({
-        where: { name: data.name },
+        where: { name: data.name, BranchId: data.BranchId },
       });
 
       if (existingVoucherName) {
-        throw new Error("Voucher name already exists");
+        throw new Error("Voucher name already exists for the same branch");
       }
 
       // Check if both nominal and presentase are provided
@@ -293,15 +293,6 @@ const voucherDiscountController = {
     try {
       const today = new Date();
       const result = await Voucher.findAll({
-        attributes: [
-          "id",
-          "name",
-          "code",
-          "expiredDate",
-          "nominal",
-          "presentase",
-          "ProductId",
-        ],
         where: {
           [Op.and]: [
             {

@@ -18,7 +18,7 @@ export default function Dashboard() {
     });
   }
   useEffect(() => {
-    document.title = 'KOPIO | Dashboard'
+    document.title = "KOPIO | Dashboard";
     fetchDataProduct();
   }, []);
   const [dataBranch, setDataBranch] = useState();
@@ -34,9 +34,13 @@ export default function Dashboard() {
   const [dataTransaction, setDataTransaction] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [idBranch, setIdBranch] = useState(
-    JSON.parse(localStorage.getItem("data")).BranchId
+    JSON.parse(localStorage.getItem("data"))
+      ? JSON.parse(localStorage.getItem("data")).BranchId
+      : null
   );
-  const superAdmin = JSON.parse(localStorage.getItem("data")).isSuperAdmin;
+  const superAdmin = JSON.parse(localStorage.getItem("data"))
+    ? JSON.parse(localStorage.getItem("data")).isSuperAdmin
+    : null;
   async function fetchDataBranch() {
     setIsLoading(true);
     await axiosInstance
@@ -223,7 +227,7 @@ export default function Dashboard() {
                 >
                   <Center
                     w={["149px", "249px", "349px"]}
-                    h={["25px", "75px", "125px"]}
+                    h={["25px", "75px", "90px"]}
                     borderRadius={"10"}
                     borderBottom="10px solid #2C3639"
                     bgColor={"#DCD7C9"}
@@ -238,7 +242,7 @@ export default function Dashboard() {
                   </Center>
                   <Center
                     w={["149px", "249px", "349px"]}
-                    h={["25px", "75px", "125px"]}
+                    h={["25px", "75px", "90px"]}
                     borderRadius={"10"}
                     borderBottom="10px solid #2C3639"
                     bgColor={"#DCD7C9"}
@@ -253,7 +257,7 @@ export default function Dashboard() {
                   </Center>
                   <Center
                     w={["149px", "249px", "349px"]}
-                    h={["25px", "75px", "125px"]}
+                    h={["25px", "75px", "90px"]}
                     borderRadius={"10"}
                     borderBottom="10px solid #2C3639"
                     bgColor={"#DCD7C9"}
@@ -268,7 +272,7 @@ export default function Dashboard() {
                   </Center>
                   <Center
                     w={["149px", "249px", "349px"]}
-                    h={["25px", "75px", "125px"]}
+                    h={["25px", "75px", "90px"]}
                     borderRadius={"10"}
                     borderBottom="10px solid #2C3639"
                     bgColor={"#DCD7C9"}
@@ -285,7 +289,7 @@ export default function Dashboard() {
                   </Center>
                   <Center
                     w={["149px", "249px", "349px"]}
-                    h={["25px", "75px", "125px"]}
+                    h={["25px", "75px", "100px"]}
                     borderRadius={"10"}
                     borderBottom="10px solid #2C3639"
                     bgColor={"#DCD7C9"}

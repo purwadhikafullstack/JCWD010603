@@ -14,6 +14,7 @@ import {
   useToast,
   Spinner,
   Center,
+  useMediaQuery,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { axiosInstance } from "../config/config";
@@ -148,6 +149,8 @@ export default function UserPage() {
       });
     }
   }
+  const [isSmallerThan430] = useMediaQuery("(max-width: 430px)");
+  const [isSmallerThan345] = useMediaQuery("(max-width: 345px)");
 
   return (
     <>
@@ -156,7 +159,7 @@ export default function UserPage() {
       <CatsContainer />
 
       <Flex
-        w="430px"
+        w={isSmallerThan430 ? "100%" : "430px"}
         h="229px"
         m="50px auto"
         direction="column"
@@ -170,7 +173,7 @@ export default function UserPage() {
       {nearestId && (
         <Select
           defaultValue={nearestId}
-          w="430px"
+          w={isSmallerThan430 ? "100%" : "430px"}
           m="0 auto"
           onChange={handleBranchChange}
           cursor="pointer"
@@ -184,7 +187,7 @@ export default function UserPage() {
         </Select>
       )}
 
-      <Flex w="430px" m="0 auto" h="500px" direction="column" py={5}>
+      <Flex w={isSmallerThan430 ? "100%" : "430px"} m="0 auto" h={isSmallerThan345 ? "600px" : "500px"} direction="column" py={5}>
         {isLoading ? (
           <Center w="100%" h="100%">
             <Spinner size="lg" />
@@ -193,15 +196,15 @@ export default function UserPage() {
           <Grid
             w="100%"
             gap={1}
-            templateColumns="repeat(3, 1fr)"
+            templateColumns={isSmallerThan345 ? "repeat(2, 1fr)" : "repeat(3, 1fr)"}
             justifyItems="center"
             px={1}
           >
             {products?.map((val) => {
               return (
                 <Flex
-                  w="133px"
-                  h="215px"
+                  w={isSmallerThan430 ? "110px" : "133px"}
+                  h={isSmallerThan430 ? "160px" : "215px"}
                   key={val.id}
                   borderRadius={10}
                   overflow="hidden"
@@ -215,21 +218,21 @@ export default function UserPage() {
                     <Image
                       src={val.imgProduct}
                       w="100%"
-                      h="120px"
+                      h={isSmallerThan430 ? "80px" : "120px"}
                       objectFit="cover"
                     />
                   </Link>
                   <Flex w="100%" overflow="auto">
-                    <Text ml={1} fontSize="sm">
+                    <Text ml={1} fontSize={isSmallerThan430? "xs" : "sm"}>
                       {val.name}
                     </Text>
                   </Flex>
-                  <Text ml={1} fontSize="sm" fontWeight="bold">
+                  <Text ml={1} fontSize={isSmallerThan430? "xs" : "sm"} fontWeight="bold">
                     Rp{val.price.toLocaleString()}
                   </Text>
 
                   <Button
-                    size="sm"
+                    size={isSmallerThan430? "xs" : "sm"}
                     borderRadius="none"
                     bg="#2C3639"
                     color="white"
@@ -252,7 +255,7 @@ export default function UserPage() {
       </Flex>
 
       <Flex
-        w="430px"
+        w={isSmallerThan430 ? "100%" : "430px"}
         h="120px"
         bg="#2C3639"
         m="40px auto 0px"

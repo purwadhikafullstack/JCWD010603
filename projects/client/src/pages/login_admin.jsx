@@ -29,7 +29,7 @@ export default function LoginAdmin() {
   const [status, setStatus] = useState(false);
   const [errMsg, setErrMsg] = useState("");
   const [loginStat, setLoginStat] = useState("");
-  
+
 
   useEffect(()=> {
     document.title = 'KOPIO | Login Admin'
@@ -67,7 +67,6 @@ export default function LoginAdmin() {
       console.log(`Error = ${error}`);
     }
   }
-  console.log(loginStat)
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

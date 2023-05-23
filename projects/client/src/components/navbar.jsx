@@ -13,6 +13,7 @@ import {
   PopoverBody,
   ListItem,
   Center,
+  useMediaQuery,
 } from "@chakra-ui/react";
 
 import { Link as ReachLink } from "react-router-dom";
@@ -34,17 +35,17 @@ export default function Navbar(props) {
     localStorage.clear();
     window.location.reload(true);
   }
-
+  const [isSmallerThan430] = useMediaQuery("(max-width: 430px)");
 
   return (
     <>
-      <Center flex={1} align={"center"} justifyContent={"center"}>
+      {/* <Center flex={1} align={"center"} justifyContent={"center"}> */}
         <Flex
           zIndex={100}
-          // px={2}
+          m='0 auto'
           h="70px"
           backgroundColor="#2C3639"
-          w="430px"
+          w={isSmallerThan430 ? "100%" : "430px"}
           padding="20px"
           borderBottom={"2px solid #E2E8F0"}
           display={"flex"}
@@ -96,12 +97,12 @@ export default function Navbar(props) {
                   <PopoverContent minW={{ base: "100%", lg: "max-content" }}>
                     <PopoverArrow backgroundColor={"#A27B5C"} />
 
-                    <PopoverHeader bgColor={"#A27B5C"} color="white">
+                    <PopoverHeader bgColor={"#A27B5C"} color="white" textAlign='center'>
                       {" "}
                       WELCOME {userSelector?.username}!
                     </PopoverHeader>
                     <PopoverBody>
-                      <List fontSize={"14px"} color="#7D7D7D" gap={5}>
+                      <List fontSize={"14px"} color="#7D7D7D" gap={5} textAlign='center'>
                         <Divider orientation="horizontal" m={2} />
                         <ListItem>
                           <Link to="/user-transactions" as={ReachLink}>
@@ -140,7 +141,7 @@ export default function Navbar(props) {
             </Flex>
           </Flex>
         </Flex>
-      </Center>
+      {/* </Center> */}
     </>
   );
 }

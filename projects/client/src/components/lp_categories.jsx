@@ -1,6 +1,6 @@
 import {
     Flex, Heading, Button, Grid, GridItem, Center,
-    Text,
+    Text, useMediaQuery,
 } from "@chakra-ui/react";
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 import { useState, useEffect } from "react";
@@ -36,9 +36,10 @@ export default function CatsContainer() {
         ];
         return colors[Math.floor(Math.random() * colors.length)];
     };
+    const [isSmallerThan430] = useMediaQuery("(max-width: 430px)");
 
     return (
-        <Flex w="430px" m='40px auto 0px' direction='column'>
+        <Flex w={isSmallerThan430 ? "100%" : "430px"} m='40px auto 0px' direction='column'>
             <Heading size='md' p={5} textAlign='center'>
                 Categories
             </Heading>
@@ -61,7 +62,7 @@ export default function CatsContainer() {
                 })}
             </Grid>
             {/* Show More Button */}
-            {!showAll && categoryData.length > 10 && (
+            {!showAll && categoryData.length > 8 && (
                 <Flex w='35%' m='0 auto' justify='space-around' align='center' onClick={handleShowAll} borderRadius={50} bg='#2C3639' color='white'
                     _hover={{
                         cursor: "pointer",

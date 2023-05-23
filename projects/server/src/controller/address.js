@@ -12,7 +12,6 @@ const Product = db.product;
 const addressController = {
   addAddress: async (req, res) => {
     try {
-      console.log(req.body);
       const {
         address,
         city,
@@ -37,12 +36,9 @@ const addressController = {
         idCity,
         idProv,
       };
-      console.log(data);
       const checkPrimaryAddress = await Address.findOne({
         where: { [Op.and]: [{ isPrimary: true }, { UserId: UserId }] },
       });
-      console.log(isPrimary);
-      console.log(checkPrimaryAddress.dataValues);
       if (isPrimary) {
         if (checkPrimaryAddress) {
           await Address.update(
@@ -69,7 +65,6 @@ const addressController = {
   updateAddress: async (req, res) => {
     try {
       const id = req.query.id;
-      console.log(id);
       const {
         address,
         city,
@@ -102,8 +97,6 @@ const addressController = {
           ],
         },
       });
-      console.log(isPrimary);
-      console.log(checkPrimaryAddress.dataValues);
       if (isPrimary) {
         if (checkPrimaryAddress) {
           await Address.update(
@@ -193,7 +186,7 @@ const addressController = {
     try {
       const getAddress = await Address.findAll();
       res.status(200).json({
-        message: "get alamat",
+        message: "get address",
         result: getAddress,
       });
     } catch (err) {

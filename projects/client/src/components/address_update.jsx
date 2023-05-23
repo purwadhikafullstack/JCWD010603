@@ -62,9 +62,7 @@ export default function UpdateAdress(props) {
 
   const fetchProvince = async () => {
     try {
-      const response = await axiosInstance.get(
-        "/api/api_rajaongkir/province"
-      );
+      const response = await axiosInstance.get("/api/api_rajaongkir/province");
       const result = response.data;
 
       setProvinceAPI(result);
@@ -130,7 +128,7 @@ export default function UpdateAdress(props) {
 
     try {
       await axiosInstance.patch("/api/address/editaddress?id=" + Data.id, Data);
-      navigate("/list-address");
+      navigate("/address");
     } catch (error) {
       console.error(error);
     }
@@ -156,7 +154,7 @@ export default function UpdateAdress(props) {
             flexDir={"column"}
             gap={5}
           >
-            <Link to="/list-address" as={ReachLink}>
+            <Link to="/address" as={ReachLink}>
               <Flex textAlign={"left"} color="white">
                 <Icon
                   boxSize={"7"}
@@ -206,7 +204,7 @@ export default function UpdateAdress(props) {
                   const selectedProvince = provinceAPI.find(
                     (val) => val.province === e.target.value
                   );
-                  setProvinces(e.target.province);
+                  setProvinces(e.target.value);
                   handleId(selectedProvince.province_id);
                 }}
               >

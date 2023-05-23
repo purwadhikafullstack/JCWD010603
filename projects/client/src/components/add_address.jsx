@@ -55,9 +55,7 @@ export default function AddAdress(props) {
   ]);
   const fetchProvince = async () => {
     try {
-      const response = await axiosInstance.get(
-        "/api/api_rajaongkir/province"
-      );
+      const response = await axiosInstance.get("/api/api_rajaongkir/province");
       const result = response.data;
 
       setProvinceAPI(result);
@@ -115,7 +113,7 @@ export default function AddAdress(props) {
             duration: 2000,
             isClosable: true,
           });
-          navigate("/list-address");
+          navigate("/address");
         })
         .catch((error) => {
           toast({
@@ -131,7 +129,7 @@ export default function AddAdress(props) {
         });
 
       if (res.status === 200) {
-        navigate("/list-address", { replace: true });
+        navigate("/address", { replace: true });
       }
     },
   });
@@ -156,7 +154,7 @@ export default function AddAdress(props) {
             flexDir={"column"}
             gap={5}
           >
-            <Link to="/list-address" as={ReachLink}>
+            <Link to="/address" as={ReachLink}>
               <Flex textAlign={"left"} color="white">
                 <Icon
                   boxSize={"7"}
