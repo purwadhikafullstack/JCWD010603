@@ -1,9 +1,10 @@
 import LineChart from "./charts/LineChart";
 import BarChart from "./charts/BarChart";
-import { Flex, Center, useMediaQuery } from "@chakra-ui/react";
+import { Flex, Center, useMediaQuery, Spinner } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
 export default function ChartComponent(props) {
+  const [isLoading, setIsLoading] = useState(true);
   const data = props.data;
   const datacat = props.datacat;
   // const databar = props.dataBar;
@@ -26,6 +27,9 @@ export default function ChartComponent(props) {
     setBarData(datacat?.map((product) => product?.totalQty));
     setDataX(data?.map((product) => product?.date));
     setDataY(data?.map((product) => parseInt(product?.grandPrice)));
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
   }, []);
   console.log(datax);
   console.log(datay);
@@ -314,49 +318,61 @@ export default function ChartComponent(props) {
 
   return (
     <>
-      <Flex gap={5} direction={isSmallerThan1500 ? "column" : "row"} h="100%">
-        <Flex
-          w="full"
-          // maxH="700px"
-          h={isSmallerThan1500 ? "50%" : "100%"}
-          maxW="1500px"
-          mt="auto"
-          flexDir={"column"}
-          gap={3}
-        >
-          <Center fontWeight="bold" fontSize="15px">
-            REPORT TRANSACTION DAY BY DAY
-          </Center>
-          <LineChart
-            // w="500px"
-            w={isSmallerThan650 ? "100%" : "500px"}
-            h={isSmallerThan1500 ? "50%" : "300px"}
-            chartData={chartData}
-            chartOptions={lineChartOptionsTotalSpent}
-          />
-        </Flex>
-        <Flex
-          w="full"
-          // maxH="500px"
-          maxW="1000px"
-          mt="auto"
-          h={isSmallerThan1500 ? "50%" : "100%"}
-          flexDir={"column"}
-          gap={3}
-          px={15}
-        >
-          <Center fontWeight="bold" fontSize="15px">
-            {" "}
-            REPORT TRANSACTION CATEGORY{" "}
-          </Center>
-          <BarChart
-            w="500px"
-            h={isSmallerThan1500 ? "50%" : "100%"}
-            chartData={barChartDataConsumption}
-            chartOptions={barChartOptionsConsumption}
-          />
-        </Flex>
-      </Flex>
+      {isLoading ? (
+        <Center w={"100vw"} h="100vh" alignContent={"center"}>
+          <Spinner size={"xl"} thickness="10px" color="blue.500" />
+        </Center>
+      ) : (
+        <>
+          <Flex
+            gap={5}
+            direction={isSmallerThan1500 ? "column" : "row"}
+            h="100%"
+          >
+            <Flex
+              w="full"
+              // maxH="700px"
+              h={isSmallerThan1500 ? "50%" : "100%"}
+              maxW="1500px"
+              mt="auto"
+              flexDir={"column"}
+              gap={3}
+            >
+              <Center fontWeight="bold" fontSize="15px">
+                REPORT TRANSACTION DAY BY DAY
+              </Center>
+              <LineChart
+                // w="500px"
+                w={isSmallerThan650 ? "100%" : "500px"}
+                h={isSmallerThan1500 ? "50%" : "300px"}
+                chartData={chartData}
+                chartOptions={lineChartOptionsTotalSpent}
+              />
+            </Flex>
+            <Flex
+              w="full"
+              // maxH="500px"
+              maxW="1000px"
+              mt="auto"
+              h={isSmallerThan1500 ? "50%" : "100%"}
+              flexDir={"column"}
+              gap={3}
+              px={15}
+            >
+              <Center fontWeight="bold" fontSize="15px">
+                {" "}
+                REPORT TRANSACTION CATEGORY{" "}
+              </Center>
+              <BarChart
+                w="500px"
+                h={isSmallerThan1500 ? "50%" : "100%"}
+                chartData={barChartDataConsumption}
+                chartOptions={barChartOptionsConsumption}
+              />
+            </Flex>
+          </Flex>
+        </>
+      )}
     </>
   );
 }
