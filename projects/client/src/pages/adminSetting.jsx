@@ -96,7 +96,7 @@ export default function AdminSetting() {
   const [idProv, setIdProv] = useState(0);
   const fetchProvince = async () => {
     try {
-      const response = await axios.get(
+      const response = await axiosInstance.get(
         "/api/api_rajaongkir/province"
       );
       const result = response.data;
@@ -117,7 +117,7 @@ export default function AdminSetting() {
 
   const fetchCity = async () => {
     try {
-      const response = await axios.get(
+      const response = await axiosInstance.get(
         `/api/api_rajaongkir/city/${idProv}`
       );
       const result = response.data;
@@ -187,6 +187,7 @@ export default function AdminSetting() {
       })
       .finally(() => {
         setBranchAlertDialogOpen(false);
+        fetchAdmin();
       });
   }
 
@@ -707,17 +708,23 @@ export default function AdminSetting() {
                         </Text>
                       </Stack>
                       <Flex w="50%" justify="space-between">
-                        <Text fontSize={["sm", "md"]}>{val.Branch.name}</Text>
+                        {
+                          val.isSuperAdmin ? (
+                            <Text fontSize={["sm", "md"]}>Head Admin</Text>
+                          ) : (
+                            <Text fontSize={["sm", "md"]}>{val.Branch.name}</Text>
+                          )
+                        }
 
                         <IconButton
                           as={FaUserSlash}
                           mr={2}
                           bg="none"
                           size="sm"
-                          color={"#A84448"}
+                          color={val.isSuperAdmin ? "gray" : "#A84448"}
                           p={1}
                           borderRadius="full"
-                          onClick={() => deleteAdmin(val.id)}
+                          onClick={val.isSuperAdmin ? null : () => deleteAdmin(val.id)}
                           sx={{
                             _hover: {
                               transform: "scale(0.98)",

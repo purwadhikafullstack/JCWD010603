@@ -210,12 +210,18 @@ const adminController = {
         });
       }
 
+      // Delete the admins associated with the branch
+      await Admins.destroy({
+        where: { BranchId: id },
+        transaction,
+      });
+
       await branch.destroy({ transaction });
 
       await transaction.commit();
 
       return res.status(200).json({
-        message: "Branch deleted successfully",
+        message: "Branch and associated admins deleted successfully",
       });
     } catch (err) {
       await transaction.rollback();

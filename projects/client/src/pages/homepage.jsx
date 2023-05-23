@@ -150,6 +150,7 @@ export default function UserPage() {
     }
   }
   const [isSmallerThan430] = useMediaQuery("(max-width: 430px)");
+  const [isSmallerThan345] = useMediaQuery("(max-width: 345px)");
 
   return (
     <>
@@ -186,7 +187,7 @@ export default function UserPage() {
         </Select>
       )}
 
-      <Flex w={isSmallerThan430 ? "100%" : "430px"} m="0 auto" h="500px" direction="column" py={5}>
+      <Flex w={isSmallerThan430 ? "100%" : "430px"} m="0 auto" h={isSmallerThan345 ? "600px" : "500px"} direction="column" py={5}>
         {isLoading ? (
           <Center w="100%" h="100%">
             <Spinner size="lg" />
@@ -195,7 +196,7 @@ export default function UserPage() {
           <Grid
             w="100%"
             gap={1}
-            templateColumns="repeat(3, 1fr)"
+            templateColumns={isSmallerThan345 ? "repeat(2, 1fr)" : "repeat(3, 1fr)"}
             justifyItems="center"
             px={1}
           >
