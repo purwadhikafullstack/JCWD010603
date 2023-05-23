@@ -9,16 +9,16 @@ export default function ChartComponent(props) {
   // const databar = props.dataBar;
 
   const [option, setOption] = useState(
-    datacat ? datacat?.map((product) => product?.Product.Category.name) : ""
+    datacat?.map((product) => product?.Product.Category.name) || ""
   );
   const [barData, setBarData] = useState(
-    datacat ? datacat?.map((product) => product?.totalQty) : 0
+    datacat?.map((product) => product?.totalQty) || 0
   );
   const [datax, setDataX] = useState(
-    datacat ? data?.map((product) => product?.date) : ""
+    data?.map((product) => product?.date) || ""
   );
   const [datay, setDataY] = useState(
-    datacat ? data?.map((product) => parseInt(product?.grandPrice)) : 0
+    data?.map((product) => parseInt(product?.grandPrice)) || 0
   );
 
   useEffect(() => {
