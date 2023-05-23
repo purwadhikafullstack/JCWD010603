@@ -153,6 +153,9 @@ export default function Dashboard() {
     fetchDataTransactionHeader();
     fetchDataTransactionItem();
     fetchDataBranch();
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
   }, [idBranch]);
 
   const webkit = {
@@ -289,7 +292,7 @@ export default function Dashboard() {
                   </Center>
                   <Center
                     w={["149px", "249px", "349px"]}
-                    h={["25px", "75px", "100px"]}
+                    h={["25px", "75px", "90px"]}
                     borderRadius={"10"}
                     borderBottom="10px solid #2C3639"
                     bgColor={"#DCD7C9"}
