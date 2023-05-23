@@ -60,7 +60,7 @@ export default function PageProducts() {
     url += `name=${search}&branch=${
       JSON.parse(localStorage.getItem("data"))
         ? JSON.parse(localStorage.getItem("data")).BranchId
-        : null
+        : 0
     }`;
 
     await axiosInstance.get("/api/product/finduser?" + url).then((res) => {
