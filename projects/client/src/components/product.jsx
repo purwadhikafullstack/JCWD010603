@@ -436,7 +436,7 @@ export default function ProductPage(props) {
               }
               backgroundColor={"white"}
               type="tel"
-              placeholder="Search"
+              placeholder="Search Name Product"
               w="400px"
               h="35px"
               borderRadius={"none"}
