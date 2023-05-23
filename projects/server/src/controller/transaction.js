@@ -44,10 +44,11 @@ const transactionController = {
           {
             model: Transaction_item,
             attributes: ["TransactionHeaderId", "qty", "ProductId"],
-            include: {
+            include: [{
               model: Product,
               attributes: ["name", "price", "imgProduct"],
-            },
+              paranoid: false
+            }],
           },
         ],
         where: {
@@ -140,6 +141,7 @@ const transactionController = {
           {
             model: Branch,
             attributes: ["name"],
+            paranoid: false
           },
         ],
         where: {
@@ -372,6 +374,7 @@ const transactionController = {
             {
               model: Branch,
               attributes: ["name"],
+              paranoid: false
             },
             {
               model: User,
@@ -408,7 +411,7 @@ const transactionController = {
     try {
       const data = await Transaction_item.findAll({
         where: { TransactionHeaderId: id },
-        include: { model: Product, attributes: ["name", "weight", "price"] },
+        include: [{ model: Product, attributes: ["name", "weight", "price"], paranoid: false }],
       });
 
       if (!data) throw new Error("Failed fetch transaction items");
@@ -471,6 +474,7 @@ const transactionController = {
             {
               model: Branch,
               attributes: ["name"],
+              paranoid: false
             },
             {
               model: User,
@@ -547,6 +551,7 @@ const transactionController = {
               {
                 model: Branch,
                 attributes: ["city"],
+                paranoid: false
               },
             ],
           },
@@ -610,6 +615,7 @@ const transactionController = {
               {
                 model: Branch,
                 attributes: ["city"],
+                paranoid: false
               },
             ],
           },
@@ -669,7 +675,7 @@ const transactionController = {
         include: [
           {
             model: Branch,
-            attributes: [],
+            paranoid: false,
           },
           {
             model: User,
@@ -726,7 +732,7 @@ const transactionController = {
         include: [
           {
             model: Branch,
-            attributes: [],
+            paranoid: false,
             where: {
               id: branchId,
             },
@@ -772,7 +778,7 @@ const transactionController = {
           },
           {
             model: Branch,
-            attributes: [],
+            paranoid: false,
           },
         ],
         group: ["userName", "branchName"],
@@ -808,7 +814,7 @@ const transactionController = {
           },
           {
             model: Branch,
-            attributes: [],
+            paranoid: false
           },
         ],
         where: {
@@ -1016,6 +1022,7 @@ const transactionController = {
             },
             include: {
               model: Product,
+              paranoid: false
             },
           },
           { transaction: t }
@@ -1085,10 +1092,12 @@ const transactionController = {
           {
             model: Product,
             attributes: ["CategoryId"],
+            paranoid: false,
             include: [
               {
                 model: Category,
                 attributes: ["name"],
+                paranoid: false
               },
             ],
           },
