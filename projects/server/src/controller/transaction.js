@@ -778,6 +778,7 @@ const transactionController = {
           },
           {
             model: Branch,
+            attributes: [],
             paranoid: false,
           },
         ],
